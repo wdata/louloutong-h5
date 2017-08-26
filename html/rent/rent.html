@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>出租</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="flexible" content="initial-dpr=2" />
+    <link rel="stylesheet" href="../../theme/plugin/flexible/flexible.css">
+    <script src="../../theme/plugin/flexible/flexible.js"></script>
+    <link rel="stylesheet" href="../../theme/plugin/swiper/css/swiper-3.3.1.min.css">
+    <link rel="stylesheet" href="../../theme/css/reset.css">
+    <link rel="stylesheet" href="../../theme/css/common.css">
+    <link rel="stylesheet" href="../../theme/css/normal.css">
+    <link rel="stylesheet" href="../../theme/css/page.css">
+</head>
+<body>
+<div class="fix-bg"></div>
+
+    <div class="sBox-wrapper tran500">
+        <div class="top-search">
+            <div class="back"><i class="icon icon-return"></i></div>
+            <div class="inpu-w bgfff">
+                <div class="p24">
+                    <input type="text" placeholder="搜索" id="search_btn">
+                </div>
+                <div class="icon-wrap"><i class="icon"></i></div>
+            </div>
+            <div class="cancel">取消</div>    
+        </div>
+        <div class="search-main tran500 fullh">
+            <div class="main-wrap fl">
+                <div class="search-key">
+                    <div class="tit">搜索指定范围</div>
+                    <div class="list-con">
+                        <div class="inner">
+                            <div class="list">标题</div>
+                            <div class="list">发布人</div>
+                            <div class="list">租金</div>
+                            <div class="list">距离</div>
+                        </div>
+                        <div class="inner undis">
+                            <div class="list">标题</div>
+                            <div class="list">发布人</div>
+                            <div class="list">租金</div>
+                            <div class="list">距离</div>
+                        </div>
+                        <div class="inner undis">
+                            <div class="list">标题</div>
+                            <div class="list">预约人</div>    
+                        </div>
+                        <div class="inner undis">
+                            <div class="list">标题</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="tran-wrap fl bgfff">
+                <div class="hr-24"></div>
+                <div class="rent-box">
+                    <div class="hr-24"></div>
+                    <div class="rent-list-con"  id="searchCon">
+                        <!-- <div class="list">
+                                <a class="p24" href="orent_detail.html">
+                                    <div class="top">
+                                        <div class="t-l fl">
+                                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                            <div class="txt">
+                                                <div class="tit">二宫合页</div>
+                                                <div class="time">1小时前</div>
+                                            </div>
+                                        </div>
+                                        <div class="t-r fr">
+                                            距离240米
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="mid">
+                                        <div class="word overhide">
+                                            东方科技大厦整层出租，南北通透，高端写字楼
+                                        </div>
+                                        <div class="price">1700元</div>    
+                                    </div>
+                                    <div class="bot">
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu2@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu3@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu4@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </a>
+                        </div>
+                        <div class="list">
+                                <a class="p24" href="orent_detail.html">
+                                    <div class="top">
+                                        <div class="t-l fl">
+                                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                            <div class="txt">
+                                                <div class="tit">二宫合页</div>
+                                                <div class="time">1小时前</div>
+                                            </div>
+                                        </div>
+                                        <div class="t-r fr">
+                                            距离240米
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="mid">
+                                        <div class="word overhide">
+                                            东方科技大厦整层出租，南北通透，高端写字楼
+                                        </div>
+                                        <div class="price">1700元</div>    
+                                    </div>
+                                    <div class="bot">
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu2@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu3@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="pic-w fl">
+                                                <img src="../../images/upload/tu4@2x.png" alt="" class="full">
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </a>
+                        </div> -->
+                        <div class="clear"></div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sCon-wrapper">
+        <div class="p-layout tran500">
+            <div class="main-wrap fl mainCon-wrap">
+                <div class="hr-88"></div>
+                <div class="swiper-container rent-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><a href=""><img src="../../images/upload/banner@2x.png" alt=""></a></div>
+                        <div class="swiper-slide"><a href=""><img src="../../images/upload/banner@2x.png" alt=""></a></div>
+                        <div class="swiper-slide"><a href=""><img src="../../images/upload/banner@2x.png" alt=""></a></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="rent-box transy">
+                    <div class="p24">
+                        <div class="rent-tab">
+                            <div class="top">
+                                <div class="top-r1">
+                                    <div class="list fl active">出租</div>
+                                    <div class="list fl">求租</div>
+                                    <div class="list fl">预约列表</div>
+                                    <div class="list fl">发布</div>
+                                    <div class="clear"></div> 
+                                </div>
+                                <div class="top-r2">
+                                    <div class="list fl half active">出租</div>
+                                    <div class="list fl half">求租</div>
+                                </div>
+                            </div>
+                            <div class="bot">
+                                <div class="inner">
+                                    <div class="list fl active">综合</div>
+                                    <div class="list fl">最新</div>
+                                    <div class="list fl">最近</div> 
+                                </div>
+                                <div class="inner undis">
+                                    <div class="list fl active">综合</div>
+                                    <div class="list fl">最新</div>
+                                    <div class="list fl">最近</div> 
+                                </div>
+                                <div class="inner undis">
+                                    <div class="inner-r1 undis">
+                                        <div class="list fl half active">未分配</div> 
+                                        <div class="list fl half">已分配</div>
+                                    </div>
+                                    <div class="inner-r2">
+                                        <div class="list fl half active">未处理</div> 
+                                        <div class="list fl half">已处理</div>
+                                    </div>
+                                </div>
+                                <div class="inner undis">
+                                   <div class="list fl active">发布</div>
+                                    <div class="list fl">我的出租</div>
+                                    <div class="list fl">我的求租</div> 
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="rent-list-con">
+                        <!-- 预约列表  未处理  物业运营人员--> 
+                        <!-- <div class="item">
+                            <div class="p24">
+                                <div class="t-l fl">
+                                    <div class="top">
+                                        <a href="">
+                                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                            <div class="txt">
+                                                <div class="tit">李莎莎</div>
+                                                <span>2017-7-31 12：50</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <a href="order_detail.html">
+                                        <div class="mid">
+                                            <p class="line2">东方科技大厦整层出租，高端写字楼，采光良好，通风不错</p>
+                                            <div class="time">预约时间：7月31日&nbsp;&nbsp;14：00</div>
+                                            <div class="tips overhide">接待者：利达|&nbsp;结果：已接待，带客户考虑清楚再回复我们</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="t-r fl">
+                                    <div class="oper">
+                                        <button class="btn">提醒</button>
+                                        <a href="recei_reasult.html" class="btn">接待</a>
+                                    </div>
+                                    <a href="order_detail.html">
+                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                    </a>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>-->
+                        <!-- 预约列表  未处理  物业管理人员--> 
+                        <!-- <div class="item">
+                            <div class="p24">
+                                <div class="t-l fl">
+                                    <div class="top">
+                                        <a href="">
+                                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                            <div class="txt">
+                                                <div class="tit">李莎莎</div>
+                                                <span>2017-7-31 12：50</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <a href="order_detail.html">
+                                        <div class="mid">
+                                            <p class="line2">东方科技大厦整层出租，高端写字楼，采光良好，通风不错</p>
+                                            <div class="time">预约时间：7月31日&nbsp;&nbsp;14：00</div>
+                                            <div class="tips overhide">接待者：利达|&nbsp;结果：已接待，带客户考虑清楚再回复我们</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="t-r fl">
+                                    <div class="hr-48"></div>
+                                    <div class="order-area" onclick="tranShow()">
+                                        <div class="mask"></div>
+                                        <button class="abs">分配接待</button>
+                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>-->
+                        <!-- 预约列表  已处理 --> 
+                         <!-- <div class="item">
+                            <a class="p24" href="orent_detail.html">
+                                <div class="t-l fl">
+                                    <div class="top">
+                                        <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                        <div class="txt">
+                                            <div class="tit">李莎莎</div>
+                                            <span>2017-7-31 12：50</span>
+                                        </div>
+                                    </div>
+                                    <div class="mid">
+                                        <p class="line2">东方科技大厦整层出租，高端写字楼，采光良好，通风不错</p>
+                                        <div class="time">预约时间：7月31日&nbsp;&nbsp;14：00</div>
+                                        <div class="tips overhide">接待者：利达|&nbsp;结果：已接待，带客户考虑清楚再回复我们</div>
+                                    </div>
+                                </div>
+                                <div class="t-r fl">
+                                    <div class="hr-48"></div>
+                                    <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                </div>
+                                <div class="clear"></div>
+                            </a>
+                                                 </div> -->
+                        <!-- 发布列表  --> 
+                        <div class="list">
+                            <a class="p24" href="orent_detail.html">
+                                <div class="mid">
+                                    <div class="word overhide">
+                                        东方科技大厦整层出租，南北通透，高端写字楼
+                                    </div>
+                                    <div class="date tips">发布于08.16</div>    
+                                </div>
+                                <div class="bot">
+                                    <div class="pic-w fl">
+                                            <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                    </div>
+                                    <div class="pic-w fl">
+                                            <img src="../../images/upload/tu2@2x.png" alt="" class="full">
+                                    </div>
+                                    <div class="pic-w fl">
+                                            <img src="../../images/upload/tu3@2x.png" alt="" class="full">
+                                    </div>
+                                    <div class="pic-w fl">
+                                            <img src="../../images/upload/tu4@2x.png" alt="" class="full">
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </a>
+                            <div class="oper-bot">
+                                <button>修改</button>
+                                <button>下架</button>
+                                <button>删除</button>
+                            </div>
+                        </div>
+                        <!-- 发布 -->
+                    </div>
+                    <div class="issue pr undis">
+                        <div class="p24">
+                            <div class="tit">选择类型</div>
+                            <div class="oper-btn">
+                                <button class="btn on">我要出租</button>
+                                <button class="btn">我要求租</button>
+                            </div>
+                        </div>
+                        <div class="issue-editbox pr bgfff">
+                            <div class="issue-inner fully">
+                                <div class="return-column bg000 undis">
+                                    <div class="return-column-heart">
+                                        <a class="header-return" href="javascript:;" onclick="returnList()"><i class="header-return-icon"></i></a>
+                                    </div>
+                                </div>
+                                <div class="photo">
+                                    <div class="icon-wrap abs">
+                                        <i class="icon icon-camera abs"></i>
+                                    </div>
+                                    <img src="../../images/upload/pic2@2x.png" alt="" class="full">
+                                    <div class="mask"></div>
+                                </div>
+                                <div class="rent-input-con p24">
+                                    <ul>
+                                        <li>
+                                            <div class="t-l fl"><span>区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域</span></div>
+                                            <div class="t-r fl" onclick="tranShow(1)">
+                                                南山区科技园
+                                                <i class="icon icon-in fr"></i>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>面&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积</span></div>
+                                            <div class="t-r fl t0r">
+                                                <input type="text">
+                                                <div class="unit">
+                                                    <span class="c999">平米</span>
+                                                </div>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金</span></div>
+                                            <div class="t-r fl"  onclick="tranShow(3)">
+                                                <input type="text" readonly>
+                                                <div class="unit">
+                                                    <span class="c333">元/m<sup>2</sup>/天</span>
+                                                </div>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <div class="t-l fl"><span>类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型</span></div>
+                                            <div class="t-r fl">
+                                                写字楼
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <div class="t-l fl"><span>标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述</span></div>
+                                            <div class="t-r fl" onclick="tranShow(2)">
+                                                <input type="text" placeHolder="10字以上" readonly>
+                                                <i class="icon icon-in fr"></i>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <div class="t-l fl"><span>联&nbsp;&nbsp;系&nbsp;&nbsp;人</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeHolder="10字以上">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <div class="t-l fl"><span>朝&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;向</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeHolder="10字以上">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li>
+                                            <div class="t-l fl"><span>配套设施</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" placeHolder="10字以上">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <input type="button" value="发布" class="submit-btn">
+                                    <div class="hr-88"></div>
+                                    <div class="hr-100"></div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="data-tips undis">已经没有更多数据了</div> 
+                    
+                </div>
+            </div> 
+            <div class="tran-wrap fl">
+                <div class="tran-inner">
+                <header>
+                    <a class="return" href="javascipt:;" onclick="tranHide()">
+                        <img src="../../images/icon/back.png" alt=""><span></span>
+                    </a>
+                    接待分配
+                </header>
+                <div class="search">
+                    <div class="search-heart">
+                        <input type="text" placeholder="请输入接收人"><i class="icon"></i>
+                    </div>
+                </div> 
+                <div class="distri-box">
+                    <div class="list" onclick="returnTran()">
+                        <div class="p24">
+                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                            <div class="txt">
+                                <div class="tit">
+                                   高原&nbsp;&nbsp;<span>物业运营</span>
+                                </div>
+                                <div class="time">上班时间：08：00~23：00</div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="tran-inner undis">
+                    <div class="switch overflow-y" style="transform: translate(0px, 0px);">
+                    <div class="return-column">
+                        <div class="return-column-heart">
+                            <a class="header-return" href="javascript:" onclick="returnTran()"><i class="header-return-icon"></i><span>返回</span></a>
+                            <div class="header-title">切换楼栋单元</div>
+                            <a id="determine" class="header-operating hide" href="javascript:">确定</a>
+                        </div>
+                    </div>
+                    <div class="hr-88"></div>
+                    <!--顶部导航-->
+                    <div class="nav-layer">
+                        <ul class="nav">
+                            <li>科技园</li><li>软件产业基地</li><li>科技园</li><li>软件产业基地</li><li id="prompt" class="active">请选择</li>
+                        </ul>
+                    </div>
+                    <div class="hr-88"></div>
+                    <!--尾部列表显示-->
+                    <ul class="address">
+                        <li class=""><i></i>全部</li>
+                        <li class=""><i></i>科技园</li>
+                        <li class="active"><i></i>软件产业基地</li>
+                    </ul>
+                    </div> 
+                </div>
+                <div class="tran-inner bgececf1 undis">
+                    <header>
+                        <a class="return" href="javascipt:;" onclick="returnTran()">
+                            <img src="../../images/icon/back.png" alt=""><span></span>
+                        </a>
+                        描述
+                    </header>
+                    <div class="desc-con p24">
+                       <textarea placeholder="10字以上"></textarea>
+                    </div>
+                </div>
+                <div class="tran-inner">
+                    <header>
+                        <a class="return" href="javascipt:;" onclick="returnTran()">
+                            <img src="../../images/icon/back.png" alt=""><span></span>
+                        </a>
+                        单位
+                    </header>
+                    <div class="unit-con p24">
+                        <ul>
+                            <li>元/m<sup>2</sup>/天</li>
+                            <li>元/</li>
+                            <li>元/m<sup>2</sup>/月</li>
+                        </ul>
+                    </div>   
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <footer class="tap-footer" style="position:fixed">
+        <a href="../../index.html"><i class="icon index-icon"></i><span>首页</span></a>
+        <a class="active" href="rent.html"><i class="icon rent-icon"></i><span>出租</span></a>
+        <a href="javascript:"><i class="icon circle-icon"></i><span>圈子</span></a>
+        <a href="javascript:"><i class="icon more-icon"></i><span>小信</span></a>
+    </footer>  
+
+
+
+
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/zepto.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/touch.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/swiper/js/swiper-3.3.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/page.js"></script>
+ <script type="text/javascript" charset="utf-8" src="js/rent.js"></script> 
+<script>        
+    var mySwiper = new Swiper ('.rent-swiper', {
+            loop: true,
+            pagination: '.swiper-pagination',
+            autoplay: 1500,
+            autoplayDisableOnInteraction: false
+    })        
+  </script>
+</body>
+</html>
