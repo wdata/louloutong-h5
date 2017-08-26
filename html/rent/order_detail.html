@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="flexible" content="initial-dpr=2" />
+    <link rel="stylesheet" href="../../theme/plugin/flexible/flexible.css">
+    <script src="../../theme/plugin/flexible/flexible.js"></script>
+    <link rel="stylesheet" href="../../theme/plugin/swiper/css/swiper-3.3.1.min.css">
+    <link rel="stylesheet" href="../../theme/css/reset.css">
+    <link rel="stylesheet" href="../../theme/css/common.css">
+    <link rel="stylesheet" href="../../theme/css/normal.css">
+    <link rel="stylesheet" href="../../theme/css/page.css">
+</head>
+<body>
+<div class="layout bggray">
+    <div class="p-layout tran500">
+        <div class="main-wrap fl">
+            <div class="return-column">
+                <div class="return-column-heart">
+                    <a class="header-return" href="javascript:;" onclick="history.go(-1);"><i class="header-return-icon"></i><span>返回</span></a>
+                    <div class="header-title">办公室预约</div>
+                    <a class="header-operating share" href="javascript:"><i></i></a>
+                </div>
+            </div>
+            <div class="hr-88"></div>
+            <div class="rent-list-con">
+                <div class="list noborder">
+                    <div class="p24" >
+                        <div class="top">
+                            <div class="t-l fl">
+                                <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                <div class="txt">
+                                    <div class="tit">二宫合页</div>
+                                    <div class="time">1小时前</div>
+                                </div>
+                            </div>
+                            <div class="t-r fr">
+                                <button class="off-btn">下架了</button>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <a href="orent_detail.html">
+                            <div class="mid">
+                                <div class="word overhide">
+                                    东方科技大厦整层出租，南北通透，高端写字楼
+                                </div>
+                                <div class="price">1700元</div>    
+                            </div>
+                            <div class="bot">
+                                <div class="pic-w fl">
+                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                </div>
+                                <div class="pic-w fl">
+                                        <img src="../../images/upload/tu2@2x.png" alt="" class="full">
+                                </div>
+                                <div class="pic-w fl">
+                                        <img src="../../images/upload/tu3@2x.png" alt="" class="full">
+                                </div>
+                                <div class="pic-w fl">
+                                        <img src="../../images/upload/tu4@2x.png" alt="" class="full">
+                                </div>
+                                <div class="clear"></div>
+                            </div>    
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="order-item-con p24">
+                <div class="tit">预约看房</div>
+                <!-- 未处理 -->
+                <!-- <div class="item">
+                    <div class="inner">
+                        <div class="t-l fl">
+                            <div class="tx">
+                                <img src="../../images/upload/touxiang@2x.png" alt="">
+                                格瑞特（李莎莎）
+                            </div>
+                            <div class="tips">
+                                <div class="tip">
+                                    <span>预约日期</span>
+                                    <div>17/03/20</div>
+                                </div>
+                                <div class="tip">
+                                    <span>预约时间</span>
+                                    <div>14：00</div>
+                                </div>
+                                <div class="tip">
+                                    <span>接待人员</span>
+                                    <div>
+                                       <img src="../../images/upload/touxiang@2x.png" alt=""> 
+                                       <span class="cblue">秀一</span>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <div class="bgline fl"></div>
+                        <div class="t-r fr">
+                            <div class="inner">
+                                <button>提醒</button><br>
+                                <a href="to:13123568956">
+                                    <i class="icon icon-phone"></i>
+                                    <div>13123568956</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div> 
+                    </div>
+                    <div class="bot">
+                       <i class="icon icon-resault"></i> 
+                       结果：房价太高高高高高高高高高高高高高高高高高高高高高
+                       高高高高高高。
+                    </div>
+                </div> -->
+                <!-- 未接待 -->
+                <div class="item">
+                    <div class="inner">
+                        <div class="t-l fl">
+                            <div class="tx">
+                                <img src="../../images/upload/touxiang@2x.png" alt="">
+                                格瑞特（李莎莎）
+                            </div>
+                            <div class="tips tips01">
+                                <div class="tip">
+                                    <span>预约日期</span>
+                                    <div>17/03/20</div>
+                                </div>
+                                <div class="tip">
+                                    <span>预约时间</span>
+                                    <div>14：00</div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <div class="bgline fl"></div>
+                        <div class="t-r fr">
+                            <div class="inner">
+                                <button onclick="receiveShow()">分配接待</button><br>
+                                <a href="to:13123568956">
+                                    <i class="icon icon-phone"></i>
+                                    <div>13123568956</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tran-wrap fl">
+            <header>
+                <a class="return" href="javascipt:;" onclick="returnTran()">
+                    <img src="../../images/icon/back.png" alt=""><span></span>
+                </a>
+                接待分配
+            </header>
+            <div class="search">
+                <div class="search-heart">
+                    <input type="text" placeholder="请输入接收人"><i class="icon"></i>
+                </div>
+            </div> 
+            <div class="distri-box">
+                <a class="list" href="rent.html">
+                    <div class="p24">
+                        <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                        <div class="txt">
+                            <div class="tit">
+                               高原&nbsp;&nbsp;<span>物业运营</span>
+                            </div>
+                            <div class="time">上班时间：08：00~23：00</div>
+                        </div>    
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/zepto.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/page.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/orent_detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+/**
+ * Created by Administrator on 2017/8/17.
+ */
+$(document).on("click",".head",function(){
+    $(this).toggleClass("active")
+        .siblings("ul").toggleClass("active");
+});
+
+
+$.ajax({
+    type:'get',
+    url:  server_url_repair + server_v1 + '/user/list/maintainer.json',
+    data: {
+        "firmId":firmId
+    },
+    dataType:'json',
+    success:function(data){
+        var list = $("#sent-list");
+        var html = '';
+        list.empty();
+        if(data.code === 0){
+            $.each(data.data,function(index,val){
+                html += '<li> <a href="javascript:"> <img class="avatar" src="'+ val.photo +'" alt="avatar"> </a> <a href="javascript:"> <div class="information"> <div class="name">'+ val.name +'<span class="position">'+ val.duty[0] +'</span></div> <time>上班时间：08:00-23:00</time> <div class="picked-up">已有'+ val.count +'单</div> </div> </a> </li>'
+            })
+        }
+        list.append('<div class="team"> <header class="head"><i class="shrink-icon"></i><div class="title">'+ data.data[0].orgName +'</div></header> <ul>'+ html +'</ul> </div>');
+    },
+    error:function(data){
+        ErrorReminder(data);
+    }
+});
