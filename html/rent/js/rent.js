@@ -57,7 +57,7 @@ rent.getList = function(elem){
 			$.each(data.data.items,function(index,item){
 				code+=`
 					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="javascript:;" onclick="link('${item.id}',${_this.type})">
+                        <a class="p24" href="orent_detail.html" onclick="link('${item.id}',${_this.type})">
                             <div class="top">
                                 <div class="t-l fl">
 									<span class="tx" data-id=${item.user.id}><img src="${item.user.photo}" alt="" class="full"></span>
@@ -415,10 +415,11 @@ order.getMoreList = function(elem){
 	})
 }
 
-
 //发布
+var propertyId=sessionStorage.getItem('propertyId');
 var issue=new Object({
 	isShow:false,
+    type:1,                     //1出租   2求租
 });
 issue.show = function(){
 	if(this.isShow){
@@ -439,6 +440,18 @@ issue.scroll = function(){
 			$('.issue-editbox').addClass('on');
 		}
 	})
+}
+issue.add = function(){
+
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+'/rents/save.json',
+        dataType:'json',
+        data:{},
+        success:function(data){
+
+        }
+    })
 }
 issue.init = function(){
 	issue.show();
