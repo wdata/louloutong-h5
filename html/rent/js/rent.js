@@ -420,6 +420,7 @@ var propertyId=sessionStorage.getItem('propertyId');
 var issue=new Object({
 	isShow:false,
     type:1,                     //1出租   2求租
+    userId:userId
 });
 issue.show = function(){
 	if(this.isShow){
@@ -442,20 +443,82 @@ issue.scroll = function(){
 	})
 }
 issue.add = function(){
-
+    var _acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
+    var _price=($('.diff-orent .elem-05').val())?$('.diff-orent .elem-05').val():$('.diff-irent .elem-05').val();
     $.ajax({
         type:'post',
         url:server_rent+server_v1+'/rents/save.json',
         dataType:'json',
-        data:{},
+        data:{
+            'type':this.type,
+            'userId':this.userId,
+            'propertyId':$('#addressList li.active').data('id'),
+            'community':$('.elem-02').val(),
+            'section':$('.elem-03').val(),
+            'acreage':_acreage,
+            'price':_price,
+            'houseType':$('.elem-06').val(),
+            'title':$('.elem-07').val(),
+            'content':$('.elem-08').val(),
+            'contacter':$('.elem-09').val(),
+            'phone':$('.elem-10').val(),
+            'direction':'朝南',
+            'traffic':'地铁',
+            'matingFacility':'花园'
+        },
         success:function(data){
 
         }
     })
 }
+issue.event = function(){
+    var _this=this;
+    //区域选择
+    $('.header-operating').click(function(){
+        $('.elem-01').text($('#addressList li.active').text());
+        $('.p-layout').css('transform','translateX(0)');
+    })
+    //选择单位
+    $('.unit-con ul li').click(function(){
+        $('#unit').text($(this).text())
+        $('.p-layout').css('transform','translateX(0)');
+    })
+    //输入描述
+    $('.desc-con textarea').focus(function(){
+        if($(this).val()){
+            $('#desc_oper').show();
+        }
+    })
+    $('#desc_oper').click(function(){
+        $('.elem-08').val($('.desc-con textarea').val())
+    })
+    //出租、求租切换
+    $('.oper-btn .btn').click(function(){
+        _this.type=$(this).index()+1;
+        if($(this).index()==0){
+            $('.diff-orent').hide();
+            $('.diff-irent').show();
+        }else{
+            $('.diff-orent').show();
+            $('.diff-irent').hide();
+        }
+        $(this).addClass('on').siblings().removeClass('on');
+    })
+    //提交
+    $('.submit-btn').click(function(){
+        if($('#addressList li.active').data('id')){
+            return true;
+        }else{
+            
+            return false;
+        }
+        _this.add();
+    })
+}
 issue.init = function(){
-	issue.show();
-	issue.scroll();
+	this.show();
+	this.scroll();
+    this.event();
 }
 
 //我的出租\求租
@@ -627,3 +690,167 @@ function link(id,type){
     var elem=JSON.stringify({'id':id,'type':type})
     sessionStorage.setItem('rent_ob',elem)
 }
+
+function dongSwitch(){
+    this.louDong = null;       //   保存数据；
+    this.addressList = $("#addressList");   //  楼栋列表父级元素
+}
+
+dongSwitch.prototype = {
+    constructor:dongSwitch,
+    main:function(){
+        this.dongAjax();     //  ajax事件获取数据，并将数据保存；
+        this.dongSelect();   //    选择楼栋
+        this.superior();      //  顶部导航重新选择同级楼栋；
+    },
+    dongAjax:function(){
+        var _this = this;
+        $.ajax({
+            type:'get',
+            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
+            data: null,
+            dataType:'json',
+            success:function(data){
+                var html = '';
+                _this.addressList.empty();
+                if(data.code === 0){
+                    _this.louDong = data.data;
+                    var one = null;var sum = 1;
+                    $.each(data.data,function(index,val){
+                        //  如果parentId === null 则表示没有上一级，ajax只显示一级列表；
+                        if(val.parentId === null){
+                            html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+                            if(sum === 1){
+                                one = val
+                            }
+                        }
+                    });
+                    _this.addressList.append(html);
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
+    },
+    dongSelect:function(){
+
+        //  点击下一级；
+
+        var _this = this;
+        $(document).on("click","#addressList li",function(){
+
+            //  提示
+            $(this).addClass("active")
+                .siblings().removeClass("active");
+
+            var id = $(this).attr("data-id");
+
+
+            var bur = _this.judgment(id,_this.louDong);  // 判断有没有下一级；
+            if(bur){
+                //  判断是不是点击的全部；
+                if(!$(this).is(".all")){
+
+                    // console.log("有下一级");
+                    //  隐藏确定；
+                    $("#determine").addClass("hide");
+
+
+                    if($("#prompt").is(".active")){
+                        //  将选择的放入顶部导航；
+                        $("#prompt").before('<li data-pid="'+ $(this).attr("data-pid") +'" data-id="'+ $(this).attr("data-id") +'">'+ $(this).text() +'</li>');
+                        //  位移到滚动条最后面；
+                        $(".nav").scrollLeft( $('.nav')[0].scrollWidth );
+                    }else{
+                        $("#prompt").addClass("active")
+                            .siblings().removeClass("active");
+
+                        //  判断是不是点击了之前的元素;
+                        $.each($(".switch .nav li"),function(index,val){
+                            if($(val).attr("data-pid") === $(this).attr("data-id")){
+                                $(val).attr({
+                                    "data-id":$(this).attr("data-id"),
+                                    "data-pid":$(this).attr("data-pid")
+                                });
+                                $(val).text($(this).text());
+                            }
+                        });
+                    }
+
+                    _this.nextLevel(id);
+                }else{
+                    // console.log("可以选择确定");
+                    $("#determine").removeClass("hide");
+                }
+
+            }else{
+                // console.log("没有下一级");
+                $("#determine").removeClass("hide");
+            }
+        });
+    },
+    superior:function(){
+        //  选择同级；
+        var _this = this;
+        $(document).on("click",".switch .nav li",function(){
+            //  提示
+            $(this).addClass("active")
+                .siblings().removeClass("active");
+            $("#determine").addClass("hide");
+
+            //  如果顶部点击元素和“请选择”中间有其他元素，需要删除它；
+            var index = $("#prompt").index() - $(this).index();
+            if(index > 1){
+                for(var x = 1 ; x < index ; x++){
+                    $(".switch .nav li").eq($(this).index()+1).remove();
+                }
+            }
+            if($(this).is("#prompt")){
+                //  如果是点击“请选择”：获取子级元素；
+                _this.nextLevel($(".switch .nav li").eq($(this).index()-1).attr("data-id"));
+            }else{
+                //  如果不是点击“请选择”：获取同级元素；
+                _this.SameLevel($(this).attr("data-id"),$(this).attr("data-pid"));
+            }
+
+        });
+    },
+    SameLevel:function(id,pid){
+        //  获取同级楼栋；
+        var html = '';
+        this.addressList.empty();
+        if(!(pid === "null")){
+            html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
+        }
+        $.each(this.louDong,function(index,val){
+            if(val.parentId + "" === pid){
+                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+            }
+
+        });
+        this.addressList.append(html);
+    },
+    nextLevel:function(id){
+        //  获取子集楼栋；
+        var html = '';
+        this.addressList.empty();
+        html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
+        $.each(this.louDong,function(index,val){
+            if(val.parentId + "" === id){
+                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+            }
+        });
+        this.addressList.append(html);
+    },
+    judgment:function(id,louDong){
+        //  判断是否有下一级
+        var bur = false;
+        $.each(louDong,function(index,val){
+            if(parseInt(id) === val.parentId){
+                bur = true;
+            }
+        });
+        return bur;
+    }
+};

@@ -9,8 +9,9 @@ function receiveShow(){
 	$('.p-layout').css('transform','translateX(-'+ww+'px)');
 }
 function tranShow(_this){
-	$('.tran-wrap .tran-inner').eq(_this-1).show().siblings().hide();
+	$('.tran-wrap .tran-inner').eq(_this).show().siblings().hide();
 	$('.p-layout').css('transform','translateX(-'+ww+'px)');
+	$('.sBox-wrapper').addClass('z0');
 }
 
 function returnTran(){
@@ -49,5 +50,9 @@ $('.sBox-wrapper .top-search .back').tap(function(){
 	$('#search_btn').attr('placeholder','搜索');
 })
 
-
+$(document).ready(function(){
+    //  楼栋切换；
+    var tap = new dongSwitch();
+    tap.main();  // 调用总函数；
+});
 

@@ -184,13 +184,18 @@
 /*发布出租*/
 .rent-input-con{}
 .rent-input-con ul{margin-top: .267rem;border:1px solid #bebebf;border-bottom:0px none;}
-.rent-input-con ul li{border-bottom:1px solid #bebebf;height:1.267rem;position: relative;font-size:.4rem;}
+.rent-input-con ul li{border-bottom:1px solid #bebebf;min-height:1.267rem;position: relative;font-size:.4rem;}
 .rent-input-con ul li .t-l{padding:.45rem 0 0 0.16rem ;width: 22%;color: #666;}
 .rent-input-con ul li .t-l span{display: inline-block;border-right:1px solid #bebebf;padding-right: .26rem;}
 .rent-input-con ul li .t-r{padding-left: .32rem;line-height: 1.26rem;width: 78%;}
 .rent-input-con ul li .t-r i{width: .3rem;height: .35rem;position: absolute;top: .48rem;right: .2rem;}
-.rent-input-con ul li .t-r input{width: 100%;height: 1.2rem;;border:0px none;color: #999;padding-right: .533rem;}
+.rent-input-con ul li .t-r input[type=text]{width: 100%;height: 1.2rem;;border:0px none;color: #999;padding-right: .533rem;}
 .rent-input-con ul li .t-r input:focus{color: #333;}
+.rent-input-con ul li .t-r .check-wrap{position: relative;display: inline-block;margin:0 .25rem;}
+.rent-input-con .check-wrap input[type=checkbox]{position: absolute;opacity: 0;height: 100%;width: 100%;left: 0;top: 0;}
+.rent-input-con .check-wrap label{padding-left:.6rem;height: 100%;background: url(../../images/icon/choose.png) no-repeat left center/auto .48rem;display: inline-block;}
+.rent-input-con .check-wrap input[type=checkbox]:checked+label{background-image: url(../../images/icon/choose-on.png);}
+
 
 .rent-input-con ul li .t0r{padding-right: 3.28rem;}
 .rent-input-con ul li .unit{display: inline-block;right: 1rem;line-height: 1.26rem;position: absolute;width: 2.3rem;text-align:right;top: 0;}
@@ -200,7 +205,7 @@
 .rent-input-con .submit-btn{display: block;margin:1.32rem auto 0 auto;height: 1.1733rem;width:3.893rem;background: #038dff;color: #fff;font-size: .426rem;}
 
 .desc-con{margin-top: .373rem;}
-.desc-con textarea{height: 11.3rem;width: 100%;background: #fff;resize:none;border:0px none;font-size:14px;line-height: 22px;padding: .48rem  .426rem }
+.desc-con textarea{height: 11.3rem;width: 100%;background: #fff;resize:none;border:0px none;font-size:14px;line-height: 22px;padding: .48rem  .426rem;box-sizing:borer-box; }
 
 .unit-con{margin-top: .373rem;}
 .unit-con ul{background: #fff;}
