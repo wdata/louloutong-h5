@@ -1,10 +1,10 @@
-/*var cur_ob=JSON.parse(sessionStorage.getItem('rent_ob'));
+var cur_ob=JSON.parse(sessionStorage.getItem('rent_ob'));
 
 if(cur_ob.type=1){
 	$('.header-title').text('出租详情');
 }else{
 	$('.header-title').text('求租详情');
-}*/
+}
 
 $.ajax({
 	type:'get',
@@ -17,10 +17,11 @@ $.ajax({
 			$('#detail_acreage').text(data.data.acreage);
 			$('#detail_views').text(data.data.views);
 			$('.detail_tips01').text(data.data.housType);
-			$('.detail_tips02').text(data.data.housType);
-			$('.detail_tips03').text(data.data.housType);
-			$('.detail_tips04').text(data.data.housType);
-			$('.detail_tips05').text(data.data.housType);
+			$('.detail_tips02').text(data.data.community);
+			$('.detail_tips03').text(data.data.direction);
+			$('.detail_tips04').text(data.data.traffic);
+			$('.detail_tips05').text(data.data.matingFacility);
+			$('.detail_tips06').text(data.data.area);
 
 
 

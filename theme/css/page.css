@@ -88,7 +88,7 @@
 /*发布*/
 .issue{margin-top: .32rem;position: relative;}
 .issue .tit{font-size:.4rem;color: #666;line-height: .86rem;height: .86rem;}
-.issue .btn{display: inline-block;height: .8rem;line-height: .8rem;text-align:center;font-size:.4rem;color:#038dff;border:1px solid #038dff;margin-right:.26rem;padding:0 .533rem;border-radius:3px;margin-bottom: .32rem;}
+.issue .btn{display: inline-block;height: .8rem;line-height: .8rem;text-align:center;font-size:.4rem;color:#038dff;border:1px solid #038dff;margin-right:.26rem;padding:0 .533rem;border-radius:3px;margin-bottom: .32rem;background: #fff;}
 .issue .btn.on{color:#fff;background:#038dff;}
 .issue .photo{height: 6.4rem;position: relative;display: inline-block;}
 .issue .photo .mask{position: absolute;width: 100%;height: 100%;background: rgba(0,0,0,.3);top:0;left:0;}
@@ -207,7 +207,7 @@
 .unit-con ul li{height: 1.28rem;border:1px solid #ececf1;line-height: 1.28rem;padding-left:.373rem;font-size: .426rem;color: #333;}
 
 .issue-editbox{height: 100%;}
-.issue-editbox.on{z-index: 201;position: fixed;top: 0;left: 0;}
+.issue-editbox.on{z-index: 201;position: fixed;top: 0;left: 0;width: 100%;}
 .issue-editbox.on .return-column{display: block;}
 
 .data-tips{height: 1rem;line-height: 1rem;text-align:center;}
