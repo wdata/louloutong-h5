@@ -25,6 +25,23 @@ function ErrorReminder(data){
 
 
 
+//------------------------------获取网址ID，key是参数名-------------------------------
+var urlParams = function (key) {
+    var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'))
+    return ret && decodeURIComponent(ret[2])
+};
+
+//  将数组转化为字符串，使用.join；并使用字符串判断是否有权限；
+function authMethod(data){
+    var auth = authority.join("");
+    var bur = null;
+    if(auth.indexOf(data) > 0){
+        bur = true;
+    }else{
+        bur = false;
+    }
+    return bur;
+}
 // GET http://ip:port/louloutong-repair/api/v1/property/manager/{userId}.json
 
 // 用户Id	姓名	角色	所属公司

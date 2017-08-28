@@ -24,17 +24,18 @@
     </div>
     <div class="hr-88"></div>
     <!--头部状态栏-->
-    <div class="process active">
+    <div class="process">
+        <!--.active 可显示维修人员头像-->
         <p class="line"></p>
         <div class="status">
-            <span class="active">待受理</span>
-            <span class="active">已受理</span>
+            <span>待受理</span>
+            <span>已受理</span>
             <span>待确认</span>
             <span>已确认</span>
         </div>
         <div class="dots">
-            <div class="transparent active garden"><div class="in garden"><div class="inside garden"></div></div></div>
-            <div class="transparent active garden"><div class="in garden"><div class="inside garden"></div></div></div>
+            <div class="transparent garden"><div class="in garden"><div class="inside garden"></div></div></div>
+            <div class="transparent garden"><div class="in garden"><div class="inside garden"></div></div></div>
             <div class="transparent garden"><div class="in garden"><div class="inside garden"></div></div></div>
             <div class="transparent garden"><div class="in garden"><div class="inside garden"></div></div></div>
         </div>
@@ -56,13 +57,13 @@
     </div>
     <div class="hr-24"></div>
     <!--待受理-->
-    <div class="pending">
+    <div id="pending" class="pending hide">
         <header>
-            <div class="title"><i></i>办公室报修</div>
-            <div class="set">
-                <a href="repair_revoked.html" class="repair-operating cancel red">撤销</a>
-                <a href="repair_sent.html" class="repair-operating single blue">派单</a>
-                <!--<a href="repari_transfer.html" class="repair-operating transfer red">移交</a>-->
+            <div id="type" class="title"><i></i>办公室报修</div>
+            <div id="set" class="set">
+                <!--<a href="repair_revoked.html" class="repair-operating cancel red">撤销</a>-->
+                <!--<a href="repair_sent.html" class="repair-operating single blue">派单</a>-->
+                <!--<a hrrepair_transfer.htmlhtml" class="repair-operating transfer red">移交</a>-->
                 <!--<a href="repair_result.html" class="repair-operating dealWith blue">填写处理</a>-->
                 <!--<a href="repair_sent.html" class="repair-operating reappear blue">重新派单</a>-->
                 <!--<a href="javascript:" class="repair-operating confirm yellow">确认验收</a>-->
@@ -70,7 +71,7 @@
         </header>
         <div class="people">
             <p class="column">报修人</p>
-            <a href="javascript:">
+            <a id="people" href="javascript:">
                 <img class="avatar" src="../../images/anounce/Oval.png" alt="avatar">
                 <div class="information">
                     <div class="name">高原</div>
@@ -79,10 +80,10 @@
             </a>
         </div>
         <ul class="detailed list-ul">
-            <li><p class="column">订单状态</p><div class="repair-status green">待受理（未派单）</div><i class="mine-icon"></i></li>
-            <li><p class="column">报修类型</p><div class="word">门窗维修</div></li>
-            <li><p class="column">报修内容</p><div class="word">昨天台风把吊顶吹落了下来，请尽快处理!昨天台风把吊顶吹落了下来，请尽快处理!</div></li>
-            <li class="image">
+            <li><p class="column">订单状态</p><div id="status"><div class="repair-status green">待受理（未派单）</div><i class="mine-icon"></i></div></li>
+            <li><p class="column">报修类型</p><div id="aspect" class="word">门窗维修</div></li>
+            <li><p class="column">报修内容</p><div id="content" class="word">昨天台风把吊顶吹落了下来，请尽快处理!昨天台风把吊顶吹落了下来，请尽快处理!</div></li>
+            <li id="image" class="image">
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
@@ -92,17 +93,17 @@
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
             </li>
-            <li class="address"><i class="address-icon"></i><span class="word">深圳市南山区科苑北路东方科技大厦D栋504 深圳市南山区科苑北路东方科技大厦D栋504</span></li>
-            <li><p class="column">预约上门时间</p><time>2017-08-14 13:00</time></li>
-            <li><p class="column">期待完成时间</p><time>2017-08-18 13:00</time></li>
+            <li class="address"><i class="address-icon"></i><span id="property" class="word">深圳市南山区科苑北路东方科技大厦D栋504 深圳市南山区科苑北路东方科技大厦D栋504</span></li>
+            <li><p class="column">预约上门时间</p><time id="reservation">2017-08-14 13:00</time></li>
+            <li><p class="column">期待完成时间</p><time id="carryOut">2017-08-18 13:00</time></li>
         </ul>
     </div>
     <!--已受理-->
-    <div class="pending">
+    <div class="pending hide">
         <header>
             <div class="title"><i></i>办公室报修</div>
             <div class="set">
-                <a href="repari_transfer.html" class="repair-operating  transfer red">移交</a>
+                <a href="repair_transfer.html" class="repair-operating  transfer red">移交</a>
                 <a href="repair_result.html" class="repair-operating dealWith blue">填写处理</a>
             </div>
         </header>
@@ -136,12 +137,12 @@
         </ul>
     </div>
     <!--待验收-->
-    <div class="pending">
+    <div class="pending hide">
         <header>
             <div class="title"><i></i>办公室报修</div>
-            <div class="set">
-                <a href="javascript:" class="repair-operating confirm">确认验收</a>
-            </div>
+            <!--<div class="set">-->
+                <!--<a href="javascript:" class="repair-operating confirm">确认验收</a>-->
+            <!--</div>-->
         </header>
         <div class="people">
             <p class="column">报修人</p>
@@ -174,7 +175,7 @@
     </div>
 
     <!--处理结果-->
-    <div class="result">
+    <div class="result hide">
         <ul class="detailed list-ul">
             <li><p class="column">处理内容</p><div class="word">更换了新的吊灯！更换了新的吊灯！更换了新的吊灯！更换了新的吊灯！</div></li>
             <li><p class="column">处理时间</p><time>2017-08-16 13:00</time></li>
@@ -187,7 +188,7 @@
         </ul>
     </div>
     <!--评论-->
-    <div class="con-main">
+    <div class="con-main hide">
         <div class="head">
             <div id="CLbutton" class="button hide box-center">
                 <div class="like-btn box-center"><i class="like-icon"></i>点赞</div>
@@ -228,8 +229,8 @@
         </div>
     </div>
     <!--确认验收-->
-    <div class="hr-96"></div>
-    <div class="confirm">确认验收</div>
+    <div class="hr-96 hide"></div>
+    <div class="confirm hide">确认验收</div>
     <!--评论输入框-->
     <div class="comment-box hide">
         <input type="text" placeholder="评论"><i class="symbol-icon"></i><div class="send">发送</div>

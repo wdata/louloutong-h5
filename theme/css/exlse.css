@@ -841,6 +841,8 @@ time{
 /*报修状态 -- 待验收*/
 .repair .repair-status.green{
     color: #00b886;
+    display: flex;
+    align-items: center;
 }
 /*报修状态 -- 被移交*/
 .repair .repair-status.red{
@@ -1146,6 +1148,9 @@ time{
 .repair-details .process.active{
     height: 2.906666rem;
 }
+.repair-details .process.active .repair-man{
+    display: flex;
+}
 .repair-details .process .status{
     display: flex;
     justify-content: space-between;
@@ -1211,7 +1216,7 @@ time{
 }
 /*  头部维修人 */
 .repair-details .repair-man{
-    display: flex;
+    display: none;
     position: relative;
 }
 .repair-details .repair-man .frame{
@@ -1340,6 +1345,9 @@ time{
 .repair-details .detailed li time{
     font-size: 14px;
     color: #333;
+}
+.repair-details .detailed li:first-child>div{
+    display: flex;
 }
 /*  防止字数过多挤压列名    */
 .repair-details .detailed li .word{
