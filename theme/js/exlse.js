@@ -39,6 +39,7 @@ $('.sBox-wrapper .cancel').tap(function(){
     $('.search-main').css('transform','translateX(0)');
     $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索').val('');
+    $(".sBox-wrapper").removeClass("hei");
 })
 //返回回到关键词页
 $('.sBox-wrapper .top-search .back').tap(function(){
@@ -47,10 +48,8 @@ $('.sBox-wrapper .top-search .back').tap(function(){
     $('#search_btn').attr('placeholder','搜索');
 })
 //搜索内容输入即开始搜索
-var i=0;
 function searchList(){
-    i++;
-    $('#search_btn').val(i)
+
 }
 
 

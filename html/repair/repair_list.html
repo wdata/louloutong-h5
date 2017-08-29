@@ -30,7 +30,7 @@
                 <div class="back"><i class="icon icon-return"></i></div>
                 <div class="inpu-w bgfff">
                     <div class="p24">
-                        <input type="text" placeholder="搜索" id="search_btn" onkeyup="searchList()">
+                        <input type="text" placeholder="搜索" id="search_btn"  onkeyup="var yup = new HtmlAjax();yup.listSearch(this)">
                     </div>
                     <div class="icon-wrap"><i class="icon"></i></div>
                 </div>
@@ -41,12 +41,12 @@
                     <div class="search-key">
                         <div class="tit">搜索指定范围</div>
                         <div class="list-con">
-                            <div class="list">报修人</div>
+                            <div data-id="1" class="list">报修人</div>
                             <div class="list">报修时间</div>
-                            <div class="list">报修状态</div>
-                            <div class="list">报修类型</div>
-                            <div class="list">服务地址</div>
-                    </div>
+                            <div data-id="2" class="list">报修状态</div>
+                            <div data-id="4" class="list">报修类型</div>
+                            <div data-id="3" class="list">服务地址</div>
+                        </div>
                     </div>
                 </div>
                 <div class="tran-wrap fl">
