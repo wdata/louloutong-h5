@@ -22,6 +22,18 @@ function session(key,value){
 	sessionStorage.setItem(key,value);
 }
 
+function clearForm(elem){
+	$(elem).find('input[type=text]').text(' ');
+}
+
+function checkMobile(phone){ 
+ 	var sMobile = phone; 
+ 	if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(sMobile))){ 
+  		return false; 
+ 	}else{
+ 		return true;
+ 	}
+} 
 //搜索相关js
 $('.search-main,.p-layout').width(ww*2);
 
@@ -50,9 +62,5 @@ $('.sBox-wrapper .top-search .back').tap(function(){
 	$('#search_btn').attr('placeholder','搜索');
 })
 
-$(document).ready(function(){
-    //  楼栋切换；
-    var tap = new dongSwitch();
-    tap.main();  // 调用总函数；
-});
+
 

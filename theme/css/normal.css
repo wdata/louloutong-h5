@@ -69,3 +69,8 @@ header .right-oper{position: absolute;padding: 0 .32rem;right: 0;color: #fff;fon
 48  - .64
 46  - .6133333
 */
+
+input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{　　color:#999}
+input:-moz-placeholder,textarea:-moz-placeholder{　　color:#999}
+input::-moz-placeholder,textarea::-moz-placeholder{　　color:#999}
+input:-ms-input-placeholder,textarea:-ms-input-placeholder{　　color:#999}
