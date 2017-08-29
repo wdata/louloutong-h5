@@ -10,10 +10,6 @@ $("#comment").on("click",function(){
     $(".confirm").toggleClass("hide");
     $(".comment-box").toggleClass("hide");
 });
-//  点赞和未点赞
-$(".like-btn").on("click",function(){
-    $(this).toggleClass("active");
-});
 
 var auth_1 = authMethod("/llt/repair/list/button/sendOrders");
 var auth_2 = authMethod("/llt/repair/list/button/sendAgain");
@@ -24,11 +20,11 @@ var auth_6 = authMethod("/llt/repair/list/button/handle");
 var auth_7 = authMethod("/llt/repair/list/button/revoke");
 
 $(document).ready(function(){
-
-   var htmlAjax = new HtmlAjax();
    htmlAjax.details();  //详情；
 });
 
+
+var htmlAjax = new HtmlAjax();
 
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
@@ -55,7 +51,7 @@ function HtmlAjax(){
                             //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
                             if(auth_1){
                                 status = '<div class="repair-status green">未派单</div>';
-                                operating += '<a href="repair_sent.html?id='+ data.data.id +'" class="repair-operating single blue">派单</a>';
+                                operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=1" class="repair-operating single blue">派单</a>';
                             }else{
                                 status = '<div class="repair-status green">待受理</div>';
                             }
@@ -88,7 +84,7 @@ function HtmlAjax(){
                             if(data.data.handlerId === null){
                                 if(auth_2){
                                     status = '<div class="repair-status red">被移交</div>';
-                                    operating += '<a href="repair_sent.html?id='+ data.data.id +'" class="repair-operating reappear blue">重新派单</a>';
+                                    operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
                                     //  有接单权限，可以接单；
                                     if(auth_4){
                                         operating += '<div class="repair-operating orders blue">接单</div>';
@@ -99,7 +95,7 @@ function HtmlAjax(){
                             }else{
                                 status = '<div class="repair-status blue">已受理</div>';
                                 if(auth_5){
-                                    operating += '<div class="repair-operating transfer blue">移交</div>';
+                                    operating += '<a href="repair_transfer.html?id='+ data.data.id +'" class="repair-operating transfer blue">移交</a>';
                                 }
                                 if(auth_6){
                                     operating += '<div class="repair-operating dealWith blue">填写处理</div>';
@@ -109,8 +105,13 @@ function HtmlAjax(){
                         case 4:
                             status = '<div class="repair-status green">待验收</div>';
                             if(auth_3){
-                                operating += '<div class="repair-operating confirm yellow">确认验收</div>';
+                                //  只有在待验收情况下显示确认验收；详情中确认颜色显示在最下面；
+                                // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
+                                $(".confirm").removeClass("hide");
+                                $(".hr-96").removeClass("hide");
                             }
+
+
                             break;
                         case 5:status = '<div class="repair-status yellow">已确认</div>';
                             break;
@@ -162,6 +163,11 @@ function HtmlAjax(){
                                 ss.eq(2).addClass("active");
                                 tr.eq(2).addClass("active");
                                 su = "two";
+                                //  显示点赞，评论，显示处理详情；
+                                $(".result").removeClass("hide");
+
+                                _this.comList();  //    评论；
+                                _this.likeList();  //   点赞头像列表；
                                 if(data.data.status >= 5){
                                     ss.eq(3).addClass("active");
                                     tr.eq(3).addClass("active");
@@ -197,14 +203,36 @@ function HtmlAjax(){
 
                     //  已受理；以上会有维修人头像和名字：
                     var html = '';
-                    if(data.data.handlerUsers.length > 1){
-                        html = '<div class="most frame '+ su +'"> ' +
-                            '<a class="service over"  href="javascript:?id='+ data.data.handlerUsers[1].id +'"><img class="avatar" src="'+ server_url_img + data.data.handlerUsers[1].photo +'" alt=""></a> ' +
-                            '<a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
-                    }else{
-                        html = '<div class="odd-number frame '+ su +'"> <a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                    if(data.data.handlerUsers){
+                        if(data.data.handlerUsers.length > 1){
+                            html = '<div class="most frame '+ su +'"> ' +
+                                '<a class="service over"  href="javascript:?id='+ data.data.handlerUsers[1].id +'"><img class="avatar" src="'+ server_url_img + data.data.handlerUsers[1].photo +'" alt=""></a> ' +
+                                '<a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                        }else{
+                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                        }
+                        $(".repair-man").empty().append(html);
                     }
-                    $(".repair-man").empty().append(html);
+
+
+                    //  待确认；
+                    img = "";
+                    if(data.data.repairRecordImages){
+                        $.each(data.data.repairRecordImages,function(x,y){
+                            img += '<img src="'+ server_url_img + y +'" alt="">';
+                        })
+                        $("#images").empty().append(img);
+                    }
+                    //  处理内容
+                    $("#dealCon").text(data.data.remark);
+                    //  处理时间；
+                    $("#rRDate").text(data.data.repairRecordDate);
+
+                    //  评论是否点赞；
+                    if(data.data.isUpvote === true){
+                        $(".like-btn").addClass("active");
+                    }
+
                     //  显示
                     $("#pending").removeClass("hide");
                 }
@@ -213,5 +241,154 @@ function HtmlAjax(){
                 ErrorReminder(data);
             }
         });
+    };
+    this.comList = function(){
+        //  报修评论列表；
+        var comment = 1;
+        var dropload = $('.dataList').dropload({
+            scrollArea : window,
+            autoLoad:true,
+            loadDownFn : function(me){
+                //  获取报修列表
+                $.ajax({
+                    type:'get',
+                    url:  server_url_repair + server_v1 + '/repairMessage/list.json',
+                    data: {
+                        "repairId":urlParams("id"),
+                        "page":comment,
+                        "size":5
+                    },
+                    dataType:'json',
+                    success:function(data){
+                        var html = '';
+                        if(data.code === 0 && data.data){
+                            $.each(data.data.items,function(index,val){
+                                html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_url_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
+                            });
+                            $("#listCom").append(html);
+                            $(".con-main").removeClass("hide");
+
+                            comment++;
+                            if(data.data.pageCount === 0){
+                                me.lock();  //智能锁定，锁定上一次加载的方向
+                                me.noData();      //无数据
+                            }
+                        }else{
+                            me.lock();  //智能锁定，锁定上一次加载的方向
+                            me.noData();      //无数据
+                        }
+                        me.resetload();    //数据加载玩重置
+                    },
+                    error:function(data){
+                        ErrorReminder(data);
+                        me.noData();      //无数据
+                        me.resetload();    //数据加载玩重置
+                    }
+                })
+            }
+        });
+
+    };
+    this.releaseCom = function(){
+        var con = $("#comCon").val();
+        //  发布评论；
+        if(!(reg.test(con)||con === "")){
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repairMessage/add.json',
+                data: {
+                    "userId":userId,
+                    "repairId":urlParams("id"),
+                    "content":con
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            showMask("评论发布成功！");
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
+        }else{
+            showMask("评论不能为空！");
+        }
+    }
+    this.releaseLike = function(self){
+        //  判断是点赞，还是取消点赞；
+        if($(self).is(".active")){
+            //  取消点赞
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repairBehaviour/delete.json',
+                data: {
+                    "userId":userId,
+                    "repairId":urlParams("id"),
+                    "type":1
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            $(self).removeClass("active");
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
+        }else{
+            //  点赞
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repairBehaviour/add.json',
+                data: {
+                    "userId":userId,
+                    "repairId":urlParams("id"),
+                    "type":1
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            $(self).addClass("active");
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
+        }
+    }
+    this.likeList = function(){
+        $.ajax({
+            type:'get',
+            url:  server_url_repair + server_v1 + '/repairBehaviour/list.json',
+            data: {
+                "repairId":urlParams("id"),
+                "page":1,
+                "size":10
+            },
+            dataType:'json',
+            success:function(data){
+                var list = $("#likeList");
+                var html = '';
+                list.empty();
+                if(data.code === 0){
+                    $.each(data.data.items,function(index,val){
+                        html += '<a href="javascript:"><img class="small-avatar" src="'+ server_url_img + val.user.photo +'" alt=""></a>';
+                    });
+                    list.append(html);
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        })
     }
 }
