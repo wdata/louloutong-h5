@@ -33,10 +33,16 @@ $.ajax({
 
 $(document).on("click",".orders",function(){
     var _this = $(this);
+    var sum = '';
+    if(urlParams("status") === "1"){
+        sum = 'sendOrder';
+    }else if(urlParams("status") === "2"){
+        sum = 'sendAgain';
+    }
    //   点击接单人派单；
     $.ajax({
         type:'post',
-        url:  server_url_repair + server_v1 + '/repair/sendOrder.json',
+        url:  server_url_repair + server_v1 + '/repair/'+ sum +'.json',
         data: {
             "id":urlParams("id"),
             "handlerId":_this.attr("data-id")
@@ -45,7 +51,7 @@ $(document).on("click",".orders",function(){
         success:function(data){
             if(data.code === 0){
                 if(data.data === true){
-                    // window.location.href = "repair_list.html";
+                    window.location.href = "repair_list.html";
                 }
             }
         },

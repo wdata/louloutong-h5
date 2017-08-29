@@ -1,22 +1,20 @@
 /**
- * Created by Administrator on 2017/8/28.
+ * Created by Administrator on 2017/8/29.
  */
-//  移交；
-$(".carry").on("click",function(){
+function carry(){
     var reason = $("#remark").text();
-    if(!(reg.test(reason)|| reason === "")){
+    if(!(reg.test(reason)||reason === "")){
         var form = new FormData($("#newForm")[0]);       //需要是JS对象
         $.each(file,function(index,val){
-            form.append("file",val);
+            form.append("files",val);
         });
         form.append("id",urlParams("id"));
         form.append("userId",userId);
-        form.append("reason",$("#reason").text());
-        form.append("remark",$("#remark").text());
+        form.append("remark",reason);
         console.log(form);
         $.ajax({
             type:'post',
-            url:  server_url_repair + server_v1 + '/repair/transferred.json',
+            url:  server_url_repair + server_v1 + '/repair/inspect.json',
             data: form,
             contentType: false,
             processData: false,
@@ -34,4 +32,4 @@ $(".carry").on("click",function(){
     }else{
         showMask("填写处理不能为空！");
     }
-});
+}
