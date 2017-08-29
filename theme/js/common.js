@@ -26,8 +26,6 @@ function ErrorReminder(data){
 
 
 
-
-=======
 //------------------------------获取网址ID，key是参数名-------------------------------
 var urlParams = function (key) {
     var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'))
