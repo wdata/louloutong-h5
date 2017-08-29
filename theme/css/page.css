@@ -187,9 +187,9 @@
 .rent-input-con ul li{border-bottom:1px solid #bebebf;min-height:1.267rem;position: relative;font-size:.4rem;}
 .rent-input-con ul li .t-l{padding:.45rem 0 0 0.16rem ;width: 22%;color: #666;}
 .rent-input-con ul li .t-l span{display: inline-block;border-right:1px solid #bebebf;padding-right: .26rem;}
-.rent-input-con ul li .t-r{padding-left: .32rem;line-height: 1.26rem;width: 78%;}
+.rent-input-con ul li .t-r{padding-left: .32rem;line-height: 1.26rem;width: 78%;min-height: 1.267rem;}
 .rent-input-con ul li .t-r i{width: .3rem;height: .35rem;position: absolute;top: .48rem;right: .2rem;}
-.rent-input-con ul li .t-r input[type=text]{width: 100%;height: 1.2rem;;border:0px none;color: #999;padding-right: .533rem;}
+.rent-input-con ul li .t-r input[type=text]{width: 100%;height: 1.2rem;;border:0px none;color: #666;padding-right: .533rem;}
 .rent-input-con ul li .t-r input:focus{color: #333;}
 .rent-input-con ul li .t-r .check-wrap{position: relative;display: inline-block;margin:0 .25rem;}
 .rent-input-con .check-wrap input[type=checkbox]{position: absolute;opacity: 0;height: 100%;width: 100%;left: 0;top: 0;}
