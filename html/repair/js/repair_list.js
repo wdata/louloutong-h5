@@ -44,7 +44,6 @@ function HtmlAjax(){
 
     this.repairList = function(proId,page,searchType,keyword){
         var _this = this;
-        console.log(keyword);
         var comment = 1;      //page数
         var dropload = $('.dataList').dropload({
             scrollArea : window,
@@ -66,7 +65,7 @@ function HtmlAjax(){
                     success:function(data){
                         var list = $("#list");
                         var html = '';
-                        if(data.code === 0){
+                        if(data.code === 0 && data.data){
                             $.each(data.data.items,function(index,val){
                                 var status = '',img = '',operating = '';
                                 var href = 'repair_details.html';
@@ -75,7 +74,7 @@ function HtmlAjax(){
                                         //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
                                         if(auth_1){
                                             status = '<div class="repair-status green">未派单</div>';
-                                            operating += '<a href="repair_sent.html?id='+ val.id +'" class="repair-operating single blue">派单</a>';
+                                            operating += '<a href="repair_sent.html?id='+ val.id +'&status=1" class="repair-operating single blue">派单</a>';
                                         }else{
                                             status = '<div class="repair-status green">待受理</div>';
                                         }
@@ -108,7 +107,7 @@ function HtmlAjax(){
                                         if(val.handlerId === null){
                                             if(auth_2){
                                                 status = '<div class="repair-status red">被移交</div>';
-                                                operating += '<a href="repair_sent.html?id='+ val.id +'" class="repair-operating reappear blue">重新派单</a>';
+                                                operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
                                                 //  有接单权限，可以接单；
                                                 if(auth_4){
                                                     operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
@@ -122,14 +121,14 @@ function HtmlAjax(){
                                                 operating += '<a href="repair_transfer.html?id='+ val.id +'" class="repair-operating transfer blue">移交</a>';
                                             }
                                             if(auth_6){
-                                                operating += '<div class="repair-operating dealWith blue">填写处理</div>';
+                                                operating += '<a href="repair_result.html?id='+ val.id +'" class="repair-operating dealWith blue">填写处理</a>';
                                             }
                                         }
                                         break;
                                     case 4:
                                         status = '<div class="repair-status green">待验收</div>';
                                         if(auth_3){
-                                            operating += '<div class="repair-operating confirm yellow">确认验收</div>';
+                                            operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                         }
                                         break;
                                     case 5:status = '<div class="repair-status yellow">已确认</div>';
@@ -202,7 +201,6 @@ function HtmlAjax(){
     this.listStatus = function(){
         $(document).on("click",".list-con div",function(){
             // 搜索类型 1：报修人 2：报修状态 3：服务地址 4：报修类型
-            console.log($(this).attr("data-id"));
             searchType = $(this).attr("data-id");
         });
         $(document).on("click",".orders",function(){
@@ -214,6 +212,28 @@ function HtmlAjax(){
                 data: {
                     "id":self.attr("data-id"),
                     "handlerId":userId
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            history.go(0); //   刷新页面；
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
+        });
+        $(document).on("click",".confirm",function(){
+            var self = $(this);
+            //  确认验收；
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repair/checked.json',
+                data: {
+                    "id":self.attr("data-id")
                 },
                 dataType:'json',
                 success:function(data){
