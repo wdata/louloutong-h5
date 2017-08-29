@@ -125,7 +125,7 @@ function wxConfig() {
         dataType: 'json',
         async:false,
         contentType: 'application/json',
-        data:{'url':location.href.split('#')[0];},
+        data:{'url':location.href.split('#')[0]},
         success: function (res) {
             var data = res.data;
             //微信配置
