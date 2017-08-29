@@ -348,16 +348,52 @@
                                     <ul>
                                         <li>
                                             <div class="t-l fl"><span>区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域</span></div>
-                                            <div class="t-r fl" onclick="tranShow(1)">
-                                                南山区科技园
+                                            <div class="t-r fl elem-01" onclick="tranShow(1)">
+                                                <span class="txt"></span>
                                                 <i class="icon icon-in fr"></i>
                                             </div>
                                             <div class="clear"></div>
                                         </li>
+                                        <li class="diff-irent">
+                                            <div class="t-l fl"><span>楼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;盘</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" class="elem-02" placeholder="2-30字">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li class="diff-irent">
+                                            <div class="t-l fl"><span>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;段</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" class="elem-03" placeholder="2-12字">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li class="diff-orent undis">
+                                            <div class="t-l fl"><span>面&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积</span></div>
+                                            <div class="t-r fl t0r">
+                                                <input type="text" class="elem-04">
+                                                <div class="unit">
+                                                    <span class="c999">平米</span>
+                                                </div>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        <li class="diff-orent undis">
+                                            <div class="t-l fl"><span>租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金</span></div>
+                                            <div class="t-r fl">
+                                                <input type="text" class="elem-05">
+                                                <div class="unit" onclick="tranShow(3)" id="unit">
+                                                    <span class="c333">元/m<sup>2</sup>/天</span>
+                                                </div>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </li>
+                                    </ul>
+                                    <ul class="diff-irent">
                                         <li>
                                             <div class="t-l fl"><span>面&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积</span></div>
                                             <div class="t-r fl t0r">
-                                                <input type="text">
+                                                <input type="text" class="elem-04">
                                                 <div class="unit">
                                                     <span class="c999">平米</span>
                                                 </div>
@@ -366,9 +402,9 @@
                                         </li>
                                         <li>
                                             <div class="t-l fl"><span>租&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金</span></div>
-                                            <div class="t-r fl"  onclick="tranShow(3)">
-                                                <input type="text" readonly>
-                                                <div class="unit">
+                                            <div class="t-r fl">
+                                                <input type="text" class="elem-05">
+                                                <div class="unit" onclick="tranShow(3)" id="unit">
                                                     <span class="c333">元/m<sup>2</sup>/天</span>
                                                 </div>
                                             </div>
@@ -379,7 +415,7 @@
                                         <li>
                                             <div class="t-l fl"><span>类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型</span></div>
                                             <div class="t-r fl">
-                                                写字楼
+                                                <input type="text" class="elem-06">
                                             </div>
                                             <div class="clear"></div>
                                         </li>
@@ -388,14 +424,14 @@
                                         <li>
                                             <div class="t-l fl"><span>标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28"  class="elem-07">
                                             </div>
                                             <div class="clear"></div>
                                         </li>
                                         <li>
                                             <div class="t-l fl"><span>描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述</span></div>
                                             <div class="t-r fl" onclick="tranShow(2)">
-                                                <input type="text" placeHolder="10字以上" readonly>
+                                                <input type="text" placeHolder="10字以上" readonly  class="elem-08">
                                                 <i class="icon icon-in fr"></i>
                                             </div>
                                             <div class="clear"></div>
@@ -405,14 +441,14 @@
                                         <li>
                                             <div class="t-l fl"><span>联&nbsp;&nbsp;系&nbsp;&nbsp;人</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28"  class="elem-09">
                                             </div>
                                             <div class="clear"></div>
                                         </li>
                                         <li>
-                                            <div class="t-l fl"><span>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</span></div>
+                                            <div class="t-l fl"><span>手&nbsp;&nbsp;机&nbsp;&nbsp;号</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeHolder="10字以上">
+                                                <input type="text" placeHolder="10字以上" class="elem-10">
                                             </div>
                                             <div class="clear"></div>
                                         </li>
@@ -421,21 +457,45 @@
                                         <li>
                                             <div class="t-l fl"><span>朝&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;向</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeholder="8-28字" minLength="8" maxlength="28">
+                                               <div class="elem-11">
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire01"><label for='dire01'>朝南</label>
+                                                    </div>
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire02"><label for='dire02'>朝北</label>
+                                                    </div>
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire03"><label for='dire03'>朝东</label>
+                                                    </div>
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire04"><label for='dire04'>朝西</label>
+                                                    </div>
+                                               </div>
                                             </div>
                                             <div class="clear"></div>
                                         </li>
                                         <li>
                                             <div class="t-l fl"><span>交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeHolder="10字以上">
+                                                <div class="elem-12">
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire05"><label for='dire05'>地铁</label>
+                                                    </div>
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire06"><label for='dire06'>公交</label>
+                                                    </div>
+                                               </div>
                                             </div>
                                             <div class="clear"></div>
                                         </li>
                                         <li>
                                             <div class="t-l fl"><span>配套设施</span></div>
                                             <div class="t-r fl">
-                                                <input type="text" placeHolder="10字以上">
+                                                <div class="elem-13">
+                                                    <div class="check-wrap">
+                                                        <input type="checkbox" id="dire07"><label for='dire07'>地铁</label>
+                                                    </div>
+                                               </div>
                                             </div>
                                             <div class="clear"></div>
                                         </li>
@@ -448,60 +508,59 @@
                         </div>
                     </div>
                     <div class="data-tips undis">已经没有更多数据了</div> 
-                    
                 </div>
             </div> 
             <div class="tran-wrap fl">
                 <div class="tran-inner">
-                <header>
-                    <a class="return" href="javascipt:;" onclick="tranHide()">
-                        <img src="../../images/icon/back.png" alt=""><span></span>
-                    </a>
-                    接待分配
-                </header>
-                <div class="search">
-                    <div class="search-heart">
-                        <input type="text" placeholder="请输入接收人"><i class="icon"></i>
-                    </div>
-                </div> 
-                <div class="distri-box">
-                    <div class="list" onclick="returnTran()">
-                        <div class="p24">
-                            <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
-                            <div class="txt">
-                                <div class="tit">
-                                   高原&nbsp;&nbsp;<span>物业运营</span>
-                                </div>
-                                <div class="time">上班时间：08：00~23：00</div>
-                            </div>    
+                    <header>
+                        <a class="return" href="javascipt:;" onclick="tranHide()">
+                            <img src="../../images/icon/back.png" alt=""><span></span>
+                        </a>
+                        接待分配
+                    </header>
+                    <div class="search">
+                        <div class="search-heart">
+                            <input type="text" placeholder="请输入接收人"><i class="icon"></i>
+                        </div>
+                    </div> 
+                    <div class="distri-box">
+                        <div class="list" onclick="returnTran()">
+                            <div class="p24">
+                                <span class="tx"><img src="../../images/upload/touxiang@2x.png" alt="" class="full"></span>
+                                <div class="txt">
+                                    <div class="tit">
+                                       高原&nbsp;&nbsp;<span>物业运营</span>
+                                    </div>
+                                    <div class="time">上班时间：08：00~23：00</div>
+                                </div>    
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
                 <div class="tran-inner undis">
-                    <div class="switch overflow-y" style="transform: translate(0px, 0px);">
-                    <div class="return-column">
-                        <div class="return-column-heart">
-                            <a class="header-return" href="javascript:" onclick="returnTran()"><i class="header-return-icon"></i><span>返回</span></a>
-                            <div class="header-title">切换楼栋单元</div>
-                            <a id="determine" class="header-operating hide" href="javascript:">确定</a>
+                    <div class="switch overflow-y bgfff"  style="transform: translate(0px, 0px);">
+                        <div class="return-column">
+                            <div class="return-column-heart">
+                                <a class="header-return" href="javascript:" onclick="returnTran()"><i class="header-return-icon"></i><span>返回</span></a>
+                                <div class="header-title">切换楼栋单元</div>
+                                <a id="determine" class="header-operating" href="javascript:">确定</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="hr-88"></div>
-                    <!--顶部导航-->
-                    <div class="nav-layer">
-                        <ul class="nav">
-                            <li>科技园</li><li>软件产业基地</li><li>科技园</li><li>软件产业基地</li><li id="prompt" class="active">请选择</li>
+                        <div class="hr-88"></div>
+                        <!--顶部导航-->
+                        <div class="nav-layer">
+                            <ul class="nav">
+                                <li id="prompt" class="active">请选择</li>
+                            </ul>
+                        </div>
+                        <div class="hr-88"></div>
+                        <!--尾部列表显示-->
+                        <ul id="addressList" class="address">
+                            <!--<li><i></i>全部</li>-->
+                            <!--<li><i></i>科技园</li>-->
+                            <!--<li><i></i>软件产业基地</li>-->
                         </ul>
                     </div>
-                    <div class="hr-88"></div>
-                    <!--尾部列表显示-->
-                    <ul class="address">
-                        <li class=""><i></i>全部</li>
-                        <li class=""><i></i>科技园</li>
-                        <li class="active"><i></i>软件产业基地</li>
-                    </ul>
-                    </div> 
                 </div>
                 <div class="tran-inner bgececf1 undis">
                     <header>
@@ -509,6 +568,7 @@
                             <img src="../../images/icon/back.png" alt=""><span></span>
                         </a>
                         描述
+                        <a id="desc_oper" class="right-oper" href="javascript:">确定</a>
                     </header>
                     <div class="desc-con p24">
                        <textarea placeholder="10字以上"></textarea>

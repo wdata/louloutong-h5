@@ -25,6 +25,9 @@ function ErrorReminder(data){
 
 
 
+
+
+=======
 //------------------------------获取网址ID，key是参数名-------------------------------
 var urlParams = function (key) {
     var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'))
@@ -42,6 +45,7 @@ function authMethod(data){
     }
     return bur;
 }
+
 // GET http://ip:port/louloutong-repair/api/v1/property/manager/{userId}.json
 
 // 用户Id	姓名	角色	所属公司
