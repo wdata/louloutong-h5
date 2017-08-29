@@ -27,6 +27,10 @@ function ErrorReminder(data){
 
 
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 52d84084ae88ddf92fa9107aede41210abd545c1
 //------------------------------获取网址ID，key是参数名-------------------------------
 var urlParams = function (key) {
     var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'))
