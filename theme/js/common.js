@@ -117,7 +117,7 @@ function showMask(msg){
 });*/
 
 
-function wxConfig() {
+/*function wxConfig() {
     console.info(cur_href)
     $.ajax({
         url: '/weixin/permissionValidation',
@@ -155,5 +155,5 @@ function wxConfig() {
 
         }
     })
-}
+}*/
 

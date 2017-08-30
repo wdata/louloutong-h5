@@ -1,3 +1,4 @@
+
 //获取当前用户的权限  
 var auth_sum=sessionStorage.getItem('authority');
 var auth_0=false;			//显示出租/求租  
@@ -43,7 +44,7 @@ function wxConfig() {
             var data = res.data;
             //微信配置
             wx.config({
-                debug: true,
+                debug: false,
                 //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                 appId: data.appId, // 必填，公众号的唯一标识
                 timestamp: data.timestamp, // 必填，生成签名的时间戳
@@ -57,7 +58,7 @@ function wxConfig() {
             });
             console.info(data);
             wx.ready(function () {
-                alert(1)
+                //alert(1)
             });
             wx.error(function (res) {
                 //throw res;
@@ -102,7 +103,7 @@ rent.getList = function(elem){
                         <a class="p24" href="orent_detail.html" onclick="link('${item.id}',${_this.type})">
                             <div class="top">
                                 <div class="t-l fl">
-									<span class="tx" data-id=${item.user.id}><img src="${item.user.photo}" alt="" class="full"></span>
+									<span class="tx" data-id=${item.user.id}><img src="${server_url_img+item.user.photo}" alt="" class="full"></span>
                                     <div class="txt">
                                         <div class="tit">${item.user.name}</div>
                                         <div class="time">${item.createTime}</div>
@@ -542,7 +543,7 @@ issue.imgUpload = function(){
     $('.issue .photo').click(function(){
         console.info(wx)
         wx.chooseImage({
-            count: 1, // 默认9
+            count: 9, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
             success: function (res) {
