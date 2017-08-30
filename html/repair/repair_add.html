@@ -32,37 +32,39 @@
         <div id="newForm" class="first">
             <div class="repair-type">
                 <header class="repair-head">请选择报修类型</header>
-                <ul>
-                    <li class="active">办公区域</li>
-                    <li>公共区域</li>
+                <ul class="addType">
+                    <li data-id="1" class="active office-area">办公区域</li>
+                    <li data-id="2" class="public-area">公共区域</li>
                 </ul>
             </div>
-            <div class="repair-type officeArea hide">
+            <div class="repair-type officeArea">
                 <header class="repair-head">请选择报修项目</header>
-                <ul>
-                    <li>房屋维修</li>
-                    <li class="active">水电维修</li>
+                <ul id="projectList">
+                    <li class="active">房屋维修</li>
+                    <li>水电维修</li>
                     <li>管道疏通</li>
                     <li>线路维修</li>
                     <li>开锁/换锁</li>
                     <li>其他</li>
                 </ul>
             </div>
-            <div class="repair-type publicArea">
+            <div class="repair-type publicArea hide">
                 <header class="repair-head">服务地址</header>
-                <div class="">
-
+                <div class="service-address">
+                    <i class="address-icon"></i>
+                    <div class="can-choose"><span id="service-address">请选择服务地址</span><i class="jump-icon"></i></div>
                 </div>
             </div>
             <div class="content">
                 <header class="repair-head">报修内容</header>
-                <div class="box" contenteditable="true" placeholder="请输入您报修的详细描述"></div>
+                <div id="box" class="box" contenteditable="true" placeholder="请输入您报修的详细描述"></div>
                 <ul class="upload">
                     <!--<li><img src="../../images/anounce/typhoon.png" alt=""><i class="delete-icon"></i><input type="hidden" name="file"></li>-->
                     <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)" multiple="multiple" type="file"></li>
                 </ul>
             </div>
             <div  class="next-step">下一步</div>
+            <div onclick="htmlAjax.releaseRpr();" class="submit publicSub hide">立即报修</div>
         </div>
         <!--物业报修选择时间和地址页面-->
         <div class="second">
@@ -71,11 +73,12 @@
             <ul>
                 <li><p class="prompt">姓名</p><input type="text" placeholder="请输入姓名" name="name"></li>
                 <li><p class="prompt">联系电话</p><input placeholder="请输入联系电话" type="number"></li>
-                <li><p class="prompt">服务地址</p><div id="address" class="features "><p>东方科技大厦</p><i class="jump-icon"></i></div></li>
+                <li><p class="prompt">服务地址</p><div id="address" class="features "><p id="ads">请选择服务地址</p><i class="jump-icon"></i></div></li>
                 <li><p class="prompt">预约上门时间</p><div class="features"><input placeholder="请选择时间" unselectable='on'  onfocus="this.blur();" readonly="readonly" id="reservation" type="text"><i class="jump-icon"></i></div></li>
                 <li><p class="prompt">期待完成时间</p><div class="features"><input placeholder="请选择时间" unselectable='on'  onfocus="this.blur();" readonly="readonly" id="expected" type="text"><i class="jump-icon"></i></div></li>
             </ul>
-            <div onclick="sumber()" class="submit">立即报修</div>
+            <!--办公区域的立即报修-->
+            <div onclick="htmlAjax.releaseRpr();" class="submit">立即报修</div>
         </div>
     </div>
 </div>
@@ -88,7 +91,7 @@
         </div>
     </div>
     <div class="hr-88"></div>
-    <ul>
+    <ul class="addressList">
         <li class="active">
             <div class="address">广东省深圳市南山区科苑路10东方科技大厦505广东省深圳市南山区科苑路10东方科技大厦505</div>
             <div class="select"><i class="select-icon"></i>设为默认</div>
@@ -99,6 +102,28 @@
         </li>
     </ul>
 </div>
+<!--切换楼栋单元-->
+<div class="switch repair-switch repair-add-switch overflow-y">
+    <!--顶部导航-->
+    <div class="title">区域选择</div>
+    <div class="nav-layer">
+        <ul class="nav">
+            <li id="prompt" class="active">请选择</li>
+        </ul>
+    </div>
+    <!--<div class="hr-88"></div>-->
+    <!--尾部列表显示-->
+    <ul id="addressList" class="address">
+        <li><i></i>全部</li>
+        <li><i></i>科技园</li>
+        <li><i></i>软件产业基地</li>
+    </ul>
+    <footer class="operating">
+        <a class="features" id="reset" href="javascript:">重置</a>
+        <a class="features" id="determine" href="javascript:">确定</a>
+    </footer>
+</div>
+
 <!--日期插件-->
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/mobiscroll/js/jquery-3.0.0.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/mobiscroll/js/mobiscroll_002.js"></script>
