@@ -15,9 +15,6 @@ var pIdRepair = propertyId;  // 物业ID；
 // /llt/repair/list/button/handle 填写处理
 // /llt/repair/list/button/revoke 撤销
 
-
-
-
 var auth_1 = authMethod("/llt/repair/list/button/sendOrders");
 var auth_2 = authMethod("/llt/repair/list/button/sendAgain");
 var auth_3 = authMethod("/llt/repair/list/button/check");
@@ -54,7 +51,7 @@ function HtmlAjax(){
                     type:'get',
                     url:  server_url_repair + server_v1 + '/repair/list.json',
                     data: {
-                        "userId":_this.userId,
+                        "userId":userId,
                         "propertyId":proId,
                         "page":comment,
                         "size":5,
@@ -127,7 +124,7 @@ function HtmlAjax(){
                                         break;
                                     case 4:
                                         status = '<div class="repair-status green">待验收</div>';
-                                        if(auth_3){
+                                        if(auth_3 && parseInt(userId) === val.user.id){
                                             operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                         }
                                         break;
@@ -160,7 +157,7 @@ function HtmlAjax(){
                                     })
                                 }
                                 var type = val.type===1?"办公区域":val.type===3?"公共区域":"未知";
-                                html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_url_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
+                                html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
                                     ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ val.property +'</span></div> <div class="image"> '+ img +'' +
                                     '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
                                     '<footer> '+ operating +' </footer> </li>';
@@ -270,13 +267,10 @@ $(document).ready(function(){
     var tap = new dongSwitch();
     tap.main();  // 调用总函数；
 });
-
 function dongSwitch(){
     this.louDong = null;       //   保存数据；
     this.addressList = $("#addressList");   //  楼栋列表父级元素
 }
-
-
 dongSwitch.prototype = {
     constructor:dongSwitch,
     main:function(){
