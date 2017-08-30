@@ -51,6 +51,7 @@
 .sBox-wrapper .top-search.active .inpu-w .icon-wrap{left: 1.84rem;}
 
 .search-main .search-key{margin-top: 1.6rem;text-align: center;font-size: 14px;}
+.search-main .search-key .tit{color: #999;}
 .search-main .list-con{padding: 0 .7rem;}
 .search-main .list-con .list{width: 33.33%;color: #038dff;float: left;margin-top: .9rem;}
 

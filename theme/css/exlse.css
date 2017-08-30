@@ -1476,6 +1476,64 @@ time{
     background-color: #038dff;
     border:0;
 }
+/*  公共区域报修  */
+.repair-add .first .repair-type.publicArea{
+    font-size: 14px;
+    color: #999;
+}
+.repair-add .publicArea .service-address{
+    width: 100%;
+    min-height: 1.44rem;
+    display: flex;
+    align-items: center;
+    padding: .32rem .32rem .32rem .4rem;
+    line-height: .5rem;
+}
+.repair-add .publicArea .service-address.active{
+    color: #333;
+}
+.repair-add .publicArea .service-address .can-choose{
+    height: 100%;
+    display: flex;
+    flex:1;
+    justify-content: space-between;
+    align-items: center;
+}
+.repair-add .publicArea .service-address .can-choose span{
+    width: 96%;
+}
+.repair-add .publicArea .service-address .address-icon{
+    width: .48rem;
+    height: .6133333rem;
+    display: block;
+    background-size:cover;
+    background-image: url("../../images/repair/positioning-gray.png");
+    margin-right: .16rem;
+}
+.repair-add .publicArea .service-address.active .address-icon{
+    background-image: url("../../images/repair/positioning.png");
+}
+.repair-add .publicArea .service-address .jump-icon{
+    width: .21333333rem;
+    height: .4rem;
+    display: block;
+    background-image: url("../../images/icon/enter.png");
+    background-size:cover;
+}
+.repair-add .first .submit{
+    transform: none;
+    margin-bottom: .5rem;
+}
+/*  区域选择扩展  */
+.repair-add-switch{
+    height: 93.5%;
+    position: absolute;
+    bottom: 0;
+    transform: translate(100%,0%);
+}
+.repair-add-switch.active{
+    transform: none;
+}
 /*  报修输入框   */
 .repair-add .first .content .box{
     height: 3.3333333rem;
@@ -1610,6 +1668,14 @@ time{
     justify-content: space-between;
     align-items: center;
 }
+.repair-add .second ul li .features p{
+    height: 100%;
+    overflow: hidden;
+    width: 95%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
 .repair-add .second ul li .features .jump-icon{
     width: .21333333rem;
     height: .4rem;
@@ -1617,7 +1683,7 @@ time{
     background-image: url("../../images/icon/enter.png");
     background-size:cover;
 }
-.repair-add .second .submit{
+.repair-add .submit{
     position: relative;
     /*bottom: 1rem;*/
     left: .64rem;
