@@ -1,11 +1,7 @@
 /**
  * Created by Administrator on 2017/8/15.
  */
-// *********************************************************** 第一步 ************************************************
-//  报修类型和报修项目选择
-$(".repair-type li").click(function(){
-   $(this).addClass("active").siblings("li").removeClass("active");
-});
+
 
 
 //  多图片上传
@@ -67,62 +63,72 @@ function sumber(){
     //     }
     // });
 }
-// *********************************************************** 第二步 ************************************************
-//  服务地址默认地址切换
-$(document).on("click",".service li",function(){
-   $(this).addClass("active")
-       .siblings().removeClass("active");
-});
 
-$("#address").on("click",function(){
-   $(".repair-add").addClass("active");
-    $(".service").addClass("active");
-});
-
-$("#addressReturn").on("click",function(){
-    $(".repair-add").removeClass("active");
-    $(".service").removeClass("active");
-});
-$(".next-step").on("click",function(){
-    $(".first").addClass("active");
-    $(".second").addClass("active");
-});
-$(".modify-icon").on("click",function(){
-    $(".first").removeClass("active");
-    $(".second").removeClass("active");
-});
 
 $(document).ready(function(){
-
-    var currYear = (new Date()).getFullYear();
-    var opt={};
-    opt.date = {preset : 'date'};
-    opt.datetime = {preset : 'datetime'};
-    opt.time = {preset : 'time'};
-    opt.default = {
-        theme: 'android-ics light', //皮肤样式
-        display: 'modal', //显示方式
-        mode: 'scroller', //日期选择模式
-        dateFormat: 'yyyy-mm-dd',
-        lang: 'zh',
-        showNow: true,
-        nowText: "今天",
-        startYear: currYear - 10, //开始年份
-        endYear: currYear + 10 //结束年份
-    };
-
-    var optDateTime = $.extend(opt['datetime'], opt['default']);
-    $("#reservation").mobiscroll(optDateTime).datetime(optDateTime);
-    $("#expected").mobiscroll(optDateTime).datetime(optDateTime);
-    // var optTime = $.extend(opt['time'], opt['default']);
-    // 只显示时分秒
-    // $("#appTime").mobiscroll(optTime).time(optTime);
-    // 日期，只显示年月日
-    // $("#appDate").mobiscroll($.extend(opt['date'], opt['default']));
-
-    //  自适应问题，所以根据HTML上的font-size来判断增加的padding
-    var fontSize = parseInt($("html").css("font-size"));
-    if(fontSize <= 32){
-        $("body").addClass("active1")
-    }
+    operating.OPevent();  // DOM事件；
+    operating.OPtime();   // 时间插件；
 });
+
+var operating = new Operating();
+function Operating(){
+
+    this.OPevent = function(){
+        //  报修类型和报修项目选择
+        $(".repair-type li").click(function(){
+            $(this).addClass("active").siblings("li").removeClass("active");
+        });
+        //  服务地址默认地址切换
+        $(document).on("click",".service li",function(){
+            $(this).addClass("active")
+                .siblings().removeClass("active");
+        });
+        //  服务地址选择；
+        $("#address").on("click",function(){
+            $(".repair-add").addClass("active");
+            $(".service").addClass("active");
+        });
+        //  从服务页面返回输入页面；
+        $("#addressReturn").on("click",function(){
+            $(".repair-add").removeClass("active");
+            $(".service").removeClass("active");
+        });
+        //  下一步
+        $(".next-step").on("click",function(){
+            $(".first").addClass("active");
+            $(".second").addClass("active");
+        });
+        //  返回上一步选择报修类型；
+        $(".modify-icon").on("click",function(){
+            $(".first").removeClass("active");
+            $(".second").removeClass("active");
+        });
+    }
+    this.OPtime = function(){
+        //  时间插件
+        var currYear = (new Date()).getFullYear();
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yyyy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            startYear: currYear - 10, //开始年份
+            endYear: currYear + 10 //结束年份
+        };
+        var optDateTime = $.extend(opt['datetime'], opt['default']);
+        $("#reservation").mobiscroll(optDateTime).datetime(optDateTime);
+        $("#expected").mobiscroll(optDateTime).datetime(optDateTime);
+        //  自适应问题，所以根据HTML上的font-size来判断增加的padding
+        var fontSize = parseInt($("html").css("font-size"));
+        if(fontSize <= 32){
+            $("body").addClass("active1")
+        }
+    }
+}

@@ -9,9 +9,9 @@ var server_url_repair = server_IP + "/louloutong-repair/api";          // 物业
 var server_url_notice = server_IP + "/louloutong-notice/api";          // 通知管理
 var server_rent = server_IP + "/louloutong-rent/api";                  // 租房管理
 var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
-var server_uel_user_img = '';
+var server_uel_user_img = 'http://otqftko25.bkt.clouddn.com/';
 
-var userId = "1979";
+var userId = "1977";
 var propertyId = sessionStorage.getItem("propertyId");
 // var propertyId = "1";
 var authority = JSON.parse(sessionStorage.getItem("authority"));       //  权限
