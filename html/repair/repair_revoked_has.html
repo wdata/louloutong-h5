@@ -18,7 +18,7 @@
     <!--头部-->
     <div class="return-column">
         <div class="return-column-heart">
-            <a class="header-return" href="repair_list.html"><i class="header-return-icon"></i></a>
+            <a class="header-return" href="javascript:" onclick="history.go(-1)"><i class="header-return-icon"></i></a>
             <div class="header-title">报修详情</div>
         </div>
     </div>
@@ -35,15 +35,14 @@
             <div class="transparent active garden"><div class="in garden"><div class="inside garden"></div></div></div>
         </div>
     </div>
-    <div class="hr-128"></div>
     <div class="hr-24"></div>
-    <div class="pending">
+    <div id="pending" class="pending hide">
         <header>
-            <div class="title"><i></i>办公室报修</div>
+            <div id="type" class="title"><i></i>办公室报修</div>
         </header>
         <div class="people">
             <p class="column">报修人</p>
-            <a href="javascript:">
+            <a id="people" href="javascript:">
                 <img class="avatar" src="../../images/anounce/Oval.png" alt="avatar">
                 <div class="information">
                     <div class="name">高原</div>
@@ -52,10 +51,10 @@
             </a>
         </div>
         <ul class="detailed list-ul">
-            <li><p class="column">订单状态</p><div class="repair-status red">已撤销</div></li>
-            <li><p class="column">报修类型</p><div class="word">门窗维修</div></li>
-            <li><p class="column">报修内容</p><div class="word">昨天台风把吊顶吹落了下来，请尽快处理!昨天台风把吊顶吹落了下来，请尽快处理!</div></li>
-            <li class="image">
+            <li><p class="column">订单状态</p><div id="status"><div class="repair-status red">已撤销</div></li>
+            <li><p class="column">报修类型</p><div id="aspect" class="word">门窗维修</div></li>
+            <li><p class="column">报修内容</p><div id="content" class="word">昨天台风把吊顶吹落了下来，请尽快处理!昨天台风把吊顶吹落了下来，请尽快处理!</div></li>
+            <li id="image" class="image">
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
@@ -65,16 +64,17 @@
                 <img src="../../images/anounce/typhoon.png" alt="">
                 <img src="../../images/anounce/typhoon.png" alt="">
             </li>
-            <li class="address"><i class="address-icon"></i><span class="word">深圳市南山区科苑北路东方科技大厦D栋504 深圳市南山区科苑北路东方科技大厦D栋504</span></li>
-            <li><p class="column">预约上门时间</p><time>2017-08-14 13:00</time></li>
-            <li><p class="column">期待完成时间</p><time>2017-08-18 13:00</time></li>
+            <li class="address"><i class="address-icon"></i><span id="property" class="word">深圳市南山区科苑北路东方科技大厦D栋504 深圳市南山区科苑北路东方科技大厦D栋504</span></li>
+            <li><p class="column">预约上门时间</p><time id="reservation">2017-08-14 13:00</time></li>
+            <li><p class="column">期待完成时间</p><time id="carryOut">2017-08-18 13:00</time></li>
         </ul>
     </div>
-    <div class="revoked"><p class="column">撤销原因</p><div class="word">自己处理完毕。自己处理完毕。自己处理完毕。</div></div>
+    <div class="revoked hide"><p class="column">撤销原因</p><div id="revoked" class="word">自己处理完毕。自己处理完毕。自己处理完毕。</div></div>
 </div>
 
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/zepto.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/touch.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/repair_revoked_has.js"></script>
 </body>
 </html>

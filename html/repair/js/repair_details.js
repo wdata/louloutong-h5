@@ -21,6 +21,7 @@ var auth_7 = authMethod("/llt/repair/list/button/revoke");
 
 $(document).ready(function(){
    htmlAjax.details();  //详情；
+    htmlAjax.features(); // 接单和确认颜色操作；
 });
 
 
@@ -57,7 +58,7 @@ function HtmlAjax(){
                             }
                             //  有接单权限，可以接单；
                             if(auth_4){
-                                operating += '<div class="repair-operating orders blue">接单</div>';
+                                operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
                             }
                             break;
                         case 2:
@@ -70,7 +71,7 @@ function HtmlAjax(){
                                 }
                                 //  有接单权限，可以接单；
                                 if(auth_4){
-                                    operating += '<div class="repair-operating orders blue">接单</div>';
+                                    operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
                                 }
                             }else{
                                 if(auth_1){
@@ -87,7 +88,7 @@ function HtmlAjax(){
                                     operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
                                     //  有接单权限，可以接单；
                                     if(auth_4){
-                                        operating += '<div class="repair-operating orders blue">接单</div>';
+                                        operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
                                     }
                                 }else{
                                     status = '<div class="repair-status blue">已受理</div>';
@@ -98,16 +99,16 @@ function HtmlAjax(){
                                     operating += '<a href="repair_transfer.html?id='+ data.data.id +'" class="repair-operating transfer blue">移交</a>';
                                 }
                                 if(auth_6){
-                                    operating += '<div class="repair-operating dealWith blue">填写处理</div>';
+                                    operating += '<a href="repair_result.html?id='+ data.data.id +'" class="repair-operating dealWith blue">填写处理</a>';
                                 }
                             }
                             break;
                         case 4:
                             status = '<div class="repair-status green">待验收</div>';
-                            if(auth_3){
+                            if(auth_3 && parseInt(userId) === data.data.user.id){
                                 //  只有在待验收情况下显示确认验收；详情中确认颜色显示在最下面；
                                 // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
-                                $(".confirm").removeClass("hide");
+                                $("#confirm").removeClass("hide").attr("data-id",data.data.id);
                                 $(".hr-96").removeClass("hide");
                             }
 
@@ -118,6 +119,7 @@ function HtmlAjax(){
                         case 6:
                             status = '<div class="repair-status gray">已撤销</div>';
                             href = 'repair_revoked_has.html';
+                            $(".comment-box").removeClass("hide");
                             break;
                     }
                     //  如果有撤销权限，切登录ID和发布ID相同，则可以撤销；
@@ -181,7 +183,7 @@ function HtmlAjax(){
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_url_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>');
+                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>');
                     //  订单状态；
                     $("#status").empty().append(status);
                     //  报修类型；
@@ -263,7 +265,7 @@ function HtmlAjax(){
                         var html = '';
                         if(data.code === 0 && data.data){
                             $.each(data.data.items,function(index,val){
-                                html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_url_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
+                                html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
                             });
                             $("#listCom").append(html);
                             $(".con-main").removeClass("hide");
@@ -290,6 +292,7 @@ function HtmlAjax(){
 
     };
     this.releaseCom = function(){
+        var _this = this;
         var con = $("#comCon").val();
         //  发布评论；
         if(!(reg.test(con)||con === "")){
@@ -306,6 +309,8 @@ function HtmlAjax(){
                     if(data.code === 0){
                         if(data.data === true){
                             showMask("评论发布成功！");
+                            $("#listCom").empty();
+                            _this.comList();
                         }
                     }
                 },
@@ -372,7 +377,7 @@ function HtmlAjax(){
             data: {
                 "repairId":urlParams("id"),
                 "page":1,
-                "size":10
+                "size":9
             },
             dataType:'json',
             success:function(data){
@@ -381,7 +386,7 @@ function HtmlAjax(){
                 list.empty();
                 if(data.code === 0){
                     $.each(data.data.items,function(index,val){
-                        html += '<a href="javascript:"><img class="small-avatar" src="'+ server_url_img + val.user.photo +'" alt=""></a>';
+                        html += '<a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a>';
                     });
                     list.append(html);
                 }
@@ -389,6 +394,53 @@ function HtmlAjax(){
             error:function(data){
                 ErrorReminder(data);
             }
+        })
+    }
+    this.features = function(){
+        $(document).on("click",".orders",function(){
+            var self = $(this);
+            //  接单；
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repair/recept.json',
+                data: {
+                    "id":self.attr("data-id"),
+                    "handlerId":userId
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            history.go(0); //   刷新页面；
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
+        });
+        $(document).on("click","#confirm",function(){
+            var self = $(this);
+            //  确认验收；
+            $.ajax({
+                type:'post',
+                url:  server_url_repair + server_v1 + '/repair/checked.json',
+                data: {
+                    "id":self.attr("data-id")
+                },
+                dataType:'json',
+                success:function(data){
+                    if(data.code === 0){
+                        if(data.data === true){
+                            history.go(0); //   刷新页面；
+                        }
+                    }
+                },
+                error:function(data){
+                    ErrorReminder(data);
+                }
+            })
         })
     }
 }
