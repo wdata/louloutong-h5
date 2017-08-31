@@ -1,3 +1,4 @@
+
 //获取当前用户的权限  
 var auth_sum=sessionStorage.getItem('authority');
 var auth_0=false;			//显示出租/求租  
@@ -29,48 +30,6 @@ var auth_0=false;			//显示出租/求租
     }
 
 var no_data="已经没有更多数据了",have_data="下拉刷新数据",loading_data="数据加载中";
-
-function wxConfig() {
-    console.info(location.href.split('#')[0])
-    $.ajax({
-        url: '/weixin/permissionValidation',
-        type: 'get',
-        dataType: 'json',
-        async:false,
-        contentType: 'application/json',
-        data:{'url':location.href.split('#')[0]},
-        success: function (res) {
-            var data = res.data;
-            //微信配置
-            wx.config({
-                debug: true,
-                //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: data.appId, // 必填，公众号的唯一标识
-                timestamp: data.timestamp, // 必填，生成签名的时间戳
-                nonceStr: data.nonceStr, // 必填，生成签名的随机串
-                signature: data.signature,// 必填，签名，见附录1
-                jsApiList: [
-                    'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ',
-                    'onMenuShareWeibo','onMenuShareQZone','chooseImage','previewImage','uploadImage',
-                    'downloadImage','getLocalImgData',
-                ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-            });
-            console.info(data);
-            wx.ready(function () {
-                alert(1)
-            });
-            wx.error(function (res) {
-                //throw res;
-                console.log(2);
-                alert(4)
-            });
-
-        },
-        error: function (res) {
-
-        }
-    })
-}
 wxConfig();
 
 //出租和求租
@@ -97,12 +56,23 @@ rent.getList = function(elem){
 			if(data.code!=0) return false;
 			if(!data.data) { $(elem).html(code); return false; }
 			$.each(data.data.items,function(index,item){
+                var imgCode="";
+                if(item.images.length>1){
+                    for(var i=0;i<item.images.length;i++){
+                        imgCode+=`
+                                <div class="pic-w fl">
+                                    <img src="${server_url_img+item.images[i].url}" alt="">
+                                </div>
+                            `;
+                    }
+                }
+                var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
 					<div class="list" data-id=${item.id}>
                         <a class="p24" href="orent_detail.html" onclick="link('${item.id}',${_this.type})">
                             <div class="top">
                                 <div class="t-l fl">
-									<span class="tx" data-id=${item.user.id}><img src="${item.user.photo}" alt="" class="full"></span>
+									<span class="tx" data-id=${item.user.id}><img src="${txCode}" alt=""></span>
                                     <div class="txt">
                                         <div class="tit">${item.user.name}</div>
                                         <div class="time">${item.createTime}</div>
@@ -120,18 +90,7 @@ rent.getList = function(elem){
                                 <div class="tips price">${item.price}</div>    
                             </div>
                             <div class="bot">
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu2@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu3@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu4@2x.png" alt="" class="full">
-                                </div>
+                                ${imgCode}
                                 <div class="clear"></div>
                             </div>
                         </a>
@@ -157,12 +116,23 @@ rent.getMoreList = function(elem){
 			if(data.code!=0) return false;
 			if(_this.page>data.data.totalPages) { _this.isHaveNextPage=false;}  
 			$.each(data.data.items,function(index,item){
+                var imgCode="";
+                if(item.images.length>1){
+                    for(var i=0;i<item.images.length;i++){
+                        imgCode+=`
+                                <div class="pic-w fl">
+                                    <img src="${server_url_img+item.images[i].url}" alt="">
+                                </div>
+                            `;
+                    }
+                };
+                var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
 					<div class="list" data-id=${item.id}>
                         <a class="p24" href="orent_detail.html">
                             <div class="top">
                                 <div class="t-l fl">
-									<span class="tx" data-id=${item.user.id}><img src="${item.user.photo}" alt="" class="full"></span>
+									<span class="tx" data-id=${item.user.id}><img src="${txCode}" alt=""></span>
                                     <div class="txt">
                                         <div class="tit">${item.user.name}</div>
                                         <div class="time">${item.createTime}</div>
@@ -180,18 +150,7 @@ rent.getMoreList = function(elem){
                                 <div class="tips price">${item.price}</div>    
                             </div>
                             <div class="bot">
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu2@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu3@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu4@2x.png" alt="" class="full">
-                                </div>
+                                ${imgCode}
                                 <div class="clear"></div>
                             </div>
                         </a>
@@ -230,20 +189,21 @@ order.getList = function(elem){
 			if(!data.data) { $(elem).html(code); return false; }
 			if(this.status==1){
 				$.each(data.data.items,function(index,item){
+                    var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
 					code+=`
 						 <div class="item">
                             <div class="p24">
                                 <div class="t-l fl">
                                     <div class="top">
                                         <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
+                                            <span class="tx"><img src="${txCode}" alt=""></span>
                                             <div class="txt">
                                                 <div class="tit">${item.beseakUser.name}</div>
                                                 <span>${item.createTime}</span>
                                             </div>
                                         </a>
                                     </div>
-                                    <a href="order_detail.html">
+                                    <a href="order_detail.html" onclick="session('order_id',${item.id})">
                                         <div class="mid">
                                             <p class="line2">${item.beseakUser.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
@@ -256,8 +216,8 @@ order.getList = function(elem){
                                         <button class="btn">提醒</button>
                                         <a href="recei_reasult.html" class="btn">接待</a>
                                     </div>
-                                    <a href="order_detail.html">
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                    <a href="order_detail.html" onclick="session('order_id',${item.id})">
+                                        <img src="${server_url_img+item.imageUrl}" alt="">
                                     </a>
                                 </div>
                                 <div class="clear"></div>
@@ -267,20 +227,21 @@ order.getList = function(elem){
 				})
 			}else{
 				$.each(data.data.items,function(index,item){
+                    var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
 					code+=`
 						<div class="item">
                             <div class="p24">
                                 <div class="t-l fl">
                                     <div class="top">
                                         <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
+                                            <span class="tx"><img src="${default_tx}" alt=""></span>
                                             <div class="txt">
                                                 <div class="tit">${item.beseakUser.name}</div>
                                                 <span>${item.createTime}</span>
                                             </div>
                                         </a>
                                     </div>
-                                    <a href="order_detail.html">
+                                    <a href="order_detail.html" onclick="session('order_id',${item.id})">
                                         <div class="mid">
                                             <p class="line2">${item.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
@@ -292,67 +253,7 @@ order.getList = function(elem){
                                     <div class="order-area" onclick="tranShow()">
                                         <div class="mask"></div>
                                         <button class="abs">分配接待</button>
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="p24">
-                                <div class="t-l fl">
-                                    <div class="top">
-                                        <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
-                                            <div class="txt">
-                                                <div class="tit">${item.beseakUser.name}</div>
-                                                <span>${item.createTime}</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <a href="order_detail.html">
-                                        <div class="mid">
-                                            <p class="line2">${item.rentTitle}</p>
-                                            <div class="time">预约时间：${item.bespeakTime}</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="t-r fl">
-                                    <div class="hr-48"></div>
-                                    <div class="order-area" onclick="tranShow()">
-                                        <div class="mask"></div>
-                                        <button class="abs">分配接待</button>
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="p24">
-                                <div class="t-l fl">
-                                    <div class="top">
-                                        <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
-                                            <div class="txt">
-                                                <div class="tit">${item.beseakUser.name}</div>
-                                                <span>${item.createTime}</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <a href="order_detail.html">
-                                        <div class="mid">
-                                            <p class="line2">${item.rentTitle}</p>
-                                            <div class="time">预约时间：${item.bespeakTime}</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="t-r fl">
-                                    <div class="hr-48"></div>
-                                    <div class="order-area" onclick="tranShow()">
-                                        <div class="mask"></div>
-                                        <button class="abs">分配接待</button>
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                        <img src="${server_url_img+item.imageUrl}" alt="">
                                     </div>
                                 </div>
                                 <div class="clear"></div>
@@ -387,7 +288,7 @@ order.getMoreList = function(elem){
                                 <div class="t-l fl">
                                     <div class="top">
                                         <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
+                                            <span class="tx"><img src="${item.beseakUser.photo}" alt=""></span>
                                             <div class="txt">
                                                 <div class="tit">${item.beseakUser.name}</div>
                                                 <span>${item.createTime}</span>
@@ -408,7 +309,7 @@ order.getMoreList = function(elem){
                                         <a href="recei_reasult.html" class="btn">接待</a>
                                     </div>
                                     <a href="order_detail.html">
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                        <img src="../../images/upload/tu1@2x.png" alt="">
                                     </a>
                                 </div>
                                 <div class="clear"></div>
@@ -424,7 +325,7 @@ order.getMoreList = function(elem){
                                 <div class="t-l fl">
                                     <div class="top">
                                         <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt="" class="full"></span>
+                                            <span class="tx"><img src="${item.beseakUser.photo}" alt=""></span>
                                             <div class="txt">
                                                 <div class="tit">${item.beseakUser.name}</div>
                                                 <span>${item.createTime}</span>
@@ -443,7 +344,7 @@ order.getMoreList = function(elem){
                                     <div class="order-area" onclick="tranShow()">
                                         <div class="mask"></div>
                                         <button class="abs">分配接待</button>
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                        <img src="../../images/upload/tu1@2x.png" alt="">
                                     </div>
                                 </div>
                                 <div class="clear"></div>
@@ -464,6 +365,7 @@ var myrent=new Object({
 	type:1
 })
 myrent.getList = function(elem){
+    var _this=this;
 	$.ajax({
 		type:'get',
 		url:server_rent+server_v1+"/rents/user/"+this.userId+"/"+this.type+".json",
@@ -476,9 +378,19 @@ myrent.getList = function(elem){
 			if(data.code!=0) return false;
 			if(!data.data) { $(elem).html(code); return false; }
 			$.each(data.data.items,function(index,item){
+                var imgCode="";
+                if(item.images.length>1){
+                    for(var i=0;i<item.images.length;i++){
+                        imgCode+=`
+                                <div class="pic-w fl">
+                                    <img src="${server_url_img+item.images[i].url}" alt="">
+                                </div>
+                            `;
+                    }
+                };
 				code+=`
 					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="orent_detail.html">
+                        <a class="p24" href="orent_detail.html"  onclick="link('${item.id}',${_this.type})">
                             <div class="mid">
                                 <div class="word overhide">
                                     ${item.title}
@@ -486,21 +398,16 @@ myrent.getList = function(elem){
                                 <div class="tips price">${item.price} <span class="fr c666">发布于${item.createTime}</span></div>    
                             </div>
                             <div class="bot">
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu1@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu2@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu3@2x.png" alt="" class="full">
-                                </div>
-                                <div class="pic-w fl">
-                                        <img src="../../images/upload/tu4@2x.png" alt="" class="full">
-                                </div>
+                                ${imgCode}
                                 <div class="clear"></div>
                             </div>
                         </a>
+                        <div class="oper-bot">
+                            <button>刷新</button>
+                            <button>修改</button>
+                            <button>下架</button>
+                            <button>删除</button>
+                        </div>
                     </div>
 				`	
 			})
@@ -516,7 +423,8 @@ var issue=new Object({
     type:1,                     //1出租   2求租
     userId:userId,
     acreage:null,
-    price:null
+    price:null,
+    picId:[],
 });
 issue.show = function(){
     if(this.isShow){
@@ -538,20 +446,37 @@ issue.scroll = function(){
         }
     })
 }
-issue.imgUpload = function(){
+issue.wxImg = function(){
+    var _this=this;
     $('.issue .photo').click(function(){
-        console.info(wx)
         wx.chooseImage({
-            count: 1, // 默认9
+            count: 9, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
             success: function (res) {
+                console.info(res);
                 var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-            }
-        });    
+                wx.uploadImage({
+                    localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 1, // 默认为1，显示进度提示
+                    success: function (res) {
+                        _this.picId.push(res.serverId); // 返回图片的服务器端ID
+                    },
+                    error:function(res){
+                        
+                    }
+                });
+            },
+        }); 
+
     })
 }
+issue.imgUpload = function(){
+    
+}
 issue.add = function(){
+    var p=$('.diff-orent .unit-choosed').html();
+    var q=$('.diff-irent .unit-choosed').html();
     $.ajax({
         type:'post',
         url:server_rent+server_v1+'/rents/save.json',
@@ -564,6 +489,7 @@ issue.add = function(){
             'section':$('.elem-03').val(),
             'acreage':this.acreage,
             'price':this.price,
+            'unit':'77元/m&lt;sup&gt;2&lt;/sup&gt;/天',
             'houseType':$('.elem-06').val(),
             'title':$('.elem-07').val(),
             'content':$('.elem-08').val(),
@@ -631,11 +557,8 @@ issue.event = function(){
     $('.submit-btn').click(function(){
         _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
         var m=$('.diff-orent .elem-05').val();
-        var n=$('.diff-orent .unit-choosed').html();
-        var p=$('.diff-irent .elem-05').val();
-        var q=$('.diff-irent .unit-choosed').html();
-        _this.price=(m)?m+n:p+q;
-        console.info(_this.price);
+        var n=$('.diff-irent .elem-05').val();
+        _this.price=(m)?m:n;
         if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
         if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
         if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
@@ -659,7 +582,7 @@ issue.init = function(){
     this.show();
     this.scroll();
     this.event();
-    this.imgUpload();
+    this.wxImg();
 }
 
 
