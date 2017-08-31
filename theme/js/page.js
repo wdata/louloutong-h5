@@ -1,3 +1,4 @@
+var default_tx="../../images/upload/touxiang@2x.png"
 
 //显示
 var ww=$(window).width();
