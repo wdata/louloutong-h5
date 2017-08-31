@@ -2,7 +2,7 @@
  * Created by Administrator on 2017/8/23.
  */
 var page = null;   // 页数
-var searchType = null;  // 报修类型
+var searchType = 1;  // 报修类型
 var keyword = null;   // 搜索关键字；
 var pIdRepair = propertyId;  // 物业ID；
 
@@ -27,7 +27,6 @@ var auth_7 = authMethod("/llt/repair/list/button/revoke");
 
 
 $(document).ready(function(){
-    var htmlAjax = new HtmlAjax();
     htmlAjax.repairList(pIdRepair,page,searchType,keyword);
     htmlAjax.listStatus();
 });
@@ -35,6 +34,7 @@ $(document).ready(function(){
 
 console.info($(window).height());
 
+var htmlAjax = new HtmlAjax();
 // 数据获取
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
@@ -199,6 +199,9 @@ function HtmlAjax(){
         $(document).on("click",".list-con div",function(){
             // 搜索类型 1：报修人 2：报修状态 3：服务地址 4：报修类型
             searchType = $(this).attr("data-id");
+        });
+        $(".back").click(function(){
+            searchType = 1;  // 报修类型
         });
         $(document).on("click",".orders",function(){
             var self = $(this);
@@ -370,15 +373,19 @@ dongSwitch.prototype = {
             $(".repair-switch").removeClass("active");
 
             var id = $("#addressList li.active").attr("data-id");
-
+            var text = $(".statusList .active").text();
+            //  如果是全部则显示为空；
+            if($(".statusList .active").is(".all")){
+                text = "";
+            }
             //  判断id不为空；
             if(id){
-                $(".dropload-down").remove();   //清除暂无数据；
-                $("#list").empty();   //    清除列表数据;
                 pIdRepair = id;
-                var htmlAjax = new HtmlAjax(id);
-                htmlAjax.repairList();
             }
+            $(".dropload-down").remove();   //清除暂无数据；
+            $("#list").empty();   //    清除列表数据;
+            keyword = text;
+            htmlAjax.repairList(pIdRepair,page,2,keyword);
         });
         //  重置
         var _this = this;
