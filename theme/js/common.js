@@ -11,7 +11,7 @@ var server_rent = server_IP + "/louloutong-rent/api";                  // 租房
 var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_uel_user_img = 'http://otqftko25.bkt.clouddn.com/';
 
-var userId = "1977";
+var userId = "1980";
 var propertyId = sessionStorage.getItem("propertyId");
 // var propertyId = "1";
 var authority = JSON.parse(sessionStorage.getItem("authority"));       //  权限

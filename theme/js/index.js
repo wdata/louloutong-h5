@@ -294,6 +294,26 @@ function IndexAjax(proPertyId){
                 ErrorReminder(data);
             }
         });
+        // 公告；
+        $.ajax({
+            type:'get',
+            url:  server_url_notice + server_v1 + '/notice/count.json',
+            data: {
+                "userId":this.userId,
+                "propertyId":this.propertyId
+            },
+            dataType:'json',
+            success:function(data){
+                if(data.code === 0){
+                    if(data.data.noticeCount >= 0){
+                        $(".features a").eq(1).find(".red-icon").show();
+                    }
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
     },
     this.noticeIndex = function(){
         // 通知列表；
@@ -330,7 +350,7 @@ function IndexAjax(proPertyId){
             data: {
                 "userId":this.userId,
                 "page":page,
-                "size":2,
+                "size":2
             },
             dataType:'json',
             success:function(data){
@@ -344,10 +364,10 @@ function IndexAjax(proPertyId){
                         switch (val.allotStatus){
                             case 0:span = '<span class="tag-green tag">未分配</span>';
                                 break;
-                            case 1:span = '<span class="tag-green tag-gray">已分配</span>';
+                            case 1:span = '<span class="tag-green tag tag-gray">已分配</span>';
                                 break;
                         }
-                        html += '<li> <a class="overall" href="html/rent/order_detail.html?id='+ val.id +'"> <div class="introduction"> <div class="personal"> <img class="avatar" src="'+ server_url_img + val.beseakUser.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.beseakUser.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
+                        html += '<li> <a class="overall" href="html/rent/order_detail.html?id='+ val.id +'"> <div class="introduction"> <div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.beseakUser.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.beseakUser.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
                             '<article>'+ val.rentTitle +'</article><div class="showings-time"><i class="time-icon"></i>预约时间：<span>'+ val.bespeakTime +'</span></div> </div> <img class="cover" src="'+ server_url_img + val.imageUrl +'" alt=""></a> </li>';
                     })
                 }
@@ -367,7 +387,7 @@ function IndexAjax(proPertyId){
                 "userId":this.userId,
                 "propertyId":this.propertyId,
                 "page":page,
-                "size":2,
+                "size":2
             },
             dataType:'json',
             success:function(data){
@@ -392,7 +412,7 @@ function IndexAjax(proPertyId){
                         }
 
                         html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
-                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ val.property +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages +'" alt=""> </a> </li>';
+                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ val.property +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
                     })
                 }
                 repair.append(html);

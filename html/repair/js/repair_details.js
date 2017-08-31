@@ -11,6 +11,9 @@ $("#comment").on("click",function(){
     $(".comment-box").toggleClass("hide");
 });
 
+//  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
+sessionStorage.setItem("repairJump",2);
+
 var auth_1 = authMethod("/llt/repair/list/button/sendOrders");
 var auth_2 = authMethod("/llt/repair/list/button/sendAgain");
 var auth_3 = authMethod("/llt/repair/list/button/check");
@@ -143,7 +146,7 @@ function HtmlAjax(){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
                         })
                     }
-                    var type = data.data.type===1?"办公区域":data.data.type===3?"公共区域":"未知";
+                    var type = data.data.type===1?"办公区域":data.data.type===2?"公共区域":"未知";
 
                     var ss = $(".status>span");
                     var tr = $(".transparent");

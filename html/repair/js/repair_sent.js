@@ -51,7 +51,7 @@ $(document).on("click",".orders",function(){
         success:function(data){
             if(data.code === 0){
                 if(data.data === true){
-                    window.location.href = "repair_list.html";
+                    window.location.href = "repair_details.html?id="+ urlParams("id") +"";
                 }
             }
         },
