@@ -81,7 +81,7 @@ function HtmlAjax(){
     this.releaseRpr = function(){
         var form = new FormData($("#newForm")[0]);       //需要是JS对象
         $.each(file,function(index,val){
-            form.append("file",val);
+            form.append("files",val);
         });
 
         var type = $(".addType .active").attr("data-id");  //类型;
@@ -92,6 +92,10 @@ function HtmlAjax(){
             expectTime = $("#expected").val();
             repairItemId = $("#projectList .active").attr("data-id");
             repairAddressId = $("#ads").attr("data-id");
+
+            form.append("bespeakTime",bespeakTime);              //   预约时间 当类型为2时，不必传
+            form.append("expectTime",expectTime);                //   期望时间 当类型为2时，不必传
+            form.append("repairItemId",repairItemId);            //   报修项目ID 当类型为2时，不必传
         }else if(type === "2"){
             repairAddressId = $("#service-address").attr("data-id");
         }
@@ -113,9 +117,6 @@ function HtmlAjax(){
         form.append("userId",userId);
         form.append("propertyId",propertyId);
         form.append("type",type);                             //   类型 1：办公区域 2：公共区域
-        form.append("bespeakTime",bespeakTime);              //   预约时间 当类型为2时，不必传
-        form.append("expectTime",expectTime);                //   期望时间 当类型为2时，不必传
-        form.append("repairItemId",repairItemId);            //   报修项目ID 当类型为2时，不必传
         form.append("repairAddressId",repairAddressId);     //   报修地址ID
         form.append("content",content);                       //   报修内容
 

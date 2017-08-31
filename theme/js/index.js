@@ -294,6 +294,26 @@ function IndexAjax(proPertyId){
                 ErrorReminder(data);
             }
         });
+        // 公告；
+        $.ajax({
+            type:'get',
+            url:  server_url_notice + server_v1 + '/notice/count.json',
+            data: {
+                "userId":this.userId,
+                "propertyId":this.propertyId
+            },
+            dataType:'json',
+            success:function(data){
+                if(data.code === 0){
+                    if(data.data.noticeCount >= 0){
+                        $(".features a").eq(1).find(".red-icon").show();
+                    }
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
     },
     this.noticeIndex = function(){
         // 通知列表；

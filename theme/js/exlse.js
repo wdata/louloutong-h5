@@ -1,6 +1,12 @@
 /**
  * Created by Administrator on 2017/8/9.
  */
+
+//  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
+// sessionStorage.setItem("repairJump",2);
+var repairJump = parseInt(sessionStorage.getItem("repairJump"));
+
+
 //显示
 var ww=$(window).width();
 function showEdit(_this){

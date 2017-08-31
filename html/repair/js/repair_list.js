@@ -5,6 +5,11 @@ var page = null;   // 页数
 var searchType = 1;  // 报修类型
 var keyword = null;   // 搜索关键字；
 var pIdRepair = propertyId;  // 物业ID；
+
+//  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
+sessionStorage.setItem("repairJump",1);
+
+
 //  权限； 报修列表按钮
 // /llt/repair/list/button/sendOrders 派单
 // /llt/repair/list/button/sendAgain  重新派单
@@ -31,15 +36,12 @@ $(document).ready(function(){
 });
 
 
-console.info($(window).height());
-
 var htmlAjax = new HtmlAjax();
 // 数据获取
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
 
     this.repairList = function(proId,page,searchType,keyword){
-        var _this = this;
         var comment = 1;      //page数
         var dropload = $(".repair-list").dropload({
             scrollArea : $(".repair-list"),
@@ -155,7 +157,7 @@ function HtmlAjax(){
                                         img += '<img src="'+ server_url_img + y +'" alt="">';
                                     })
                                 }
-                                var type = val.type===1?"办公区域":val.type===3?"公共区域":"未知";
+                                var type = val.type===1?"办公区域":val.type===2?"公共区域":"未知";
                                 html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
                                     ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ val.property +'</span></div> <div class="image"> '+ img +'' +
                                     '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
@@ -195,12 +197,18 @@ function HtmlAjax(){
         }
     };
     this.listStatus = function(){
+        var _this = this;
         $(document).on("click",".list-con div",function(){
             // 搜索类型 1：报修人 2：报修状态 3：服务地址 4：报修类型
             searchType = $(this).attr("data-id");
         });
         $(".back").click(function(){
             searchType = 1;  // 报修类型
+        });
+        $('.sBox-wrapper .cancel').tap(function(){
+            //  清除搜索条件；
+            keyword = "";
+            _this.repairList();
         });
         $(document).on("click",".orders",function(){
             var self = $(this);
@@ -216,7 +224,7 @@ function HtmlAjax(){
                 success:function(data){
                     if(data.code === 0){
                         if(data.data === true){
-                            history.go(0); //   刷新页面；
+                            window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
                         }
                     }
                 },
@@ -238,7 +246,7 @@ function HtmlAjax(){
                 success:function(data){
                     if(data.code === 0){
                         if(data.data === true){
-                            history.go(0); //   刷新页面；
+                            window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
                         }
                     }
                 },
