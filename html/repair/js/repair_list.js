@@ -5,7 +5,6 @@ var page = null;   // 页数
 var searchType = 1;  // 报修类型
 var keyword = null;   // 搜索关键字；
 var pIdRepair = propertyId;  // 物业ID；
-
 //  权限； 报修列表按钮
 // /llt/repair/list/button/sendOrders 派单
 // /llt/repair/list/button/sendAgain  重新派单
@@ -42,8 +41,8 @@ function HtmlAjax(){
     this.repairList = function(proId,page,searchType,keyword){
         var _this = this;
         var comment = 1;      //page数
-        var dropload = $('.dataList').dropload({
-            scrollArea : window,
+        var dropload = $(".repair-list").dropload({
+            scrollArea : $(".repair-list"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
