@@ -117,8 +117,8 @@ function showMask(msg){
 });*/
 
 
-/*function wxConfig() {
-    console.info(cur_href)
+function wxConfig() {
+    console.info(location.href.split('#')[0])
     $.ajax({
         url: '/weixin/permissionValidation',
         type: 'get',
@@ -142,12 +142,14 @@ function showMask(msg){
                     'downloadImage','getLocalImgData',
                 ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
             });
+            console.info(data);
             wx.ready(function () {
-                console.log(1)
+                //alert(1)
             });
             wx.error(function (res) {
                 //throw res;
-                console.log(2)
+                console.log(2);
+                alert(4)
             });
 
         },
@@ -155,5 +157,5 @@ function showMask(msg){
 
         }
     })
-}*/
+}
 
