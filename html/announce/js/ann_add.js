@@ -82,7 +82,6 @@ function sub(){
 
 
 
-
 /*var form = new FormData($("#newForm")[0]);
         $.ajax({
             type:'post',
@@ -97,8 +96,71 @@ function sub(){
                     returnMessage(2,data.message);
                 }
             },*/
+function release(){
+    if($("#title").val().length < 4){
+        showMask("请输入长度大于4个字符的标题！");
+        return;
+    }
+    if($(".placeholader").length === 1){
+        showMask("请输入正文！");
+        return;
+    }
+    if($(".firmIds:checked").length <= 0){
+        showMask("请选择接收人！");
+        return;
+    }
+
+    $("#content").val($("#editor_box").html());
+
+    var form = new FormData($("#newForm")[0]);       //需要是JS对象
+    var firmIds = "";
+    $.each($(".firmIds:checked"),function(x,y){
+        if(x === 0){
+            firmIds += $(y).attr("data-id");
+        }else{
+            firmIds += "," + $(y).attr("data-id");
+        }
+    });
 
 
+    form.append("propertyId",propertyId);
+    form.append("userId",userId);
+    form.append("title",$("#title").val());
+    form.append("firmIds",firmIds);
+
+    $.ajax({
+        type:'post',
+        url:  server_url_notice + server_v1 + '/notice.json',
+        data: form,
+        contentType: false,
+        processData: false,
+        success:function(data){
+            if(data.code === 0 && data.message === "SUCCESS"){
+                window.location.href = "ann_list.html";
+            }
+        },
+        error:function(data){ErrorReminder(data);}
+    });
+}
+
+//  入驻企业；
+$.ajax({
+    type:'get',
+    url:  server_url_repair + server_v1 + '/propertyFirms/'+ 2 +'.json',
+    data: null,
+    dataType:'json',
+    success:function(data){
+        var list = $(".list-con");
+        var html = '';
+        if(data.code === 0 && data.data){
+            $.each(data.data,function(index,val){
+                html += '<div class="list"> <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div> <div class="tit fl">'+ val.name +'</div> <div class="check-box fr"> <input class="firmIds " data-id="'+ val.id +'" type="checkbox" /> <label for=""></label> </div> <div class="clear"></div> </div>'
+            });
+            list.append(html);
+        }
+    },
+    error:function(data){ErrorReminder(data);}
+})
 
 
 
