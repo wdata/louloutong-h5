@@ -424,7 +424,7 @@ var issue=new Object({
     userId:userId,
     acreage:null,
     price:null,
-    picId:[],
+    picId:null,
 });
 issue.show = function(){
     if(this.isShow){
@@ -449,7 +449,8 @@ issue.scroll = function(){
 issue.wxImg = function(){
     var _this=this;
     $('.issue .photo').click(function(){
-        wx.chooseImage({
+        _this.imgUpload(); 
+        /*wx.chooseImage({
             count: 9, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
@@ -460,19 +461,31 @@ issue.wxImg = function(){
                     localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: function (res) {
-                        _this.picId.push(res.serverId); // 返回图片的服务器端ID
+                       // _this.picId.push(res.serverId); // 返回图片的服务器端ID
+                       _this.picId=res.serverId;
+                       _this.imgUpload();    
                     },
                     error:function(res){
                         
                     }
                 });
             },
-        }); 
+        });*/ 
 
     })
 }
 issue.imgUpload = function(){
-    
+     $.ajax({
+        type:'post',
+        url:'/weixin/downloadImage',
+        dataType:'json',
+        data:{
+            mediaId:'1237378768e7q8e7r8qwesafdasdfasdfaxss111'
+        },
+        success:function(data){
+
+        }
+     }) 
 }
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();

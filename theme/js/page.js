@@ -35,6 +35,11 @@ function checkMobile(phone){
  		return true;
  	}
 } 
+
+//图片默认处理
+function imgDefault(url,de_url){
+	return (url=="null" || url==null)?de_url:server_uel_user_img+url;
+}
 //搜索相关js
 $('.search-main,.p-layout').width(ww*2);
 
@@ -44,20 +49,20 @@ $('#search_btn').focus(function(){
 	$('.sBox-wrapper').addClass('active');
 })
 //点击关键字后
-$('.sBox-wrapper .list-con .list').tap(function(){
+$('.sBox-wrapper .list-con .list').click(function(){
 	$(this).addClass('active').siblings().removeClass('active');
 	$('#search_btn').attr('placeholder',$(this).text());
 	$('.search-main').css('transform','translateX(-'+ww+'px)');	
 	$('.sBox-wrapper .top-search').addClass('active')
 })
 //取消回到列表页
-$('.sBox-wrapper .cancel').tap(function(){
+$('.sBox-wrapper .cancel').click(function(){
 	$('.search-main').css('transform','translateX(0)');	
 	$('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
 	$('#search_btn').attr('placeholder','搜索').val('');
 })
 //返回回到关键词页
-$('.sBox-wrapper .top-search .back').tap(function(){
+$('.sBox-wrapper .top-search .back').click(function(){
     $('.search-main').css('transform','translateX(0)');
 	$('.sBox-wrapper .top-search').removeClass('active');
 	$('#search_btn').attr('placeholder','搜索');

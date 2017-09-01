@@ -27,10 +27,8 @@ $.ajax({
 			if(data.data.user.phone){
 				$('#phone').text(data.data.phone);
 			}else{
-				$('.rent-bot .t-r a').addClass('gray');
+				 $('.rent-bot .t-r a').addClass('gray');
 			}
-			
-
 		}
 	}
 })
