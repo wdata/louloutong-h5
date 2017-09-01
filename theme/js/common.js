@@ -118,9 +118,9 @@ function showMask(msg){
 
 
 function wxConfig() {
-    console.info(location.href.split('#')[0])
+    var curTime=(new Date()).getTime();
     $.ajax({
-        url: '/weixin/permissionValidation',
+        url: '/weixin/permissionValidation?cur='+curTime,
         type: 'get',
         dataType: 'json',
         async:false,
@@ -142,14 +142,12 @@ function wxConfig() {
                     'downloadImage','getLocalImgData',
                 ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
             });
-            console.info(data);
             wx.ready(function () {
                 //alert(1)
             });
             wx.error(function (res) {
-                //throw res;
-                console.log(2);
-                alert(4)
+                throw res;
+                //console.log(2);
             });
 
         },

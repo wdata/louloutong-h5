@@ -29,8 +29,6 @@ $.ajax({
 			}else{
 				 $('.rent-bot .t-r a').addClass('gray');
 			}
-			
-
 		}
 	}
 })
