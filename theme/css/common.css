@@ -26,7 +26,7 @@
 
 /*搜索效果*/
 .icon{display: inline-block;}
-.sCon-wrapper{width: 100%;position: relative;z-index: 20;}
+.sCon-wrapper{width: 100%;position: relative;z-index: 20;height: 100%;}
 
 .sBox-wrapper{position: fixed;z-index: 198;width: 100%;background: #eee;height: 1.173333rem;overflow: hidden;}
 .sBox-wrapper .top-search{border-bottom: 1px solid #d4d4d4;}

@@ -119,10 +119,10 @@ function showMask(msg){
 });*/
 
 
-function wxConfig() {
+function wxConfig(wx) {
     var curTime=(new Date()).getTime();
     $.ajax({
-        url: '/weixin/permissionValidation?cur='+curTime,
+        url: '/weixin/permissionValidation',
         type: 'get',
         dataType: 'json',
         async:false,
