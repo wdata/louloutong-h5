@@ -40,6 +40,10 @@ function checkMobile(phone){
 function imgDefault(url,de_url){
 	return (url=="null" || url==null)?de_url:server_uel_user_img+url;
 }
+
+function nullCheck(elem){
+	return (elem=="null" || elem==null)?' ':elem;
+}
 //搜索相关js
 $('.search-main,.p-layout').width(ww*2);
 

@@ -2,7 +2,7 @@
 //获取当前用户的权限  
 var auth_sum=sessionStorage.getItem('authority');
 var auth_0=false;			//显示出租/求租  
-	auth_1=false;			//显示预约/发布
+	auth_1=true;			//显示预约/发布
 	auth_2=false;  			//预约显示状态_未分配/已分配 
 	auth_3=false;			//预约显示状态_未处理/已处理 
 	auth_4=false;			//分配接待 
@@ -10,12 +10,12 @@ var auth_0=false;			//显示出租/求租
 	auth_6=false;			//接待
 	
     //if(auth_sum.indexOf('/llt/click/rent/showModel/rentorwanted')>0) 			auth_0=true;
-    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeakoradd')>0) 			auth_1=true;
+    /*if(auth_sum.indexOf('/llt/click/rent/showModel/bespeakoradd')>0) 			auth_1=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/click/assignorno')>0) 		auth_2=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/click/handleorno')>0) 		auth_3=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/distribute')>0) 		auth_4=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/remind')>0) 			auth_5=true;
-    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/recept')>0) 			auth_6=true;
+    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/recept')>0) 			auth_6=true;*/
 
     //因权限而对页面显示控制
     if(auth_1){
@@ -30,7 +30,7 @@ var auth_0=false;			//显示出租/求租
     }
 
 var no_data="已经没有更多数据了",have_data="下拉刷新数据",loading_data="数据加载中";
-wxConfig();
+//wxConfig();
 
 //出租和求租
 var rent = new Object({
@@ -69,7 +69,7 @@ rent.getList = function(elem){
                 var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
 					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="orent_detail.html" onclick="link('${item.id}',${_this.type})">
+                        <a class="p24" href="rent_detail.html" onclick="link('${item.id}',${_this.type})">
                             <div class="top">
                                 <div class="t-l fl">
 									<span class="tx" data-id=${item.user.id}><img src="${txCode}" alt=""></span>
@@ -129,7 +129,7 @@ rent.getMoreList = function(elem){
                 var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
 					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="orent_detail.html">
+                        <a class="p24" href="rent_detail.html">
                             <div class="top">
                                 <div class="t-l fl">
 									<span class="tx" data-id=${item.user.id}><img src="${txCode}" alt=""></span>
@@ -357,7 +357,7 @@ order.getMoreList = function(elem){
 		}
 	})
 }
-//我的出租\求租
+//我的出租\求租列表
 var myrent=new Object({
 	page:1,
 	size:10,
@@ -390,7 +390,7 @@ myrent.getList = function(elem){
                 };
 				code+=`
 					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="orent_detail.html"  onclick="link('${item.id}',${_this.type})">
+                        <a class="p24" href="rent_detail.html"  onclick="link('${item.id}',${_this.type})">
                             <div class="mid">
                                 <div class="word overhide">
                                     ${item.title}
@@ -403,10 +403,10 @@ myrent.getList = function(elem){
                             </div>
                         </a>
                         <div class="oper-bot">
-                            <button>刷新</button>
+                            <button onclick="myrent.refresh(${item.id})">刷新</button>
                             <button>修改</button>
-                            <button>下架</button>
-                            <button>删除</button>
+                            <button onclick="myrent.changeStatus(${item.id},${item.status})">${item.status==0?'下架':item.status==1?'上架':'其他'}</button>
+                            <button onclick="myrent.del(${item.id},${item.status})">删除</button>
                         </div>
                     </div>
 				`	
@@ -414,6 +414,40 @@ myrent.getList = function(elem){
 			$(elem).html(code);
 		}
 	})
+}
+myrent.refresh = function(id){
+    var _this=this;
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+'/rents/refresh/'+this.userId+'/'+id+'.json',
+        dataType:'json',
+        success:function(res){
+            _this.getList('.rent-list-con');
+        }
+    })
+}
+myrent.changeStatus = function(id,status){
+    var _this=this;
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+'/rents/offShelf/'+this.userId+'/'+id+'.json',
+        dataType:'json',
+        success:function(res){
+            _this.getList('.rent-list-con');
+        }
+   })
+}
+myrent.del = function(id,status){
+    var _this=this;
+    if(status != 1) { showMask('该商品还未下架，不能进行删除！'); return false; }
+    $.ajax({ 
+        type:'post',
+        url:server_rent+server_v1+'/rents/delete/'+this.userId+'/'+id+'.json',
+        dataType:'json',
+        success:function(res){
+            _this.getList('.rent-list-con');
+        }
+   })
 }
 
 //发布
@@ -450,7 +484,7 @@ issue.wxImg = function(){
     var _this=this;
     $('.issue .photo').click(function(){
         _this.imgUpload(); 
-        /*wx.chooseImage({
+        wx.chooseImage({
             count: 9, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
@@ -463,14 +497,15 @@ issue.wxImg = function(){
                     success: function (res) {
                        // _this.picId.push(res.serverId); // 返回图片的服务器端ID
                        _this.picId=res.serverId;
-                       _this.imgUpload();    
+                       _this.imgUpload(); 
+                       $('.elem-02').val(_this.picId);   
                     },
                     error:function(res){
                         
                     }
                 });
             },
-        });*/ 
+        }); 
 
     })
 }
@@ -480,10 +515,10 @@ issue.imgUpload = function(){
         url:'/weixin/downloadImage',
         dataType:'json',
         data:{
-            mediaId:'1237378768e7q8e7r8qwesafdasdfasdfaxss111'
+            mediaId:this.picId
         },
-        success:function(data){
-
+        success:function(res){
+            
         }
      }) 
 }
