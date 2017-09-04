@@ -5,8 +5,11 @@
 
 
 //  多图片上传
-var file = [];
+// var file = [];
+var fileData = [];
 function uploadPicture(_this){
+    //新增，调用新增ajax
+    var form = new FormData($("#newForm")[0]);       //需要是JS对象
     var html = '';
     var shoot = $("#shoot");
     $.each($(_this)[0].files,function(index,val){
@@ -17,17 +20,61 @@ function uploadPicture(_this){
         }else if(img_size >  2048){
             console.log("已过滤不符合大小");
         }else{
-            file.push(val);
+            // file.push(val);
+            form.append("file",val);
             html += '<li><img src="'+ getObjectURL(_this.files[index]) +'" alt=""><i class="delete-icon"></i></li>';
         }
     });
+
+    //  添加图片；
+    $.ajax({
+        type:'post',
+        url:  server_core + server_v1 + '/file/uploads.json',
+        data: form,
+        contentType: false,
+        processData: false,
+        success:function(data){
+            if(data.code === 0 && data.data){
+                $.each(data.data,function(index,val){
+                    fileData.push(val);
+                })
+            }else{
+                showMask("文件太大了！");
+            }
+        },
+        error:function(data){
+            ErrorReminder(data);
+        }
+    });
+
+
     shoot.before(html);
 }
 //  删除
 $(document).on("click",".delete-icon",function(){
     var ind = $(this).parent().index();
-    $(this).parent().remove();
-    file.splice(ind, 1);//修改fileLists
+    // file.splice(ind, 1);//修改fileLists
+    //  删除图片；
+    $.ajax({
+        type:'post',
+        url:  server_core + server_v1 + '/file/delete.json',
+        data: {
+            "name":"name"
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.code === 0 && data.message === "SUCCESS"){
+                $(this).parent().remove();
+                fileData.splice(ind,1); //删除呗删除图片数据；
+            }
+        },
+        error:function(data){
+            ErrorReminder(data);
+        }
+    });
+
+
+
     console.log(file);
 });
 function getObjectURL(file) {
@@ -80,9 +127,13 @@ var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.releaseRpr = function(){
         var form = new FormData($("#newForm")[0]);       //需要是JS对象
-        $.each(file,function(index,val){
-            form.append("files",val);
+        var urls = [];
+        var data = {};
+        $.each(fileData,function(index,val){
+           urls.push(val.name);
         });
+
+
 
         var type = $(".addType .active").attr("data-id");  //类型;
         var content = $("#box").html();                     //报修内容
@@ -96,6 +147,11 @@ function HtmlAjax(){
             form.append("bespeakTime",bespeakTime);              //   预约时间 当类型为2时，不必传
             form.append("expectTime",expectTime);                //   期望时间 当类型为2时，不必传
             form.append("repairItemId",repairItemId);            //   报修项目ID 当类型为2时，不必传
+
+            data["bespeakTime"] = bespeakTime;
+            data["expectTime"] = expectTime;
+            data["repairItemId"] = repairItemId;
+
         }else if(type === "2"){
             repairAddressId = $("#service-address").attr("data-id");
         }
@@ -120,13 +176,19 @@ function HtmlAjax(){
         form.append("repairAddressId",repairAddressId);     //   报修地址ID
         form.append("content",content);                       //   报修内容
 
+        data["urls"] = urls;
+        data["userId"] = userId;
+        data["propertyId"] = propertyId;
+        data["type"] = type;
+        data["repairAddressId"] = repairAddressId;
+        data["content"] = content;
 
         $.ajax({
             type:'post',
             url:  server_url_repair + server_v1 + '/repair/add.json',
-            data: form,
-            contentType: false,
-            processData: false,
+            data: data,
+            dataType:'json',
+            traditional:true,
             success:function(data){
                 if(data.code === 0){
                     if(data.data === true){
@@ -140,6 +202,22 @@ function HtmlAjax(){
         });
     };
     this.project = function(){
+        //  获取用户信息;
+        $.ajax({
+            type:'get',
+            url:  server_url_repair + server_v1 + '/usercenter/userInfo/'+ userId +'.json',
+            data: null,
+            dataType:'json',
+            success:function(data){
+                if(data.code === 0){
+                    $("#name").val(data.data.name);
+                    $("#phone").val(data.data.phone);
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
         //  获取报修项目；
         $.ajax({
             type:'get',

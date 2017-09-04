@@ -71,8 +71,10 @@
             <header class="head"><div>报修类型：<span class="repair-type">办公区域</span>报修项目：<span class="project">水电维修</span></div><i class="modify-icon"></i></header>
             <div class="title">联系信息</div>
             <ul>
-                <li><p class="prompt">姓名</p><input type="text" placeholder="请输入姓名" name="name"></li>
-                <li><p class="prompt">联系电话</p><input placeholder="请输入联系电话" type="number"></li>
+                <li><p class="prompt">姓名</p><input readonly id="name" type="text" placeholder="请输入姓名" name="name"></li>
+                <li><p class="prompt">联系电话</p><input readonly id="phone" placeholder="请输入联系电话" type="number"></li>
+                <!--<li><p class="prompt">姓名</p><div id="name"></div></li>-->
+                <!--<li><p class="prompt">联系电话</p><div id="phone"></div></li>-->
                 <li><p class="prompt">服务地址</p><div id="address" class="features "><p id="ads">请选择服务地址</p><i class="jump-icon"></i></div></li>
                 <li><p class="prompt">预约上门时间</p><div class="features"><input placeholder="请选择时间" unselectable='on'  onfocus="this.blur();" readonly="readonly" id="reservation" type="text"><i class="jump-icon"></i></div></li>
                 <li><p class="prompt">期待完成时间</p><div class="features"><input placeholder="请选择时间" unselectable='on'  onfocus="this.blur();" readonly="readonly" id="expected" type="text"><i class="jump-icon"></i></div></li>

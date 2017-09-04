@@ -262,7 +262,7 @@ function IndexAjax(proPertyId){
             data: null,
             dataType:'json',
             success:function(data){
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     sessionStorage.setItem("authority",JSON.stringify(data.data));
                 }
             },
@@ -284,7 +284,7 @@ function IndexAjax(proPertyId){
             },
             dataType:'json',
             success:function(data){
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     if(data.data >= 0){
                         $(".features a").eq(2).find(".red-icon").show();
                     }
@@ -304,7 +304,7 @@ function IndexAjax(proPertyId){
             },
             dataType:'json',
             success:function(data){
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     if(data.data.noticeCount >= 0){
                         $(".features a").eq(1).find(".red-icon").show();
                     }
@@ -329,7 +329,7 @@ function IndexAjax(proPertyId){
                 var noticeIndex = $("#noticeIndex");
                 var html = "";
                 noticeIndex.empty();
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     $.each(data.data,function(index,val){
                         html += '<div class="swiper-slide box-center"><a href="html/notice/notice_details.html?id='+ val.id +'">'+ val.title +'</a></div>';
                     })
@@ -357,7 +357,7 @@ function IndexAjax(proPertyId){
                 var showings = $("#showings");
                 var html = "";
                 showings.empty();
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
                         var span = '';
                         // <!--标签有两种颜色：tag-green tag-gray-->
@@ -394,7 +394,7 @@ function IndexAjax(proPertyId){
                 var repair = $("#repair");
                 var html = '';
                 repair.empty();
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
                         var span = '';
                         switch (val.status){

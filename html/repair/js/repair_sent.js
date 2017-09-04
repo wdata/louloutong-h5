@@ -45,7 +45,8 @@ $(document).on("click",".orders",function(){
         url:  server_url_repair + server_v1 + '/repair/'+ sum +'.json',
         data: {
             "id":urlParams("id"),
-            "handlerId":_this.attr("data-id")
+            "handlerId":_this.attr("data-id"),
+            "allocationId":userId
         },
         dataType:'json',
         success:function(data){

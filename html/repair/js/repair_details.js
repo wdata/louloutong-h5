@@ -49,15 +49,15 @@ function HtmlAjax(){
             success:function(data){
                 if(data.code === 0){
                     var status = '',img = '',operating = '';
+                    var color = ''; // 各种状态颜色；
+                    var mi = '';  //  给我的；
                     var href = 'repair_details.html';
                     switch (data.data.status){
                         case 1:
+                            color = "green";
                             //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
                             if(auth_1){
-                                status = '<div class="repair-status green">未派单</div>';
                                 operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=1" class="repair-operating single blue">派单</a>';
-                            }else{
-                                status = '<div class="repair-status green">待受理</div>';
                             }
                             //  有接单权限，可以接单；
                             if(auth_4){
@@ -67,10 +67,11 @@ function HtmlAjax(){
                         case 2:
                             //  判断维修ID等于登录ID，则显示“给我的”派单；
                             if(data.data.handlerId === parseInt(userId)){
+                                mi = '<i class="mine-icon"></i>';
                                 if(auth_1){
-                                    status = '<div class="repair-status blue"><i class="mine-icon"></i>已派单</div>';
+                                    color = "blue";
                                 }else{
-                                    status = '<div class="repair-status green">>待受理</div>';
+                                    color = "green";
                                 }
                                 //  有接单权限，可以接单；
                                 if(auth_4){
@@ -78,49 +79,46 @@ function HtmlAjax(){
                                 }
                             }else{
                                 if(auth_1){
-                                    status = '<div class="repair-status blue">已派单</div>';
+                                    color = "blue";
                                 }else{
-                                    status = '<div class="repair-status green">待受理</div>';
+                                    color = "green";
                                 }
                             }
                             break;
                         case 3:
-                            if(data.data.handlerId === null){
-                                if(auth_2){
-                                    status = '<div class="repair-status red">被移交</div>';
-                                    operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
-                                    //  有接单权限，可以接单；
-                                    if(auth_4){
-                                        operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
-                                    }
-                                }else{
-                                    status = '<div class="repair-status blue">已受理</div>';
-                                }
-                            }else{
-                                status = '<div class="repair-status blue">已受理</div>';
-                                if(auth_5){
-                                    operating += '<a href="repair_transfer.html?id='+ data.data.id +'" class="repair-operating transfer blue">移交</a>';
-                                }
-                                if(auth_6){
-                                    operating += '<a href="repair_result.html?id='+ data.data.id +'" class="repair-operating dealWith blue">填写处理</a>';
-                                }
+                            color = "blue";
+                            if(auth_5){
+                                operating += '<a href="repair_transfer.html?id='+ data.data.id +'" class="repair-operating transfer blue">移交</a>';
+                            }
+                            if(auth_6){
+                                operating += '<a href="repair_result.html?id='+ data.data.id +'" class="repair-operating dealWith blue">填写处理</a>';
                             }
                             break;
                         case 4:
-                            status = '<div class="repair-status green">待验收</div>';
+                            color = "red";
+                            //  有重新派单权限，可以派单；
+                            if(auth_2){
+                                operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
+                            }
+                            //  有接单权限，可以接单；
+                            if(auth_4){
+                                operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
+                            }
+                            break;
+                        case 5:
+                            color = "green";
                             if(auth_3 && parseInt(userId) === data.data.user.id){
                                 //  只有在待验收情况下显示确认验收；详情中确认颜色显示在最下面；
                                 // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
                                 $("#confirm").removeClass("hide").attr("data-id",data.data.id);
                                 $(".hr-96").removeClass("hide");
                             }
-
-
-                            break;
-                        case 5:status = '<div class="repair-status yellow">已确认</div>';
                             break;
                         case 6:
-                            status = '<div class="repair-status gray">已撤销</div>';
+                            color = "yellow";
+                            break;
+                        case 7:
+                            color = "gray";
                             href = 'repair_revoked_has.html';
                             $(".comment-box").removeClass("hide");
                             break;
@@ -129,6 +127,7 @@ function HtmlAjax(){
                     if(auth_7 && parseInt(userId) === data.data.user.id && (data.data.status === 1 || data.data.status === 2)){
                         operating += '<a href="repair_revoked.html?id='+ data.data.id +'" class="repair-operating cancel red">撤销</a>';
                     }
+                    status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
                     //<div class="repair-status green">未派单</div>
                     //<div class="repair-status red">被移交</div>
                     //<div class="repair-status gray">已撤销</div>

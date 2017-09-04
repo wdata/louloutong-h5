@@ -8,6 +8,8 @@ var server_url = server_IP + "/louloutong-rent/api";
 var server_url_repair = server_IP + "/louloutong-repair/api";          // 物业管理
 var server_url_notice = server_IP + "/louloutong-notice/api";          // 通知管理
 var server_rent = server_IP + "/louloutong-rent/api";                  // 租房管理
+var server_core = server_IP + "/louloutong-core/api";                  // 文件管理
+// var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_uel_user_img = 'http://otqftko25.bkt.clouddn.com/';
 
