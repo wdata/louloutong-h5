@@ -15,8 +15,8 @@ var auth_0=false;			//显示出租/求租
     if(auth_sum.indexOf('/llt/click/rent/showModel/click/handleorno')>0) 		auth_3=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/distribute')>0) 		auth_4=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/remind')>0) 			auth_5=true;
-    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/recept')>0) 			auth_6=true;*/
-
+    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/recept')>0) 			auth_6=true;
+*/
     //因权限而对页面显示控制
     if(auth_1){
     	$('.rent-tab .top .top-r1').show().siblings().hide();
@@ -30,7 +30,7 @@ var auth_0=false;			//显示出租/求租
     }
 
 var no_data="已经没有更多数据了",have_data="下拉刷新数据",loading_data="数据加载中";
-//wxConfig();
+//wxConfig(wx);
 
 //出租和求租
 var rent = new Object({
@@ -56,7 +56,7 @@ rent.getList = function(elem){
 			if(data.code!=0) return false;
 			if(!data.data) { $(elem).html(code); return false; }
 			$.each(data.data.items,function(index,item){
-                var imgCode="";
+                var imgCode="",botCode="";
                 if(item.images.length>1){
                     for(var i=0;i<item.images.length;i++){
                         imgCode+=`
@@ -65,6 +65,7 @@ rent.getList = function(elem){
                                 </div>
                             `;
                     }
+                    botCode=`<div class="bot">`+imgCode+`</div>`
                 }
                 var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
@@ -89,10 +90,7 @@ rent.getList = function(elem){
                                 </div>
                                 <div class="tips price">${item.price}</div>    
                             </div>
-                            <div class="bot">
-                                ${imgCode}
-                                <div class="clear"></div>
-                            </div>
+                            ${botCode}
                         </a>
                     </div>
 				`	
@@ -480,24 +478,31 @@ issue.scroll = function(){
         }
     })
 }
-issue.wxImg = function(){
+/*issue.wxImg = function(){
     var _this=this;
     $('.issue .photo').click(function(){
-        _this.imgUpload(); 
         wx.chooseImage({
             count: 9, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
             success: function (res) {
-                console.info(res);
+                console.info(res)
                 var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                var wimgCode="";
+                $.each(res.localIds,function(index,item){
+                    wimgCode+=`
+                        <img src="${item}" alt="" class="full">
+                        `
+                })
+                $('.issue .photo .img-wrap').html(wimgCode);
                 wx.uploadImage({
-                    localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+                    localId: localIds, // 需要上传的图片的本地ID，由chooseImage接口获得
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: function (res) {
                        // _this.picId.push(res.serverId); // 返回图片的服务器端ID
                        _this.picId=res.serverId;
                        _this.imgUpload(); 
+
                        $('.elem-02').val(_this.picId);   
                     },
                     error:function(res){
@@ -515,13 +520,14 @@ issue.imgUpload = function(){
         url:'/weixin/downloadImage',
         dataType:'json',
         data:{
-            mediaId:this.picId
+            mediaIds:this.picId
         },
         success:function(res){
             
         }
      }) 
 }
+*/
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
@@ -630,8 +636,57 @@ issue.init = function(){
     this.show();
     this.scroll();
     this.event();
-    this.wxImg();
+    //this.wxImg();
 }
+
+issue.add = function(){
+}
+
+function imgUpload(elem){
+    $(elem).click(function(){
+        wx.chooseImage({
+            count: 9, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success: function (res) {
+                console.info(res)
+                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                /*var wimgCode="";
+                $.each(res.localIds,function(index,item){
+                    wimgCode+=`
+                        <img src="${item}" alt="" class="full">
+                        `
+                })
+                $('.issue .photo .img-wrap').html(wimgCode);*/
+                wx.uploadImage({
+                    localId: localIds, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 1, // 默认为1，显示进度提示
+                    success: function (res) {
+                        var picId=res.serverId;
+                        $.ajax({
+                            type:'post',
+                            url:'/weixin/downloadImage',
+                            dataType:'json',
+                            data:{
+                                mediaIds:picId
+                            },
+                            success:function(res){
+                                console.info(res)
+                                alert(res.data.urls)
+                                return res.data.urls;
+                            }
+                        }) 
+                    },
+                    error:function(res){
+                        
+                    }
+                });
+            },
+
+        })
+    })
+}
+imgUpload('.issue .photo .icon-wrap');
 
 
 function dongSwitch(){
