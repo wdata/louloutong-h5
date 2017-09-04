@@ -14,18 +14,18 @@
 </head>
 <body class="p-body">
     <div class="p-layout tran500">
-       <div class="publish-box fl">
+       <form id="newForm" class="publish-box fl">
             <div class="return-column">
                 <div class="return-column-heart">
                     <a class="header-return" href="javascript:;" onclick="history.go(-1);"><i class="header-return-icon"></i><span>返回</span></a>
                     <div class="header-title">发布公告</div>
-                    <a class="header-operating" href="ann_list.html">完成</a>
+                    <a onclick="release()" class="header-operating" href="javascript:">完成</a>
                 </div>
             </div>
             <div class="hr-88"></div>
             <div class="publish-add-box">
                 <div class="tt">
-                    <input type="text" placeHolder="添加标题（必填）">
+                    <input id="title" type="text" maxlength="28" minlength="4" placeHolder="添加标题（必填）">
                     <div class="row"  onclick="receiveShow()">
                         <div class="fl overhide" id="recei_comp">全部企业</div>
                         <div class="icon-wrap fr" >
@@ -37,6 +37,7 @@
                 <div class="main">
                     <input type="hidden" id="target">
                     <div class="article-content" id="editor_box"></div>
+                    <input id="content" type="hidden" name="content">
                 </div>
             </div>
             <div class="add-bot">
@@ -50,7 +51,7 @@
                     <input class="input-file" id="imageUpload" type="file"  name="file" accept="image/*">
                 </div>
             </div>
-        </div>    
+        </form>
         <div class="receive-box fl">
             <header>
                 <a class="return" href="javascipt:;" onclick="rePublish()">
@@ -72,42 +73,42 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
+                <!--<div class="list">-->
+                    <!--<div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>-->
+                    <!--<div class="tit fl">小道公司</div>-->
+                    <!--<div class="check-box fr">-->
+                        <!--<input type="checkbox" />-->
+                        <!--<label for=""></label>-->
+                    <!--</div>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
+                <!--<div class="list">-->
+                    <!--<div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>-->
+                    <!--<div class="tit fl">小道公司</div>-->
+                    <!--<div class="check-box fr">-->
+                        <!--<input type="checkbox" />-->
+                        <!--<label for=""></label>-->
+                    <!--</div>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
+                <!--<div class="list">-->
+                    <!--<div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>-->
+                    <!--<div class="tit fl">小道公司</div>-->
+                    <!--<div class="check-box fr">-->
+                        <!--<input type="checkbox" />-->
+                        <!--<label for=""></label>-->
+                    <!--</div>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
+                <!--<div class="list">-->
+                    <!--<div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>-->
+                    <!--<div class="tit fl">小道公司</div>-->
+                    <!--<div class="check-box fr">-->
+                        <!--<input type="checkbox" />-->
+                        <!--<label for=""></label>-->
+                    <!--</div>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
             </div> 
         </div> 
     </div>
