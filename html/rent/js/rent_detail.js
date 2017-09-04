@@ -29,6 +29,9 @@ $.ajax({
 			}else{
 				 $('.rent-bot .t-r a').addClass('gray');
 			}
+			if(data.data.status==1){                       //0为正常 1为下架
+				$('.rent-bot').hide().siblings('.rent-bot-xj').show();
+			}
 		}
 	}
 })

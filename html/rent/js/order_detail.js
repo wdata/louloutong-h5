@@ -18,17 +18,16 @@ function hourTran(date){
 		return null;
 	}
 }
+
+order_id=18;
+
+
 $.ajax({
 	type:'get',
-	url:server_url+server_v1+'/rents/bespeak/'+18+'.json',
+	url:server_url+server_v1+'/rents/bespeak/'+order_id+'.json',
 	dataType:'json',
 	success:function(res){
 		if(res.code==0){ 
-            $('.rent-list-con .top .t-l .tx img').attr('src',imgDefault(res.data.user.photo,default_tx));
-            $('.rent-list-con .top .t-l .txt .tit').text(res.data.user.name);
-            $('.rent-list-con .top .t-l .txt .time').text(res.data.createTime);
-            $('.rent-list-con .list .mid .word').text(res.data.title);
-            $('.rent-list-con .list .mid .price').text(res.data.price+res.data.unit);
             var imgCode="";
             if(res.data.images.length>1){
                 for(var i=0;i<res.data.images.length;i++){
@@ -39,11 +38,42 @@ $.ajax({
                         `;
                 }
             }
-           	$('.rent-list-con .list .bot').html(imgCode);
+            var tCode=`
+            	<div class="list noborder">
+                    <div class="p24" >
+                        <div class="top">
+                            <div class="t-l fl">
+                                <span class="tx"><img src="${imgDefault(res.data.user.photo,default_tx)}" alt="" class="full"></span>
+                                <div class="txt">
+                                    <div class="tit" >${res.data.user.name}</div>
+                                    <div class="time">${res.data.createTime}</div>
+                                </div>
+                            </div>
+                            <div class="t-r fr">
+                                <button class="off-btn">下架了</button>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <a href="orent_detail.html" onclick="link()">
+                            <div class="mid">
+                                <div class="word overhide">
+                                   ${nullCheck(res.data.title)}
+                                </div>
+                                <div class="price">${res.data.price+res.data.unit}</div>    
+                            </div>
+                            <div class="bot">
+                                ${imgCode}
+                                <div class="clear"></div>
+                            </div>    
+                        </a>
+                    </div>
+                </div>
+            	`;
+           	$('.rent-list-con').html(tCode);
            	var beCode="";
            	if(res.data.rentBespeaks){
 	           	$.each(res.data.rentBespeaks,function(index,item){
-	           		var tipsCode="",operCode="";
+	           		var tipsCode="",operCode="",resCode="";
 	           		if(auth_2){
 	           			operCode=`<button>分配接待</button><br>`;
 	           			tipsCode=`
@@ -74,16 +104,22 @@ $.ajax({
 	                            <div class="tip">
 	                                <span>接待人员</span>
 	                                <div>
-	                                   <img src="../../images/upload/touxiang@2x.png" alt=""> 
-	                                   <span class="cblue">秀一</span>
+	                                   <img src="${imgDefault(item.receptUser.photo,default_tx)}" alt=""> 
+	                                   <span class="cblue">${item.receptUser.name}</span>
 	                                </div>
 	                            </div>
 	                            <div class="clear"></div>
 	                        </div>
 	           				`;
 	           		}
-	           		console.info(imgDefault(item.beseakUser.photo,default_tx));
-	           		console.info(item.beseakUser.photo)
+	           		if(item.result){
+	           			resCode=`
+	           				<div class="bot">
+		                       <i class="icon icon-resault"></i> 
+		                      	${nullCheck(item.result)}
+		                    </div>
+	           				`;
+	           		}
 	           		beCode+=`
 	           				<div class="item">
 			                    <div class="inner">
@@ -100,23 +136,20 @@ $.ajax({
 			                                ${operCode}
 			                                <a href="to:13123568956">
 			                                    <i class="icon icon-phone"></i>
-			                                    <div>13123568956</div>
+			                                    <div>${item.beseakUser.phone}</div>
 			                                </a>
 			                            </div>
 			                        </div>
-			                        <div class="clear"></div> 
+			                        <div class="clear"></div>
 			                    </div>
-			                    <div class="bot">
-			                       <i class="icon icon-resault"></i> 
-			                       结果：房价太高高高高高高高高高高高高高高高高高高高高高
-			                       高高高高高高。
-			                    </div>
+			                    ${resCode}
 			                </div>
 		           			`;	
-	           	})	
+	           	})
+	           	$('.order-item-con').html(`<div class="tit">预约看房</div>`+beCode);	
            	}
            	
-			$('.order-item-con').append(beCode);
+			
           
 
 
