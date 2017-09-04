@@ -33,17 +33,17 @@ var auth_7 = authMethod("/llt/repair/list/button/revoke");
 $(document).ready(function(){
     htmlAjax.repairList(pIdRepair,page,searchType,keyword);
     htmlAjax.listStatus();
+    //  楼栋切换；
+    tap.main();  // 调用总函数；
 });
 
 
 var htmlAjax = new HtmlAjax();
 // 数据获取
 function HtmlAjax(){
-    this.userId = userId;   // 用户ID；
-
     this.repairList = function(proId,page,searchType,keyword){
         var comment = 1;      //page数
-        var dropload = $(".repair-list").dropload({
+        $(".repair-list").dropload({
             scrollArea : $(".repair-list"),
             autoLoad:true,
             loadDownFn : function(me){
@@ -188,7 +188,7 @@ function HtmlAjax(){
         keyword = $(slef).val();
         if($(slef).val().length > 0){
             $(".dropload-down").remove();   //清除暂无数据；
-            $("#list").empty();   //    清除列表数据;
+            $("#list").empty();            //清除列表数据;
             $(".sBox-wrapper").addClass("hei");
 
             this.repairList(pIdRepair,page,searchType,keyword);
@@ -261,27 +261,12 @@ function HtmlAjax(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-$(document).ready(function(){
-    //  楼栋切换；
-    var tap = new dongSwitch();
-    tap.main();  // 调用总函数；
-});
-function dongSwitch(){
+var tap = new DongSwitch();
+function DongSwitch(){
     this.louDong = null;       //   保存数据；
     this.addressList = $("#addressList");   //  楼栋列表父级元素
 }
-dongSwitch.prototype = {
+DongSwitch.prototype = {
     constructor:dongSwitch,
     main:function(){
         this.dongAjax();     //  ajax事件获取数据，并将数据保存；
