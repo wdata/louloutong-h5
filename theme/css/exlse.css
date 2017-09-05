@@ -1243,6 +1243,7 @@ time{
 /* @@@@@@@@@@ 评论 @@@@@@@@@@@@@@   */
 .repair-details .con-main{
     border-top: 1px solid #dfdfdf;
+    min-height: 3rem;
 }
 .repair-details .con-main i{
     display: inline-block;

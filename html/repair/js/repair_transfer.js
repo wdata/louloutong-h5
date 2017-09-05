@@ -6,21 +6,26 @@ $(".carry").on("click",function(){
     var remark = $("#remark").text();
     var reason = $("#reason").text();
     if(!(reg.test(remark)|| remark === "") || !(reg.test(reason)|| reason === "")){
-        var form = new FormData($("#newForm")[0]);       //需要是JS对象
-        $.each(file,function(index,val){
-            form.append("file",val);
+        if(imgBur){
+            showMask("正在处理图片，请稍等！");
+            return
+        }
+        var urls = [];
+        $.each(fileData,function(index,val){
+            urls.push(val.name);
         });
-        form.append("id",urlParams("id"));
-        form.append("userId",userId);
-        form.append("reason",$("#reason").text());
-        form.append("remark",remark);
-        console.log(form);
         $.ajax({
             type:'post',
             url:  server_url_repair + server_v1 + '/repair/transferred.json',
-            data: form,
-            contentType: false,
-            processData: false,
+            data: {
+                "urls":urls,
+                "id":urlParams("id"),
+                "userId":userId,
+                "remark":remark,
+                "reason":$("#reason").text()
+            },
+            dataType:'json',
+            traditional:true,
             success:function(data){
                 if(data.code === 0){
                     if(data.data === true){

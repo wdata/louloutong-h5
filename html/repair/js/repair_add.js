@@ -2,116 +2,6 @@
  * Created by Administrator on 2017/8/15.
  */
 
-
-
-//  多图片上传
-// var file = [];
-var fileData = [];
-function uploadPicture(_this){
-    //新增，调用新增ajax
-    var form = new FormData($("#newForm")[0]);       //需要是JS对象
-    var html = '';
-    var shoot = $("#shoot");
-    $.each($(_this)[0].files,function(index,val){
-        var img_ext = val.name.substring(val.name.length-3,val.name.length);
-        var img_size = Math.floor((val.size)/1024);   //单位为KB
-        if(img_ext !== "jpg" && img_ext !== "png"&& img_ext !== "gif"){
-            console.log("已过滤不符合格式图片");
-        }else if(img_size >  2048){
-            console.log("已过滤不符合大小");
-        }else{
-            // file.push(val);
-            form.append("file",val);
-            html += '<li><img src="'+ getObjectURL(_this.files[index]) +'" alt=""><i class="delete-icon"></i></li>';
-        }
-    });
-
-    //  添加图片；
-    $.ajax({
-        type:'post',
-        url:  server_core + server_v1 + '/file/uploads.json',
-        data: form,
-        contentType: false,
-        processData: false,
-        success:function(data){
-            if(data.code === 0 && data.data){
-                $.each(data.data,function(index,val){
-                    fileData.push(val);
-                })
-            }else{
-                showMask("文件太大了！");
-            }
-        },
-        error:function(data){
-            ErrorReminder(data);
-        }
-    });
-
-
-    shoot.before(html);
-}
-//  删除
-$(document).on("click",".delete-icon",function(){
-    var ind = $(this).parent().index();
-    // file.splice(ind, 1);//修改fileLists
-    //  删除图片；
-    $.ajax({
-        type:'post',
-        url:  server_core + server_v1 + '/file/delete.json',
-        data: {
-            "name":"name"
-        },
-        dataType:'json',
-        success:function(data){
-            if(data.code === 0 && data.message === "SUCCESS"){
-                $(this).parent().remove();
-                fileData.splice(ind,1); //删除呗删除图片数据；
-            }
-        },
-        error:function(data){
-            ErrorReminder(data);
-        }
-    });
-
-
-
-    console.log(file);
-});
-function getObjectURL(file) {
-    var url = null;
-    if (window.createObjectURL !== undefined) { // basic
-        url = window.createObjectURL(file);
-    } else if (window.URL !== undefined) { // mozilla(firefox)
-        url = window.URL.createObjectURL(file);
-    } else if (window.webkitURL !== undefined) { // webkit or chrome
-        url = window.webkitURL.createObjectURL(file);
-    }
-    return url;
-}
-
-//  下一步
-function sumber(){
-    // //新增，调用新增ajax
-    // var form = new FormData($("#newForm")[0]);       //需要是JS对象
-    // $.each(file,function(index,val){
-    //     form.append("file",val);
-    // });
-    // $.ajax({
-    //     type:'post',
-    //     url: '/party-server-core/web/api/menus.json',
-    //     data: form,
-    //     contentType: false,
-    //     processData: false,
-    //     success:function(data){
-    //
-    //     },
-    //     error:function(data){
-    //         //报错提醒框
-    //     }
-    // });
-}
-
-
 $(document).ready(function(){
 
     htmlAjax.project();   //  获取报修项目；
@@ -126,14 +16,11 @@ $(document).ready(function(){
 var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.releaseRpr = function(){
-        var form = new FormData($("#newForm")[0]);       //需要是JS对象
         var urls = [];
         var data = {};
         $.each(fileData,function(index,val){
            urls.push(val.name);
         });
-
-
 
         var type = $(".addType .active").attr("data-id");  //类型;
         var content = $("#box").html();                     //报修内容
@@ -143,10 +30,6 @@ function HtmlAjax(){
             expectTime = $("#expected").val();
             repairItemId = $("#projectList .active").attr("data-id");
             repairAddressId = $("#ads").attr("data-id");
-
-            form.append("bespeakTime",bespeakTime);              //   预约时间 当类型为2时，不必传
-            form.append("expectTime",expectTime);                //   期望时间 当类型为2时，不必传
-            form.append("repairItemId",repairItemId);            //   报修项目ID 当类型为2时，不必传
 
             data["bespeakTime"] = bespeakTime;
             data["expectTime"] = expectTime;
@@ -170,12 +53,6 @@ function HtmlAjax(){
             return;
         }
 
-        form.append("userId",userId);
-        form.append("propertyId",propertyId);
-        form.append("type",type);                             //   类型 1：办公区域 2：公共区域
-        form.append("repairAddressId",repairAddressId);     //   报修地址ID
-        form.append("content",content);                       //   报修内容
-
         data["urls"] = urls;
         data["userId"] = userId;
         data["propertyId"] = propertyId;
@@ -192,7 +69,7 @@ function HtmlAjax(){
             success:function(data){
                 if(data.code === 0){
                     if(data.data === true){
-
+                        window.location.href = "repair_list.html";
                     }
                 }
             },

@@ -4,20 +4,25 @@
 function carry(){
     var reason = $("#remark").text();
     if(!(reg.test(reason)||reason === "")){
-        var form = new FormData($("#newForm")[0]);       //需要是JS对象
-        $.each(file,function(index,val){
-            form.append("files",val);
+        if(imgBur){
+            showMask("正在处理图片，请稍等！");
+            return
+        }
+        var urls = [];
+        $.each(fileData,function(index,val){
+            urls.push(val.name);
         });
-        form.append("id",urlParams("id"));
-        form.append("userId",userId);
-        form.append("remark",reason);
-        console.log(form);
         $.ajax({
             type:'post',
             url:  server_url_repair + server_v1 + '/repair/inspect.json',
-            data: form,
-            contentType: false,
-            processData: false,
+            data: {
+                "urls":urls,
+                "id":urlParams("id"),
+                "userId":userId,
+                "remark":reason
+            },
+            dataType:'json',
+            traditional:true,
             success:function(data){
                 if(data.code === 0){
                     if(data.data === true){
