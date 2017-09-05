@@ -136,7 +136,7 @@ function release(){
         processData: false,
         success:function(data){
             if(data.code === 0 && data.message === "SUCCESS"){
-                window.location.href = "ann_list.html";
+                // window.location.href = "notice_list.html";
             }
         },
         error:function(data){ErrorReminder(data);}
@@ -160,7 +160,7 @@ $.ajax({
         }
     },
     error:function(data){ErrorReminder(data);}
-})
+});
 
 
 

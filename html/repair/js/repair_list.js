@@ -34,14 +34,13 @@ $(document).ready(function(){
     htmlAjax.repairList(pIdRepair,page,searchType,keyword);
     htmlAjax.listStatus();
 });
-
-
+var dropload;
 var htmlAjax = new HtmlAjax();
 // 数据获取
 function HtmlAjax(){
     this.repairList = function(proId,page,searchType,keyword){
         var comment = 1;      //page数
-        $(".repair-list").dropload({
+        dropload = $(".repair-list").dropload({
             scrollArea : $(".repair-list"),
             autoLoad:true,
             loadDownFn : function(me){
@@ -126,6 +125,8 @@ function HtmlAjax(){
                                         color = "green";
                                         if(auth_3 && parseInt(userId) === val.user.id){
                                             operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
+                                        }else if(auth_3 && val.type === 2 && userId !== val.handlerId){
+                                            operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                         }
                                         break;
                                     case 6:
@@ -158,15 +159,23 @@ function HtmlAjax(){
                                         img += '<img src="'+ server_url_img + y +'" alt="">';
                                     })
                                 }
-                                var type = val.type===1?"办公区域":val.type===2?"公共区域":"未知";
+                                var type = '';var address = "";
+                                if(val.type === 1){
+                                    type = "办公区域";
+                                    address = val.address;
+                                }else if(val.type === 2){
+                                    type = "公共区域";
+                                    address = val.publicAddress;
+                                }
                                 html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
-                                    ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ val.property +'</span></div> <div class="image"> '+ img +'' +
+                                    ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ address +'</span></div> <div class="image"> '+ img +'' +
                                     '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
                                     '<footer> '+ operating +' </footer> </li>';
                             });
                             list.append(html);
                             comment ++;
                             if(data.data.pageCount === 0){
+                                console.log("ffff");
                                 me.lock();  //智能锁定，锁定上一次加载的方向
                                 me.noData();      //无数据
                             }
@@ -191,7 +200,9 @@ function HtmlAjax(){
             $(".dropload-down").remove();   //清除暂无数据；
             $("#list").empty();            //清除列表数据;
             $(".sBox-wrapper").addClass("hei");
-
+            dropload.resetload();
+            dropload.unlock();
+            dropload.noData(false);
             this.repairList(pIdRepair,page,searchType,keyword);
         }else{
             $(".sBox-wrapper").removeClass("hei");
@@ -205,11 +216,20 @@ function HtmlAjax(){
         });
         $(".back").click(function(){
             searchType = 1;  // 报修类型
+            $("#search_btn").val("");
         });
-        $('.sBox-wrapper .cancel').tap(function(){
+        $('#cancel').click(function(){
+            $("#search_btn").val("");
+
+            $(".dropload-down").remove();   //清除暂无数据；
+            $("#list").empty();   //    清除列表数据;
+            searchType = 1;  // 报修类型
             //  清除搜索条件；
             keyword = "";
-            _this.repairList();
+            dropload.resetload();
+            dropload.unlock();
+            dropload.noData(false);
+            _this.repairList(pIdRepair,page,searchType,keyword);
         });
         $(document).on("click",".orders",function(){
             var self = $(this);
@@ -381,6 +401,9 @@ DongSwitch.prototype = {
             $(".dropload-down").remove();   //清除暂无数据；
             $("#list").empty();   //    清除列表数据;
             keyword = text;
+            dropload.resetload();
+            dropload.unlock();
+            dropload.noData(false);
             htmlAjax.repairList(pIdRepair,page,2,keyword);
         });
         //  重置

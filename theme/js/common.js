@@ -13,7 +13,7 @@ var server_core = server_IP + "/louloutong-core/api";                  // 文件
 var server_url_img = '';
 var server_uel_user_img = 'http://otqftko25.bkt.clouddn.com/';
 
-var userId = "1980";
+var userId = "1977";
 var propertyId = sessionStorage.getItem("propertyId");
 // var propertyId = "1";
 var authority = JSON.parse(sessionStorage.getItem("authority"));       //  权限
