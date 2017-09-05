@@ -7,8 +7,11 @@ $(".prompt").on("click",function(){
 });
 //  显示和隐藏评论输入框
 $("#comment").on("click",function(){
-    $(".confirm").toggleClass("hide");
-    $(".comment-box").toggleClass("hide");
+    //  如果没有权限显示确认验收，则不修改；
+    if(!$(".comment-box").is(".auth")){
+        $(".confirm").toggleClass("hide");
+        $(".comment-box").toggleClass("hide");
+    }
 });
 
 //  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
@@ -112,6 +115,9 @@ function HtmlAjax(){
                                 // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
                                 $("#confirm").removeClass("hide").attr("data-id",data.data.id);
                                 $(".hr-96").removeClass("hide");
+                            }else{
+                                $(".comment-box").removeClass("hide").addClass("auth");
+                                $(".hr-96").removeClass("hide");
                             }
                             break;
                         case 6:
@@ -127,7 +133,7 @@ function HtmlAjax(){
                     if(auth_7 && parseInt(userId) === data.data.user.id && (data.data.status === 1 || data.data.status === 2)){
                         operating += '<a href="repair_revoked.html?id='+ data.data.id +'" class="repair-operating cancel red">撤销</a>';
                     }
-                    status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
+                    status = '<div class="repair-status '+ color +'">'+ mi + data.data.statusName +'</div>';
                     //<div class="repair-status green">未派单</div>
                     //<div class="repair-status red">被移交</div>
                     //<div class="repair-status gray">已撤销</div>
@@ -154,7 +160,7 @@ function HtmlAjax(){
                     if(data.data.status >= 1){
                         ss.eq(0).addClass("active");
                         tr.eq(0).addClass("active");
-                        if(data.data.status >= 3){
+                        if(data.data.status >= 4){
 
                             ss.eq(1).addClass("active");
                             tr.eq(1).addClass("active");
@@ -162,17 +168,17 @@ function HtmlAjax(){
                             $(".process").addClass("active");
                             su = "one";
 
-
-                            if(data.data.status >= 4){
+                            if(data.data.status >= 5){
                                 ss.eq(2).addClass("active");
                                 tr.eq(2).addClass("active");
                                 su = "two";
                                 //  显示点赞，评论，显示处理详情；
                                 $(".result").removeClass("hide");
+                                $(".con-main").removeClass("hide");
 
                                 _this.comList();  //    评论；
                                 _this.likeList();  //   点赞头像列表；
-                                if(data.data.status >= 5){
+                                if(data.data.status >= 6){
                                     ss.eq(3).addClass("active");
                                     tr.eq(3).addClass("active");
                                     su = "three";
@@ -210,10 +216,10 @@ function HtmlAjax(){
                     if(data.data.handlerUsers){
                         if(data.data.handlerUsers.length > 1){
                             html = '<div class="most frame '+ su +'"> ' +
-                                '<a class="service over"  href="javascript:?id='+ data.data.handlerUsers[1].id +'"><img class="avatar" src="'+ server_url_img + data.data.handlerUsers[1].photo +'" alt=""></a> ' +
-                                '<a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                                '<a class="service over"  href="javascript:?id='+ data.data.handlerUsers[1].id +'"><img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[1].photo +'" alt=""></a> ' +
+                                '<a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
                         }else{
-                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_url_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
                         }
                         $(".repair-man").empty().append(html);
                     }
@@ -224,7 +230,7 @@ function HtmlAjax(){
                     if(data.data.repairRecordImages){
                         $.each(data.data.repairRecordImages,function(x,y){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
-                        })
+                        });
                         $("#images").empty().append(img);
                     }
                     //  处理内容
@@ -270,7 +276,6 @@ function HtmlAjax(){
                                 html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
                             });
                             $("#listCom").append(html);
-                            $(".con-main").removeClass("hide");
 
                             comment++;
                             if(data.data.pageCount === 0){
@@ -325,6 +330,7 @@ function HtmlAjax(){
         }
     }
     this.releaseLike = function(self){
+        var _this = this;
         //  判断是点赞，还是取消点赞；
         if($(self).is(".active")){
             //  取消点赞
@@ -341,6 +347,7 @@ function HtmlAjax(){
                     if(data.code === 0){
                         if(data.data === true){
                             $(self).removeClass("active");
+                            _this.likeList();
                         }
                     }
                 },
@@ -363,6 +370,7 @@ function HtmlAjax(){
                     if(data.code === 0){
                         if(data.data === true){
                             $(self).addClass("active");
+                            _this.likeList();
                         }
                     }
                 },
@@ -373,6 +381,7 @@ function HtmlAjax(){
         }
     }
     this.likeList = function(){
+        //  点赞列表；
         $.ajax({
             type:'get',
             url:  server_url_repair + server_v1 + '/repairBehaviour/list.json',
@@ -386,7 +395,7 @@ function HtmlAjax(){
                 var list = $("#likeList");
                 var html = '';
                 list.empty();
-                if(data.code === 0){
+                if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
                         html += '<a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a>';
                     });

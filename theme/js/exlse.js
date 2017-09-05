@@ -35,20 +35,20 @@ $('#search_btn').focus(function(){
     $('.sBox-wrapper').addClass('active');
 })
 //点击关键字后
-$('.sBox-wrapper .list-con .list').tap(function(){
+$('.sBox-wrapper .list-con .list').click(function(){
     $('#search_btn').attr('placeholder',$(this).text());
     $('.search-main').css('transform','translateX(-'+ww+'px)');
     $('.sBox-wrapper .top-search').addClass('active')
 })
 //取消回到列表页
-$('.sBox-wrapper .cancel').tap(function(){
+$('.sBox-wrapper .cancel').click(function(){
     $('.search-main').css('transform','translateX(0)');
     $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索').val('');
     $(".sBox-wrapper").removeClass("hei");
 })
 //返回回到关键词页
-$('.sBox-wrapper .top-search .back').tap(function(){
+$('.sBox-wrapper .top-search .back').click(function(){
     $('.search-main').css('transform','translateX(0)');
     $('.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索');
@@ -70,9 +70,12 @@ function searchList(){
 //     });
 
 
+
 //  多图片上传
-var file = [];
+var fileData = [];var imgBur = false;  //如果图片正在上传则禁止发送请求；
 function uploadPicture(_this){
+    //新增，调用新增ajax
+    var form = new FormData($("#newForm")[0]);       //需要是JS对象
     var html = '';
     var shoot = $("#shoot");
     $.each($(_this)[0].files,function(index,val){
@@ -83,18 +86,68 @@ function uploadPicture(_this){
         }else if(img_size >  2048){
             console.log("已过滤不符合大小");
         }else{
-            file.push(val);
+            form.append("file",val);
             html += '<li><img src="'+ getObjectURL(_this.files[index]) +'" alt=""><i class="delete-icon"></i></li>';
         }
     });
+
+    //  添加图片；
+    $.ajax({
+        type:'post',
+        url:  server_core + server_v1 + '/file/uploads.json',
+        data: form,
+        contentType: false,
+        processData: false,
+        success:function(data){
+            if(data.code === 0 && data.data){
+                $.each(data.data,function(index,val){
+                    fileData.push(val);
+                })
+            }else{
+                showMask("文件太大了！");
+            }
+        },
+        beforeSend:function(){
+            imgBur = true;
+        },
+        complete:function(){
+            imgBur = false;
+        },
+        error:function(data){
+            ErrorReminder(data);
+        }
+    });
+
+
     shoot.before(html);
 }
 //  删除
 $(document).on("click",".delete-icon",function(){
     var ind = $(this).parent().index();
-    $(this).parent().remove();
-    file.splice(ind, 1);//修改fileLists
-    console.log(file);
+    //  删除图片；
+    $.ajax({
+        type:'post',
+        url:  server_core + server_v1 + '/file/delete.json',
+        data: {
+            "name":"name"
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.code === 0 && data.message === "SUCCESS"){
+                $(this).parent().remove();
+                fileData.splice(ind,1); //删除呗删除图片数据；
+            }
+        },
+        beforeSend:function(){
+            imgBur = true;
+        },
+        complete:function(){
+            imgBur = false;
+        },
+        error:function(data){
+            ErrorReminder(data);
+        }
+    });
 });
 function getObjectURL(file) {
     var url = null;
