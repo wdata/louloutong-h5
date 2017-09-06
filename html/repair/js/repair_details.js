@@ -32,6 +32,8 @@ $(document).ready(function(){
 
 
 var htmlAjax = new HtmlAjax();
+var dropload;
+var comment = 1;
 
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
@@ -159,12 +161,12 @@ function HtmlAjax(){
                     }
 
                     var type = '';var address = "";
-                    if(val.type === 1){
+                    if(data.data.type === 1){
                         type = "办公区域";
-                        address = val.address;
-                    }else if(val.type === 2){
+                        address = data.data.address;
+                    }else if(data.data.type === 2){
                         type = "公共区域";
-                        address = val.publicAddress;
+                        address = data.data.publicAddress;
                     }
                     //  公共区域没有类型，时间等；
                     if(data.data.type ===2){
@@ -276,9 +278,8 @@ function HtmlAjax(){
     };
     this.comList = function(){
         //  报修评论列表；
-        var comment = 1;
-        var dropload = $('.dataList').dropload({
-            scrollArea : window,
+        dropload = $('#list').dropload({
+            scrollArea : $(".repair-details"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
@@ -343,8 +344,12 @@ function HtmlAjax(){
                     if(data.code === 0){
                         if(data.data === true){
                             showMask("评论发布成功！");
-                            $("#listCom").empty();
-                            _this.comList();
+                            $("#listCom").empty();  // 删除列表数据；
+                            $("#comCon").val("");  // 清空评论；
+                            comment = 1;
+                            dropload.unlock();
+                            dropload.noData(false);
+                            dropload.resetload();
                         }
                     }
                 },

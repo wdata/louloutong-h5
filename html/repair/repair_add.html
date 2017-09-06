@@ -17,8 +17,8 @@
 
     <link rel="stylesheet" href="../../theme/css/exlse.css">
 </head>
-<body>
-<div class="repair-add repair overflow-y">
+<body style="position: relative;">
+<div class="repair-add repair-add-A repair overflow-y">
     <!--头部-->
     <div class="return-column">
         <div class="return-column-heart">
@@ -63,7 +63,8 @@
                 <div id="box" class="box" contenteditable="true" placeholder="请输入您报修的详细描述"></div>
                 <ul class="upload">
                     <!--<li><img src="../../images/anounce/typhoon.png" alt=""><i class="delete-icon"></i><input type="hidden" name="file"></li>-->
-                    <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)" multiple="multiple" type="file"></li>
+                    <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)"  type="file"></li>
+                    <!--不支持：multiple="multiple"-->
                 </ul>
             </div>
             <div  class="next-step">下一步</div>
@@ -87,7 +88,7 @@
         </div>
     </div>
 </div>
-<div class="repair service overflow-y">
+<div class="repair address-repair service overflow-y">
     <!--头部-->
     <div class="return-column">
         <div class="return-column-heart">
