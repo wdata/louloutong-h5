@@ -574,7 +574,7 @@ var dropload = $('.mainCon-wrap').dropload({
                     order.getList('.rent-list-con',me);
                     break;
                 default:
-                    rent.getList('.rent-list-con',me);
+                    rent.getList('.rent-list-con',me);  
                     break;
             }
             
