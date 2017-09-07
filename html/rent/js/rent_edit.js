@@ -7,27 +7,8 @@ if(rent_modify.type==1){
     $('.diff-orent').show();
     $('.diff-irent').hide();
 }
-console.info(rent_modify)
-$.ajax({
-	type:'get',
-	url:server_rent+server_v1+'/rents/'+rent_modify.id+'.json',
-	dataType:'json',
-	success:function(res){
-		if(res.code==0){
-			$('.elem-01 span').text(res.data.propertyId);
-			$('.elem-02').val(res.data.community);
-			$('.elem-03').val(res.data.section);
-			$('.elem-04').val(res.data.acreage);
-			$('.elem-05').val(res.data.price);
-			$('.elem-06').val(res.data.houseType);
-			$('.elem-07').val(res.data.title);
-			$('.elem-08').val(res.data.content);
-			$('.elem-09').val(res.data.contacter);
-			$('.elem-10').val(res.data.phone);
-			$('.unit').text(res.data.unit)
-		}
-	}
-})
+
+
 
 var modify = new Object({
 	id:rent_modify.id, 
@@ -36,9 +17,12 @@ var modify = new Object({
     acreage:null,
     price:null,
     picId:null,
+    propertyId:null
 })
-
 modify.update = function(){
+	var p=$('.diff-orent .unit-choosed').html();
+    var q=$('.diff-irent .unit-choosed').html();
+    var unit=this.type==1?p:q
 	$.ajax({
 		type:'post',
 		url:server_rent+server_v1+'/rents/update.json',
@@ -67,29 +51,36 @@ modify.update = function(){
 		}
 	})
 }
+modify.event = function(){
+	var _this=this;
+	$('.submit-btn').click(function(){
+	    _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
+	    var m=$('.diff-orent .elem-05').val();
+	    var n=$('.diff-irent .elem-05').val();
+	    _this.price=(m)?m:n;
+	    if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
+	    if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
+	    if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
+	    if(!$('.elem-06').val())                                                        { showMask('请填写类型！'); return false; }
+	    if(!($('.elem-07').val().length>=8 && $('.elem-07').val().length<=18))          { showMask('请填写标题，且在8-28个字之间！'); return false; }
+	    if(!$('.elem-08').val().length>=10)                                             { showMask('请填写描述！'); return false; }
+	    if(!$('.elem-09').val().length>=2)                                              { showMask('请填写联系人，且至少2字！'); return false; }
+	    if(!$('.elem-10').val())                                                        { showMask('请填写手机号！'); return false; }
+	    if(!checkMobile($('.elem-10').val()))                                           { showMask('手机号格式错误！'); return false; }
+	    if($('.elem-02').val()){
+	        if(!($('.elem-02').val().length>=2 && $('.elem-07').val().length<=30))      { showMask('所填写楼盘字数应为2-30个字'); return false; }
+	    }
+	    if($('.elem-03').val()){
+	        if(!($('.elem-03').val().length>=2 && $('.elem-03').val().length<=12))      { showMask('所填写地段字数应为2-12个字'); return false; }
+	    }
+	    _this.update()
+	})
+}
 
-$('.submit-btn').click(function(){
-    _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
-    var m=$('.diff-orent .elem-05').val();
-    var n=$('.diff-irent .elem-05').val();
-    _this.price=(m)?m:n;
-    if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
-    if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
-    if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
-    if(!$('.elem-06').val())                                                        { showMask('请填写类型！'); return false; }
-    if(!($('.elem-07').val().length>=8 && $('.elem-07').val().length<=18))          { showMask('请填写标题，且在8-28个字之间！'); return false; }
-    if(!$('.elem-08').val().length>=10)                                             { showMask('请填写描述！'); return false; }
-    if(!$('.elem-09').val().length>=2)                                              { showMask('请填写联系人，且至少2字！'); return false; }
-    if(!$('.elem-10').val())                                                        { showMask('请填写手机号！'); return false; }
-    if(!checkMobile($('.elem-10').val()))                                           { showMask('手机号格式错误！'); return false; }
-    if($('.elem-02').val()){
-        if(!($('.elem-02').val().length>=2 && $('.elem-07').val().length<=30))      { showMask('所填写楼盘字数应为2-30个字'); return false; }
-    }
-    if($('.elem-03').val()){
-        if(!($('.elem-03').val().length>=2 && $('.elem-03').val().length<=12))      { showMask('所填写地段字数应为2-12个字'); return false; }
-    }
-    modify()
-})
+
+
+modify.event()
+
 
 function modify(){
 	
@@ -154,7 +145,30 @@ dongSwitch.prototype = {
                         }
                     });
                     _this.addressList.append(html);
-					_this.Default(rent_modify.id);
+					modify.getInfo = function(){
+							$.ajax({
+								type:'get',
+								url:server_rent+server_v1+'/rents/'+rent_modify.id+'.json',
+								dataType:'json',
+								success:function(res){
+									if(res.code==0){
+										//this.propertyId=res.data.propertyId;
+										$('.elem-02').val(res.data.community);
+										$('.elem-03').val(res.data.section);
+										$('.elem-04').val(res.data.acreage);
+										$('.elem-05').val(res.data.price);
+										$('.elem-06').val(res.data.houseType);
+										$('.elem-07').val(res.data.title);
+										$('.elem-08').val(res.data.content);
+										$('.elem-09').val(res.data.contacter);
+										$('.elem-10').val(res.data.phone);
+										$('.unit').text(res.data.unit);
+										_this.Default(res.data.propertyId);
+									}
+								}
+							})
+					}
+					modify.getInfo();
                 }
             },
             error:function(data){
@@ -226,7 +240,6 @@ dongSwitch.prototype = {
 
         $.each(_this.louDong,function(index,val){
             if(parseInt(data) === val.id){
-        	console.info(parseInt(data),val.id);
                 _this.SameLevel(val.id,val.parentId + "");
                 //  如果父级ID为不为空，则添加父级ID到顶部导航；
                 _this.repeatAdd(val.parentId);  // 重复添加父级，一直到父级ID为null
@@ -270,8 +283,8 @@ dongSwitch.prototype = {
             if(val.parentId + "" === pid){
                 //  保证刷新后突出显示
                 if(id === val.id){
-                	console.log();
                     IndexActive = "active";
+                    $('.elem-01 span').text(val.name);
                 }
                 html += '<li class="'+ IndexActive +'" data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
             }
@@ -331,9 +344,8 @@ dongSwitch.prototype = {
         return bur;
     }
 };
-
-    var tap = new dongSwitch();
-    tap.main();  // 调用总函数；
+var tap = new dongSwitch();
+tap.main();  // 调用总函数；
 
 
 

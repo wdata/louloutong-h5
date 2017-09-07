@@ -23,14 +23,13 @@ var auth_0=false;			//显示出租/求租
     }else{
     	$('.rent-tab .top .top-r2').show().siblings().hide();
     }
-    if(auth_3){
+    if(auth_2){
     	$('.rent-tab .bot .inner-r1').show().siblings().hide();
     }else if(auth_4){
     	$('.rent-tab .bot .inner-r2').show().siblings().hide();
     }
 
-var no_data="已经没有更多数据了",have_data="下拉刷新数据",loading_data="数据加载中";
-wxConfig(wx);
+/*wxConfig(wx);*/
 
 //出租和求租
 var rent = new Object({
@@ -120,9 +119,10 @@ var order=new Object({
 	page:1,
 	size:1,
 	userId:userId,
-	status:0,    //状态， 0: 未分配或未处理， 1: 已分配或已处理
+	status:0,          //状态， 0: 未分配或未处理， 1: 已分配或已处理
 	keyword:null,
-    searchType:null
+    searchType:null,
+    state:auth_2?0:1        //0：未分配或已分配     1：已分配或已处理
 })
 order.getList = function(elem,me){
     var _this=this;
@@ -142,7 +142,8 @@ order.getList = function(elem,me){
                 me.resetload();
                 return false; 
             }
-            if(this.status==1){
+            
+            if(_this.status==0){
                 $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
                     code+=`
@@ -183,6 +184,12 @@ order.getList = function(elem,me){
             }else{
                 $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
+                    console.info(_this.status)
+                    console.info(_this.state)
+                    var resCode="";
+                    if(_this.state==1){           //已处理 有接待结果
+                        resCode=`<div>接待人：${item.receptUser.result}</div>`;
+                    }
                     code+=`
                         <div class="item">
                             <div class="p24">
@@ -200,13 +207,15 @@ order.getList = function(elem,me){
                                         <div class="mid">
                                             <p class="line2">${item.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
+                                            <div>接待人：${item.receptUser.name}</div>
+                                            ${resCode}
                                         </div>
                                     </a>
                                 </div>
                                 <div class="t-r fl">
                                     <div class="hr-48"></div>
                                     <div class="order-area" onclick="tranShow()">
-                                        <div class="mask"></div>
+                                        
                                         <button class="abs">分配接待</button>
                                         <img src="${server_url_img+item.imageUrl}" alt="">
                                     </div>
@@ -333,6 +342,79 @@ myrent.del = function(id,status){
    })
 }
 
+var wxImg = new Object({
+    urls:[],
+})
+wxImg.imgUpload = function(){
+    var _this=this;
+    var i=0;
+    wx.chooseImage({
+        count: 8, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            syncUpload(localIds);
+        }
+    })
+    var syncUpload = function(localIds){
+        var localId = localIds.pop();
+        var code=`
+                <div class="img-list">
+                    <img src="${localId}" alt="">
+                    <i class="icon icon-del" onclick="del(this)"></i>
+                </div> 
+                `;
+        $('.pic-wrap .pic-con .list-con').append(code);
+        wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: function (res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                $.ajax({
+                    type:'post',
+                    url:'/weixin/downloadImage',
+                    dataType:'json',
+                    data:{
+                        mediaIds:serverId
+                    },
+                    success:function(res){
+                        _this.urls.push(res.data.urls);
+                        $('.issue .photo .img-wrap').html(`<img src="${_this.urls[0]}" alt="" class="full">`);
+                    }
+                })
+                if(localIds.length > 0){
+                    syncUpload(localIds);
+                }
+            }
+        });
+    }   
+}
+wxImg.init = function(){
+    var _this=this;
+    $('.issue .photo').click(function(){
+        if(_this.urls.length>=1){
+            $('.pic-wrap').show();
+            $('.sBox-wrapper,.tap-footer').addClass('z0');
+        }else{
+           _this.imgUpload(); 
+        }
+    })
+    $('.pic-wrap .pic-con .add-list').click(function(){
+        if(_this.urls.length>=8){
+            showMask('最多只能上传8张！');
+            return false;
+        }
+        _this.imgUpload(); 
+    })
+
+    $('.pic-wrap .return').click(function(){
+        $('.pic-wrap').hide();
+        $('.sBox-wrapper,.tap-footer').removeClass('z0');
+    })   
+}
+
+
 //发布
 var issue=new Object({
     isShow:false,
@@ -362,57 +444,6 @@ issue.scroll = function(){
         }
     })
 }
-/*issue.wxImg = function(){
-    var _this=this;
-    $('.issue .photo').click(function(){
-        wx.chooseImage({
-            count: 9, // 默认9
-            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-            success: function (res) {
-                console.info(res)
-                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                var wimgCode="";
-                $.each(res.localIds,function(index,item){
-                    wimgCode+=`
-                        <img src="${item}" alt="" class="full">
-                        `
-                })
-                $('.issue .photo .img-wrap').html(wimgCode);
-                console.info(localIds)
-                wx.uploadImage({
-                    localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
-                    isShowProgressTips: 1, // 默认为1，显示进度提示
-                    success: function (res) {
-                       _this.picId=res.serverId;
-                       //alert(res.serverId)
-                       $('.elem-02').val(_this.picId); 
-                       //_this.imgUpload();   
-                    },
-                    error:function(res){
-                        
-                    }
-                });
-
-            },
-        }); 
-
-    })
-}
-issue.imgUpload = function(){
-     $.ajax({
-        type:'post',
-        url:'/weixin/downloadImage',
-        dataType:'json',
-        data:{
-            mediaIds:this.picId
-        },
-        success:function(res){
-            
-        }
-     }) 
-}*/
-
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
@@ -451,7 +482,7 @@ issue.tranBack = function(){
 issue.event = function(){
     var _this=this;
     //区域选择
-    $('.header-operating').click(function(){
+    $('.header-operating').tap(function(){
         var cur_name,li_name;
         li_name=$('#addressList li.active').text();
         if(li_name=="全部"){
@@ -463,7 +494,7 @@ issue.event = function(){
         _this.tranBack();
     })
     //选择单位
-    $('.unit-con ul li').click(function(){
+    $('.unit-con ul li').tap(function(){
         if(_this.type==1){
            $('.diff-irent .unit-choosed').html($(this).html()) 
         }else{
@@ -477,12 +508,12 @@ issue.event = function(){
             $('#desc_oper').show();
         }
     })
-    $('#desc_oper').click(function(){
+    $('#desc_oper').tap(function(){
         $('.elem-08').val($('.desc-con textarea').val());
         _this.tranBack();
     })
     //出租、求租切换
-    $('.oper-btn .btn').click(function(){
+    $('.oper-btn .btn').tap(function(){
         _this.type=$(this).index()+1;
         if($(this).index()==0){
             $('.diff-orent').hide();
@@ -494,11 +525,12 @@ issue.event = function(){
         $(this).addClass('on').siblings().removeClass('on');
     })
     //提交  
-    $('.submit-btn').click(function(){
+    $('.submit-btn').tap(function(){
         _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
         var m=$('.diff-orent .elem-05').val();
         var n=$('.diff-irent .elem-05').val();
         _this.price=(m)?m:n;
+        //if(_this.type==1 && urls.length<=0)                                             { showMask('请至少上传一张图片！'); return false; }
         if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
         if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
         if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
@@ -517,58 +549,11 @@ issue.event = function(){
         _this.add();
     })
 }
-
 issue.init = function(){
     this.show();
     this.scroll();
     this.event();
-    //this.wxImg();
 }
-
-
-function imgUpload(elem){
-    var urls=[];
-    wx.chooseImage({
-        count: 9, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-        success: function (res) {
-            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-            syncUpload(localIds);
-        }
-    })
-    var syncUpload = function(localIds){
-        var localId = localIds.pop();
-        wx.uploadImage({
-            localId: localId,
-            isShowProgressTips: 1,
-            success: function (res) {
-                var serverId = res.serverId; // 返回图片的服务器端ID
-                $.ajax({
-                    type:'post',
-                    url:'/weixin/downloadImage',
-                    dataType:'json',
-                    data:{
-                        mediaIds:picId
-                    },
-                    success:function(res){
-                        urls.push(res.data.urls);
-                        $('.issue .photo .img-wrap').html(`<img src="${res.data.urls}" alt="" class="full">`);
-                    }
-                })
-                if(localIds.length > 0){
-                    syncUpload(localIds);
-                }
-            }
-        });
-    }  
-}
-
-$('.issue .photo .icon-wrap').click(function(){
-    imgUpload();
-})
-
-
 
 //下拉刷新效果
 var i=0;
@@ -585,6 +570,7 @@ var dropload = $('.mainCon-wrap').dropload({
                     myrent.getList('.rent-list-con',me)
                     break;
                 case 3:
+                console.info(conIndex)
                     order.getList('.rent-list-con',me);
                     break;
                 default:
@@ -661,7 +647,7 @@ $('#search_btn').on("input porpertychange",function(){
 	}
 })
 
-$('.rent-tab .top .list').click(function(){
+$('.rent-tab .top .list').tap(function(){
 	if($(this).hasClass('active')) return false;
 	$(this).addClass('active').siblings().removeClass('active');
 	var tIndex=$(this).index();
@@ -672,6 +658,7 @@ $('.rent-tab .top .list').click(function(){
 		case 2:
 			cur_ob=order;
             conIndex=tIndex+1;
+            $('.rent-list-con').html(' ');
             order.page=1;
             dropload.unlock();
             dropload.noData(false);
@@ -689,6 +676,7 @@ $('.rent-tab .top .list').click(function(){
 			$('.issue').hide();
 			rent.type=tIndex+1;
             conIndex=tIndex+1;
+            $('.rent-list-con').html(' ');
             rent.page=1;
             dropload.unlock();
             dropload.noData(false);
@@ -696,7 +684,7 @@ $('.rent-tab .top .list').click(function(){
 	}
 })			
 
-$('.rent-tab .bot .list').click(function(){
+$('.rent-tab .bot .list').tap(function(){
 	if($(this).hasClass('active')) return false;
 	$(this).addClass('active').siblings().removeClass('active');
 	var bIndex=$(this).index();
@@ -759,7 +747,7 @@ function mlink(id,type,status){
 }
 
 //点击关键字后
-$('.sBox-wrapper .list-con .list').click(function(){
+$('.sBox-wrapper .list-con .list').tap(function(){
     $(this).addClass('active').siblings().removeClass('active');
     $('#search_btn').attr('placeholder',$(this).text());
     $('.search-main').css('transform','translateX(-'+ww+'px)'); 
@@ -767,7 +755,7 @@ $('.sBox-wrapper .list-con .list').click(function(){
     $('#searchCon').html(' ');
 })
 //取消回到列表页
-$('.sBox-wrapper .cancel').click(function(){
+$('.sBox-wrapper .cancel').tap(function(){
     $('.search-main').css('transform','translateX(0)'); 
     $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索').val('');

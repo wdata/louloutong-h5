@@ -106,7 +106,7 @@
 .rent-list-con .item .t-l .top .tx img{border-radius: 100%;height: 100%;}
 .rent-list-con .item .t-l .top .txt{display: inline-block;font-size: 12px;color: #999;vertical-align: middle;margin-left: 5px;}
 .rent-list-con .item .t-l .top .txt .tit{font-size: 14px;color: #333;line-height: .48rem;}
-.rent-list-con .item .t-l .mid p{font-size: .48rem;color: #333;line-height: .586rem;height: 1.172rem;margin-top: 6px;}
+.rent-list-con .item .t-l .mid p{font-size: .48rem;color: #333;line-height: .586rem;max-height: 1.172rem;margin-top: 6px;}
 .rent-list-con .item .t-l .mid div{font-size: 12px;color: #999;margin-top: 6px;} 
 .rent-list-con .item .t-r{width: 33%;padding-left: 10px;}
 .rent-list-con .item .t-r img{height: 2rem;}
@@ -224,12 +224,12 @@
 
 /*发布选择图片*/
 .pic-wrap{position: fixed;height: 100%;width: 100%;background: #fff;top:0;left: 0;z-index: 200;}
-
-
-
-
-
-
+.pic-wrap .pic-con{margin: .1rem .075rem 0;}
+.pic-wrap .pic-con .img-list{width: 33.33%;padding:0 .075rem;float: left;position: relative;height: 3rem;margin-top:.1rem;}
+.pic-wrap .pic-con .img-list img{width: 100%;height:3rem; }
+.pic-wrap .pic-con .img-list i{display: inline-block;position: absolute;height: .65rem;width: .65rem;top: .2rem;right: .2rem;}
+.pic-wrap .pic-con .add-list{background: #e2e2e2;color: #fff;font-size: 100px;text-align:center;}
+.pic-wrap .pic-con .add-list img{width: 55%;height: auto;}
 
 
 
