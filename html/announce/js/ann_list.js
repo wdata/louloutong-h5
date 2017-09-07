@@ -12,6 +12,16 @@ if(authMethod("/llt/notice/list/button/add")){
     $("#release").removeClass("hide");
 }
 
+var sum = obtain("tapAnn");
+if(sum){
+    itemIndex = sum;
+    $(".tap a").eq(sum).addClass("active")
+        .siblings().removeClass("active");
+    $(".anounce-list").eq(sum).removeClass("hide")
+        .siblings(".anounce-list").addClass("hide");
+}
+
+
 
 $(".tap a").click(function(){
     $(this).addClass("active")
@@ -23,6 +33,8 @@ $(".tap a").click(function(){
         $(".unread-list").removeClass("hide")
             .siblings(".have-read-list").addClass("hide");
 
+        deposited("tapAnn",0);  // 将键值对输入本地存储dataSession中；
+
         htmlAjax.judgment(tapSwitchA);
 
     }else if(itemIndex === 1){
@@ -31,6 +43,8 @@ $(".tap a").click(function(){
             .siblings(".unread-list").addClass("hide");
 
         htmlAjax.judgment(tapSwitchB);
+
+        deposited("tapAnn",1);  // 将键值对输入本地存储dataSession中；
 
     }
 });
@@ -77,7 +91,7 @@ function HtmlAjax(){
                         if(val.image){
                             html += '<li> <a href="ann_details.html?id='+ val.id +'"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <img src="'+ val.image +'" alt="cover"> <div class="details">查看全文</div> </a> </li>'
                         }else{
-                            html += '<li> <a href="ann_details.html?id='+ val.id +'" class="no-price"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <div class="details">查看全文</div> </a> </li>'
+                            html += '<li> <a href="ann_details.html?id='+ val.id +'" class="no-price"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <div class="details">查看全文</div> </a> </li>';
                         }
                     });
                     list.append(html);
@@ -87,7 +101,7 @@ function HtmlAjax(){
                     }else if(status === 1){
                         commentB ++;
                     }
-                    if(data.data.pageCount === 0){
+                    if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                         me.lock();  //智能锁定，锁定上一次加载的方向
                         me.noData();      //无数据
                         if(status === 0){

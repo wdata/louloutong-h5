@@ -588,6 +588,8 @@ time{
     font-size: 14px;
     color: #333;
     line-height: 20px;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 .details .content article img{
     width:100%;

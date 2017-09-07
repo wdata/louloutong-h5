@@ -80,7 +80,7 @@ dongSwitch.prototype = {
                         if(val.parentId === null){
                             html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
                             if(sum === 1){
-                                one = val
+                                one = val;
                             }
                             sum++;
                         }

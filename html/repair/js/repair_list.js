@@ -189,7 +189,7 @@ function HtmlAjax(){
                     });
                     list.append(html);
                     comment ++;
-                    if(data.data.pageCount === 0){
+                    if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                         me.lock();  //智能锁定，锁定上一次加载的方向
                         me.noData();      //无数据
                     }

@@ -13,7 +13,7 @@ $.ajax({
             $(".personal time").text(data.data.createTime);  //时间；
             $("article").text(data.data.content);     //内容；
 
-            if(data.data.status === 1){
+            if(data.data.type === 2){
                 $(".types").removeClass("hide");
             }
 
