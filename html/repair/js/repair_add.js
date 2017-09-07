@@ -16,15 +16,21 @@ $(document).ready(function(){
 var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.releaseRpr = function(){
+        if(imgBur){
+            showMask("正在处理图片，请稍等！");
+            return
+        }
         var urls = [];
         var data = {};
         $.each(fileData,function(index,val){
-           urls.push(val.name);
+           urls.push(val.url);
         });
 
         var type = $(".addType .active").attr("data-id");  //类型;
         var content = $("#box").html();                     //报修内容
         var bespeakTime = '',expectTime = '',repairItemId = '',repairAddressId = '';
+        var serviceAdd = $("#service-address").attr("data-id");
+        var address = $("#pA").val();
         if(type === "1"){
             bespeakTime = $("#reservation").val();
             expectTime = $("#expected").val();
@@ -34,20 +40,31 @@ function HtmlAjax(){
             data["bespeakTime"] = bespeakTime;
             data["expectTime"] = expectTime;
             data["repairItemId"] = repairItemId;
+            data["repairAddressId"] = repairAddressId;
+            data["propertyId"] = propertyId;
 
         }else if(type === "2"){
-            repairAddressId = $("#service-address").attr("data-id");
+
+            if(serviceAdd){
+                data["propertyId"] = serviceAdd;
+            }else{
+                showMask("请选择服务地址！");
+                return;
+            }
+
+            if(reg.test(address) || content === ""){
+                showMask("请输入报修项目详细地址！");
+                return;
+            }
+
+            data["address"] = address;
         }
+
         //  判断是否为空！
         if(type === "1" && (!bespeakTime || !expectTime)){
             showMask("请选择预约和期望时间！");
             return;
         }
-        if(!repairAddressId){
-            showMask("请选择服务地址！");
-            return;
-        }
-        console.log();
         if(reg.test(content) || content === ""){
             showMask("请输入报修内容！");
             return;
@@ -55,9 +72,7 @@ function HtmlAjax(){
 
         data["urls"] = urls;
         data["userId"] = userId;
-        data["propertyId"] = propertyId;
         data["type"] = type;
-        data["repairAddressId"] = repairAddressId;
         data["content"] = content;
 
         $.ajax({
@@ -200,7 +215,7 @@ function Operating(){
             }
         });
         //  请选择服务地址；
-        $(".service-address").click(function(){
+        $(".service").click(function(){
            $(".repair-add-switch").addClass("active");
         });
 
@@ -223,8 +238,9 @@ function Operating(){
             $(".repair-add").removeClass("active");
             $(".service").removeClass("active");
 
-            $("#ads").text($(".addressList li.active .address").text()
-                .attr("data-id",$(".addressList li.active").attr("data-id")));
+            $("#ads").text($(".addressList li.active .address").text())
+                .attr("data-id",$(".addressList li.active").attr("data-id"));
+            return false;
         });
         //  下一步
         $(".next-step").on("click",function(){
@@ -275,96 +291,13 @@ function dongSwitch(){
 dongSwitch.prototype = {
     constructor:dongSwitch,
     main:function(){
-        this.dongAjax();     //  ajax事件获取数据，并将数据保存；
-        this.dongSelect();   //  选择楼栋
-        this.superior();      // 顶部导航重新选择同级楼栋；
-        this.animation();     // 首页到切换页面动画；
-    },
-    dongAjax:function(){
-        var _this = this;
-        $.ajax({
-            type:'get',
-            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
-            data: null,
-            dataType:'json',
-            success:function(data){
-                var html = '';
-                _this.addressList.empty();
-                if(data.code === 0){
-                    _this.louDong = data.data;
-                    $.each(data.data,function(index,val){
-                        //  如果parentId === null 则表示没有上一级，ajax只显示一级列表；
-                        if(val.parentId === null){
-                            html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
-                        }
-                    });
-                    _this.addressList.append(html);
-                }
-            },
-            error:function(data){
-                ErrorReminder(data);
-            }
-        });
-    },
-    dongSelect:function(){
-
-        //  点击下一级；
-
-        var _this = this;
-        $(document).on("click","#addressList li",function(){
-
-            //  提示
-            $(this).addClass("active")
-                .siblings().removeClass("active");
-
-            var id = $(this).attr("data-id");
-
-
-            var bur = _this.judgment(id,_this.louDong);  // 判断有没有下一级；
-            if(bur){
-                //  判断是不是点击的全部；
-                if(!$(this).is(".all")){
-
-                    // console.log("有下一级");
-
-                    if($("#prompt").is(".active")){
-                        //  将选择的放入顶部导航；
-                        $("#prompt").before('<li data-pid="'+ $(this).attr("data-pid") +'" data-id="'+ $(this).attr("data-id") +'">'+ $(this).text() +'</li>');
-                        //  位移到滚动条最后面；
-                        $(".nav").scrollLeft( $('.nav')[0].scrollWidth );
-                    }else{
-                        $("#prompt").addClass("active")
-                            .siblings().removeClass("active");
-
-                        //  判断是不是点击了之前的元素;
-                        $.each($(".switch .nav li"),function(index,val){
-                            if($(val).attr("data-pid") === $(this).attr("data-id")){
-                                $(val).attr({
-                                    "data-id":$(this).attr("data-id"),
-                                    "data-pid":$(this).attr("data-pid")
-                                });
-                                $(val).text($(this).text());
-                            }
-                        });
-                    }
-
-                    _this.nextLevel(id);
-                }
-            }
-        });
+        this.animation();    // 确定、重置功能；和动画切换效果；（这个是可以随意编辑的，）
+        this.dongAjax();     //  ajax事件获取数据，并将数据保存；（这个是获取数据）
+        this.dongSelect();   //  选择下一级
+        this.superior();     //  顶部导航重新选择同级楼栋；
     },
     animation:function(){
         var _this = this;
-        // 平移动画效果
-        $(document).on("click","#filter",function(){
-            $(".index").addClass("active");
-            $(".repair-switch").addClass("active");
-        });
-        //  选择订单报修状态
-        $(".repair-switch .status li").click(function(){
-            $(this).addClass("active").siblings().removeClass("active");
-        });
-
         //  确定
         $("#determine").click(function(){
             $(".index").removeClass("active");
@@ -387,7 +320,6 @@ dongSwitch.prototype = {
             }
         });
         //  重置
-        var _this = this;
         $("#reset").click(function(){
             //  重置订单报修状态；
             $(".repair-switch .status li:first-child").addClass("active").siblings().removeClass("active");
@@ -395,7 +327,87 @@ dongSwitch.prototype = {
             _this.dongAjax();     //  ajax事件获取数据，并将数据保存；
             //  删除顶部选择楼栋；
             $("#prompt").siblings().remove();
-        })
+        });
+
+        // 平移动画效果
+        $(document).on("click","#filter",function(){
+            $(".index").addClass("active");
+            $(".repair-switch").addClass("active");
+        });
+
+        //  选择订单报修状态
+        $(".repair-switch .status li").click(function(){
+            $(this).addClass("active").siblings().removeClass("active");
+        });
+    },
+    dongAjax:function(){
+        var _this = this;
+        $.ajax({
+            type:'get',
+            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
+            data: null,
+            dataType:'json',
+            success:function(data){
+                var html = '';
+                _this.addressList.empty();
+                if(data.code === 0){
+                    _this.louDong = data.data;
+                    $.each(data.data,function(index,val){
+                        //  如果parentId === null 则表示没有上一级，ajax只显示一级列表；
+                        if(val.parentId === null){
+                            html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+                        }
+                    });
+                    _this.addressList.append(html);
+                    _this.Default();
+                }
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
+    },
+    dongSelect:function(){
+
+        //  点击下一级；
+        var _this = this;
+        $(document).on("click","#addressList li",function(){
+            var self = this;
+
+            //  提示
+            $(this).addClass("active")
+                .siblings().removeClass("active");
+            var id = $(this).attr("data-id");
+
+            var bur = _this.judgment(id,_this.louDong);  // 判断有没有下一级；
+            if(bur){
+                //  判断是不是点击的全部；
+                if(!$(this).is(".all")){
+                    // console.log("有下一级");
+                    if($("#prompt").is(".active")){
+                        //  将选择的放入顶部导航；
+                        _this.topApend($(this).attr("data-id"),$(this).attr("data-pid"),$(this).text());
+                        //  位移到滚动条最后面；
+                        $(".nav").scrollLeft( $('.nav')[0].scrollWidth );
+                    }else{
+                        $("#prompt").addClass("active")
+                            .siblings().removeClass("active");
+
+                        //  判断是不是点击了之前的元素;
+                        $.each($("#prompt").siblings(),function(index,val){
+                            if($(val).attr("data-pid") === $(self).attr("data-pid")){
+                                $(val).attr({
+                                    "data-id":$(self).attr("data-id"),
+                                    "data-pid":$(self).attr("data-pid")
+                                });
+                                $(val).text($(self).text());
+                            }
+                        });
+                    }
+                    _this.nextLevel(id);
+                }
+            }
+        });
     },
     superior:function(){
         //  选择同级；
@@ -422,18 +434,36 @@ dongSwitch.prototype = {
 
         });
     },
+    Default:function(){
+        var _this = this;
+        //  判断sessionStorage存储的ID和name是否为空;
+        if(propertyId && propertyName){
+            $.each(_this.louDong,function(index,val){
+                if(parseInt(propertyId) === val.id){
+                    _this.SameLevel(propertyId,val.parentId + "");
+                    //  如果父级ID为不为空，则添加父级ID到顶部导航；
+                    _this.repeatAdd(val.parentId);  // 重复添加父级，一直到父级ID为null
+                }
+            })
+
+        }
+    },
     SameLevel:function(id,pid){
-        //  获取同级楼栋；
+        //  获取同级楼栋；pid使用的是字符串
         var html = '';
         this.addressList.empty();
         if(!(pid === "null")){
-            html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
+            html = '<li class="all" data-id="'+ pid +'"><i></i>全部</li>';
         }
         $.each(this.louDong,function(index,val){
+            var IndexActive = "";
             if(val.parentId + "" === pid){
-                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+                //  保证刷新后突出显示
+                if(propertyId && parseInt(propertyId) === val.id){
+                    IndexActive = "active";
+                }
+                html += '<li class="'+ IndexActive +'" data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
             }
-
         });
         this.addressList.append(html);
     },
@@ -449,10 +479,39 @@ dongSwitch.prototype = {
         });
         this.addressList.append(html);
     },
-    judgment:function(id,louDong){
+    repeatAdd:function(pid){
+        var ParData = this.topSuperior(pid);
+        var pidData = ParData?ParData.parentId:"null";
+        if(ParData){
+            //  如果父级ID不为"null"，则重复添加；   ****** 此操作在前，以此让顶部菜单排列正确！*********
+            if(!(pidData === "null")){
+                this.repeatAdd(pidData);
+            }
+            this.topApend(ParData.id,pidData,ParData.name);
+        }
+    },
+    topApend:function(id,pid,text){
+        //  将选择的放入顶部导航；id:当前ID ， pid：当前父级ID， text：当前名
+        $("#prompt").before('<li data-pid="'+ pid +'" data-id="'+ id +'">'+ text +'</li>');
+    },
+    topSuperior:function(pid){
+        //  判断是否有上一级,如果有上一级则返回数据，如果没有则返回null
+        var bur = null;
+        //  pid为null时，不遍历；
+        if(parseInt(pid)){
+            $.each(this.louDong,function(index,val){
+                if(parseInt(pid) === val.id){
+                    bur = val;
+                }
+            });
+        }
+        return bur;
+
+    },
+    judgment:function(id){
         //  判断是否有下一级
         var bur = false;
-        $.each(louDong,function(index,val){
+        $.each(this.louDong,function(index,val){
             if(parseInt(id) === val.parentId){
                 bur = true;
             }

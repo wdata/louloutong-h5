@@ -32,6 +32,8 @@ $(document).ready(function(){
 
 
 var htmlAjax = new HtmlAjax();
+var dropload;
+var comment = 1;
 
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
@@ -115,12 +117,18 @@ function HtmlAjax(){
                                 // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
                                 $("#confirm").removeClass("hide").attr("data-id",data.data.id);
                                 $(".hr-96").removeClass("hide");
+                            }else if(auth_3 && data.data.type === 2 && parseInt(userId) !== data.data.handlerId){
+                                // operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
+                                $("#confirm").removeClass("hide").attr("data-id",data.data.id);
+                                $(".hr-96").removeClass("hide");
                             }else{
                                 $(".comment-box").removeClass("hide").addClass("auth");
                                 $(".hr-96").removeClass("hide");
                             }
                             break;
                         case 6:
+                            $(".comment-box").removeClass("hide").addClass("auth");
+                            $(".hr-96").removeClass("hide");
                             color = "yellow";
                             break;
                         case 7:
@@ -151,7 +159,23 @@ function HtmlAjax(){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
                         })
                     }
-                    var type = data.data.type===1?"办公区域":data.data.type===2?"公共区域":"未知";
+
+                    var type = '';var address = "";
+                    if(data.data.type === 1){
+                        type = "办公区域";
+                        address = data.data.address;
+                    }else if(data.data.type === 2){
+                        type = "公共区域";
+                        address = data.data.publicAddress;
+                    }
+                    //  公共区域没有类型，时间等；
+                    if(data.data.type ===2){
+                        var ped = $("#pending ul li");
+                        ped.eq(1).addClass("hide");
+                        ped.eq(5).addClass("hide");
+                        ped.eq(6).addClass("hide");
+                    }
+
 
                     var ss = $(".status>span");
                     var tr = $(".transparent");
@@ -160,7 +184,7 @@ function HtmlAjax(){
                     if(data.data.status >= 1){
                         ss.eq(0).addClass("active");
                         tr.eq(0).addClass("active");
-                        if(data.data.status >= 4){
+                        if(data.data.status >= 3){
 
                             ss.eq(1).addClass("active");
                             tr.eq(1).addClass("active");
@@ -201,7 +225,7 @@ function HtmlAjax(){
                     //  图片；
                     $("#image").empty().append(img);
                     //  地址;
-                    $("#property").text(data.data.property);
+                    $("#property").text(address);
                     //  预约上门时间;
                     $("#reservation").text(data.data.bespeakTime);
                     //  期待完成时间;
@@ -254,9 +278,8 @@ function HtmlAjax(){
     };
     this.comList = function(){
         //  报修评论列表；
-        var comment = 1;
-        var dropload = $('.dataList').dropload({
-            scrollArea : window,
+        dropload = $('#list').dropload({
+            scrollArea : $(".repair-details"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
@@ -271,7 +294,11 @@ function HtmlAjax(){
                     dataType:'json',
                     success:function(data){
                         var html = '';
+                        if(comment === 1 && data.code === 0 && data.data){
+                            $(".comment").addClass("hide");   //没有评论时隐藏评论列表；
+                        }
                         if(data.code === 0 && data.data){
+                            $(".comment").removeClass("hide");   //有评论时显示评论列表；
                             $.each(data.data.items,function(index,val){
                                 html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
                             });
@@ -290,6 +317,7 @@ function HtmlAjax(){
                     },
                     error:function(data){
                         ErrorReminder(data);
+                        $(".comment").addClass("hide");   //没有评论时隐藏评论列表；
                         me.noData();      //无数据
                         me.resetload();    //数据加载玩重置
                     }
@@ -316,8 +344,12 @@ function HtmlAjax(){
                     if(data.code === 0){
                         if(data.data === true){
                             showMask("评论发布成功！");
-                            $("#listCom").empty();
-                            _this.comList();
+                            $("#listCom").empty();  // 删除列表数据；
+                            $("#comCon").val("");  // 清空评论；
+                            comment = 1;
+                            dropload.unlock();
+                            dropload.noData(false);
+                            dropload.resetload();
                         }
                     }
                 },
@@ -328,7 +360,7 @@ function HtmlAjax(){
         }else{
             showMask("评论不能为空！");
         }
-    }
+    };
     this.releaseLike = function(self){
         var _this = this;
         //  判断是点赞，还是取消点赞；
@@ -379,7 +411,7 @@ function HtmlAjax(){
                 }
             })
         }
-    }
+    };
     this.likeList = function(){
         //  点赞列表；
         $.ajax({
@@ -396,14 +428,18 @@ function HtmlAjax(){
                 var html = '';
                 list.empty();
                 if(data.code === 0 && data.data){
+                    $(".like").removeClass("hide");   // 有点赞，显示点赞列表；
                     $.each(data.data.items,function(index,val){
                         html += '<a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a>';
                     });
                     list.append(html);
+                }else{
+                    $(".like").addClass("hide");   // 如果没有点赞，隐藏点赞列表；
                 }
             },
             error:function(data){
                 ErrorReminder(data);
+                $(".like").addClass("hide");   // 如果没有点赞，隐藏点赞列表；
             }
         })
     }

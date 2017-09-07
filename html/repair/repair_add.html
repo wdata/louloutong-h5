@@ -17,8 +17,8 @@
 
     <link rel="stylesheet" href="../../theme/css/exlse.css">
 </head>
-<body>
-<div class="repair-add repair overflow-y">
+<body style="position: relative;">
+<div class="repair-add repair-add-A repair overflow-y">
     <!--头部-->
     <div class="return-column">
         <div class="return-column-heart">
@@ -50,9 +50,12 @@
             </div>
             <div class="repair-type publicArea hide">
                 <header class="repair-head">服务地址</header>
-                <div class="service-address">
+                <div class="service-address service">
                     <i class="address-icon"></i>
                     <div class="can-choose"><span id="service-address">请选择服务地址</span><i class="jump-icon"></i></div>
+                </div>
+                <div class="service-address">
+                    <input id="pA" type="text" placeholder="请输入报修项目详细地址">
                 </div>
             </div>
             <div class="content">
@@ -60,7 +63,8 @@
                 <div id="box" class="box" contenteditable="true" placeholder="请输入您报修的详细描述"></div>
                 <ul class="upload">
                     <!--<li><img src="../../images/anounce/typhoon.png" alt=""><i class="delete-icon"></i><input type="hidden" name="file"></li>-->
-                    <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)" multiple="multiple" type="file"></li>
+                    <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)"  type="file"></li>
+                    <!--不支持：multiple="multiple"-->
                 </ul>
             </div>
             <div  class="next-step">下一步</div>
@@ -84,7 +88,7 @@
         </div>
     </div>
 </div>
-<div class="repair service overflow-y">
+<div class="repair address-repair service overflow-y">
     <!--头部-->
     <div class="return-column">
         <div class="return-column-heart">
@@ -134,6 +138,7 @@
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/mobiscroll/js/mobiscroll_003.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/mobiscroll/js/mobiscroll_005.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/exlse.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/repair_add.js"></script>
 </body>
 </html>

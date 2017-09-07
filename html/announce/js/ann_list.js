@@ -44,7 +44,7 @@ var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.main = function(){
         var _this = this;
-        dropload = $(".content").dropload({
+        dropload = $(".anounce").dropload({
             scrollArea : window,
             autoLoad:true,
             loadDownFn : function(me){
@@ -52,7 +52,6 @@ function HtmlAjax(){
                 if(itemIndex === 0){
                     _this.listAjax(me,commentA,itemIndex,tapSwitchA,$(".unread-list"));
                 }else if(itemIndex === 1){
-                    console.log("....1111111111.....");
                     _this.listAjax(me,commentB,itemIndex,tapSwitchB,$(".have-read-list"));
                 }
             }
@@ -125,5 +124,6 @@ function HtmlAjax(){
             dropload.lock('down');
             dropload.noData();
         }
+        dropload.resetload();    //数据加载玩重置
     }
 }

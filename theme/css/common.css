@@ -291,7 +291,7 @@ body{overflow: hidden;}
     top: 6px;
     right: 6px;
 }
-.annex li .icon-wrap{width: 1rem;height: 100%;line-height: 1.333333rem;}
+.annex li .icon-wrap{width: 1rem;height: 100%;line-height: 1.333333rem;text-align: center;}
 .annex li .icon-wrap i{display: inline-block;vertical-align: middle;}
 
 
@@ -314,6 +314,7 @@ body{overflow: hidden;}
     height: 1.2266666rem;
     border-bottom: 1px solid #D4D4D4;
     padding: 0 .29333333rem;
+    box-sizing: border-box;
 }
 .switch .nav{
     height: 1.2266666rem;
@@ -364,4 +365,11 @@ body{overflow: hidden;}
 }
 .switch .address li.active i{
     display: block;
+}
+
+/*  发布公告 -- 编辑区域，提示“添加正文”  */
+#editor_box.article-content:empty:before{
+    content: attr(placeholder);
+    color: #038dff;
+    font-size: 14px;
 }

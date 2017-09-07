@@ -42,11 +42,15 @@ $('.sBox-wrapper .list-con .list').click(function(){
 })
 //取消回到列表页
 $('.sBox-wrapper .cancel').click(function(){
+
+    $("#search_btn").val("");
     $('.search-main').css('transform','translateX(0)');
-    $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索').val('');
     $(".sBox-wrapper").removeClass("hei");
-})
+    // $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
+    // 因为重复绑定事件，会导致次事件在前，
+
+});
 //返回回到关键词页
 $('.sBox-wrapper .top-search .back').click(function(){
     $('.search-main').css('transform','translateX(0)');
