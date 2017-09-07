@@ -102,7 +102,7 @@ rent.getList = function(elem,me){
 			})
 			$(elem).append(code);
             _this.page++;
-            if(data.data.pageCount === 0){
+            if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                 me.lock();  //智能锁定，锁定上一次加载的方向
                 me.noData();      //无数据
             }
@@ -219,7 +219,7 @@ order.getList = function(elem,me){
             }   
             $(elem).append(code);
             _this.page++;
-            if(data.data.pageCount === 0){
+            if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                 me.lock();  //智能锁定，锁定上一次加载的方向
                 me.noData();      //无数据
             }
@@ -232,7 +232,7 @@ order.getList = function(elem,me){
 //我的出租\求租列表
 var myrent=new Object({
 	page:1,
-	size:10,
+	size:1,
 	userId:userId,
 	type:1,
     keyword:null,
@@ -266,6 +266,7 @@ myrent.getList = function(elem,me){
                             `;
                     }
                 };
+                var botCode=`<div class="bot">`+imgCode+`</div>`
 				code+=`
 					<div class="list" data-id=${item.id}>
                         <a class="p24" href="rent_detail.html"  onclick="link('${item.id}',${_this.type})">
@@ -275,23 +276,20 @@ myrent.getList = function(elem,me){
                                 </div>
                                 <div class="tips price">${item.price} <span class="fr c666">发布于${item.createTime}</span></div>    
                             </div>
-                            <div class="bot">
-                                ${imgCode}
-                                <div class="clear"></div>
-                            </div>
+                            ${botCode}
                         </a>
                         <div class="oper-bot">
-                            <button onclick="myrent.refresh(${item.id})">刷新</button>
-                            <button>修改</button>
-                            <button onclick="myrent.changeStatus(${item.id},${item.status})">${item.status==0?'下架':item.status==1?'上架':'其他'}</button>
-                            <button onclick="myrent.del(${item.id},${item.status})">删除</button>
+                            <button onclick="myrent.refresh(${item.id})" class="btn">刷新</button>
+                            <a class="btn" href="rent_edit.html" onclick="mlink('${item.id}',${_this.type},'${item.status}')">修改</a>
+                            <button onclick="myrent.changeStatus(${item.id},${item.status})" class="btn">${item.status==1?'上架':'下架'}</button>
+                            <button onclick="myrent.del(${item.id},${item.status})" class="btn">删除</button>
                         </div>
                     </div>
 				`	
 			})
 			$(elem).append(code);
             _this.page++;
-            if(data.data.pageCount === 0){
+            if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                 me.lock();  //智能锁定，锁定上一次加载的方向
                 me.noData();      //无数据
             }
@@ -312,9 +310,10 @@ myrent.refresh = function(id){
 }
 myrent.changeStatus = function(id,status){
     var _this=this;
+    var c_status=status==1?0:1
     $.ajax({
         type:'post',
-        url:server_rent+server_v1+'/rents/offShelf/'+this.userId+'/'+id+'.json',
+        url:server_rent+server_v1+'/rents/shelfStatus/'+this.userId+'/'+id+'/'+c_status+'.json',
         dataType:'json',
         success:function(res){
             _this.getList('.rent-list-con');
@@ -335,7 +334,6 @@ myrent.del = function(id,status){
 }
 
 //发布
-var propertyId=sessionStorage.getItem('propertyId');
 var issue=new Object({
     isShow:false,
     type:1,                     //1出租   2求租
@@ -418,6 +416,7 @@ issue.imgUpload = function(){
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
+    var unit=this.type==1?p:q
     $.ajax({
         type:'post',
         url:server_rent+server_v1+'/rents/save.json',
@@ -430,7 +429,7 @@ issue.add = function(){
             'section':$('.elem-03').val(),
             'acreage':this.acreage,
             'price':this.price,
-            'unit':'77元/m&lt;sup&gt;2&lt;/sup&gt;/天',
+            'unit':unit,
             'houseType':$('.elem-06').val(),
             'title':$('.elem-07').val(),
             'content':$('.elem-08').val(),
@@ -526,8 +525,6 @@ issue.init = function(){
     //this.wxImg();
 }
 
-issue.add = function(){
-}
 
 function imgUpload(elem){
     var urls=[];
@@ -564,182 +561,12 @@ function imgUpload(elem){
                 }
             }
         });
-    }
-   
+    }  
 }
-
 
 $('.issue .photo .icon-wrap').click(function(){
-    alert(imgUpload());
+    imgUpload();
 })
-
-function dongSwitch(){
-    this.louDong = null;       //   保存数据；
-    this.addressList = $("#addressList");   //  楼栋列表父级元素
-}
-
-dongSwitch.prototype = {
-    constructor:dongSwitch,
-    main:function(){
-        this.dongAjax();     //  ajax事件获取数据，并将数据保存；
-        this.dongSelect();   //    选择楼栋
-        this.superior();      //  顶部导航重新选择同级楼栋；
-    },
-    dongAjax:function(){
-        var _this = this;
-        $.ajax({
-            type:'get',
-            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
-            data: null,
-            dataType:'json',
-            success:function(data){
-                var html = '';
-                _this.addressList.empty();
-                if(data.code === 0){
-                    _this.louDong = data.data;
-                    var one = null;var sum = 1;
-                    $.each(data.data,function(index,val){
-                        //  如果parentId === null 则表示没有上一级，ajax只显示一级列表；
-                        if(val.parentId === null){
-                            html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
-                            if(sum === 1){
-                                one = val
-                            }
-                        }
-                    });
-                    _this.addressList.append(html);
-                }
-            },
-            error:function(data){
-                ErrorReminder(data);
-            }
-        });
-    },
-    dongSelect:function(){
-
-        //  点击下一级；
-
-        var _this = this;
-        $(document).on("click","#addressList li",function(){
-
-            //  提示
-            $(this).addClass("active")
-                .siblings().removeClass("active");
-
-            var id = $(this).attr("data-id");
-
-
-            var bur = _this.judgment(id,_this.louDong);  // 判断有没有下一级；
-            if(bur){
-                //  判断是不是点击的全部；
-                if(!$(this).is(".all")){
-
-                    // console.log("有下一级");
-                    //  隐藏确定；
-                    $("#determine").addClass("hide");
-
-
-                    if($("#prompt").is(".active")){
-                        //  将选择的放入顶部导航；
-                        $("#prompt").before('<li data-pid="'+ $(this).attr("data-pid") +'" data-id="'+ $(this).attr("data-id") +'">'+ $(this).text() +'</li>');
-                        //  位移到滚动条最后面；
-                        $(".nav").scrollLeft( $('.nav')[0].scrollWidth );
-                    }else{
-                        $("#prompt").addClass("active")
-                            .siblings().removeClass("active");
-
-                        //  判断是不是点击了之前的元素;
-                        $.each($(".switch .nav li"),function(index,val){
-                            if($(val).attr("data-pid") === $(this).attr("data-id")){
-                                $(val).attr({
-                                    "data-id":$(this).attr("data-id"),
-                                    "data-pid":$(this).attr("data-pid")
-                                });
-                                $(val).text($(this).text());
-                            }
-                        });
-                    }
-
-                    _this.nextLevel(id);
-                }else{
-                    // console.log("可以选择确定");
-                    $("#determine").removeClass("hide");
-                }
-
-            }else{
-                // console.log("没有下一级");
-                $("#determine").removeClass("hide");
-            }
-        });
-    },
-    superior:function(){
-        //  选择同级；
-        var _this = this;
-        $(document).on("click",".switch .nav li",function(){
-            //  提示
-            $(this).addClass("active")
-                .siblings().removeClass("active");
-            $("#determine").addClass("hide");
-
-            //  如果顶部点击元素和“请选择”中间有其他元素，需要删除它；
-            var index = $("#prompt").index() - $(this).index();
-            if(index > 1){
-                for(var x = 1 ; x < index ; x++){
-                    $(".switch .nav li").eq($(this).index()+1).remove();
-                }
-            }
-            if($(this).is("#prompt")){
-                //  如果是点击“请选择”：获取子级元素；
-                _this.nextLevel($(".switch .nav li").eq($(this).index()-1).attr("data-id"));
-            }else{
-                //  如果不是点击“请选择”：获取同级元素；
-                _this.SameLevel($(this).attr("data-id"),$(this).attr("data-pid"));
-            }
-
-        });
-    },
-    SameLevel:function(id,pid){
-        //  获取同级楼栋；
-        var html = '';
-        this.addressList.empty();
-        if(!(pid === "null")){
-            html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
-        }
-        $.each(this.louDong,function(index,val){
-            if(val.parentId + "" === pid){
-                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
-            }
-
-        });
-        this.addressList.append(html);
-    },
-    nextLevel:function(id){
-        //  获取子集楼栋；
-        var html = '';
-        this.addressList.empty();
-        html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
-        $.each(this.louDong,function(index,val){
-            if(val.parentId + "" === id){
-                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
-            }
-        });
-        this.addressList.append(html);
-    },
-    judgment:function(id,louDong){
-        //  判断是否有下一级
-        var bur = false;
-        $.each(louDong,function(index,val){
-            if(parseInt(id) === val.parentId){
-                bur = true;
-            }
-        });
-        return bur;
-    }
-};
-$(document).ready(function(){
-    var tap = new dongSwitch();
-    tap.main();  // 调用总函数；
-});
 
 
 
@@ -748,32 +575,11 @@ var i=0;
 var cur_ob=rent;  //当前列表
 var conIndex=1;
 var serIndex=1;
-$('.mainCon-wrap').scroll(function(){
-    var isBottom = $('.mainCon-wrap').scrollTop()>=($('.mainCon-wrap').height()-$(window).height())-50;
-    i++;
-    if(isBottom & i<=1){
-        var num=32;
-        touch.on('.rent-list-con','swipestart',function(e){
-        	if(!cur_ob.isHaveNextPage) $('.data-tips').text(no_data).show();
-        });
-        touch.on('.rent-list-con','swiping',function(e){
-            if(cur_ob.isHaveNextPage) $('.data-tips').text(loading_data).show();
-        });
-        touch.on('.rent-list-con','swipeend',function(e){
-        	$('.data-tips').hide();
-        	if(cur_ob.isHaveNextPage){ 
-        		cur_ob.getMoreList('.rent-list-con',true);
-        		
-        	}
-        });
-    }
-});
 
 var dropload = $('.mainCon-wrap').dropload({
         scrollArea : $(".mainCon-wrap"),
         autoLoad:true,
         loadDownFn:function(me){
-            console.info(me)
             switch(conIndex){
                 case 4:
                     myrent.getList('.rent-list-con',me)
@@ -887,7 +693,6 @@ $('.rent-tab .top .list').click(function(){
             dropload.unlock();
             dropload.noData(false);
             dropload.resetload();
-
 	}
 })			
 
@@ -915,14 +720,13 @@ $('.rent-tab .bot .list').click(function(){
 				default:
 					issue.isShow=false;
 					issue.init();
-					myrent.type=bIndex;
                     $('.rent-list-con').html(' ');
+					myrent.type=bIndex;
                     conIndex=tIndex+1;
                     myrent.page=1;
                     dropload.unlock();
                     dropload.noData(false);
                     dropload.resetload();
-					/*myrent.getList('.rent-list-con');*/
 					break;
 			}
 			break;
@@ -948,6 +752,10 @@ function returnList(){
 function link(id,type){
     var elem=JSON.stringify({'id':id,'type':type})
     sessionStorage.setItem('rent_ob',elem)
+}
+function mlink(id,type,status){
+    var elem=JSON.stringify({'id':id,'type':type,'status':status})
+    sessionStorage.setItem('rent_modify',elem)
 }
 
 //点击关键字后
