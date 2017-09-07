@@ -17,15 +17,6 @@ var noticeWord = new Swiper('.notice-word', {
 });
 
 
-$(document).ready(function(){
-
-    //  楼栋切换；
-    var tap = new dongSwitch();
-    tap.main();  // 调用总函数；
-
-
-});
-
 function dongSwitch(){
     this.louDong = null;       //   保存数据；
     this.addressList = $("#addressList");   //  楼栋列表父级元素
@@ -91,10 +82,18 @@ dongSwitch.prototype = {
                             if(sum === 1){
                                 one = val
                             }
+                            sum++;
                         }
                     });
                     _this.addressList.append(html);
                     _this.Default(one);    // 显示本地存储内楼栋名；
+
+                    //  这边部分是首页数据；可以删除
+                    var propertyIdD = propertyId?propertyId:one.id;
+                    //  首页数据；
+                    var indexAjaxb = new IndexAjax(propertyIdD);
+                    indexAjaxb.main();
+
                 }
             },
             error:function(data){
@@ -282,11 +281,10 @@ dongSwitch.prototype = {
     }
 };
 
-
 $(document).ready(function(){
-    //  首页数据；
-    var indexAjax = new IndexAjax(propertyId);
-    indexAjax.main();
+    //  楼栋切换；
+    var tap = new dongSwitch();
+    tap.main();  // 调用总函数；
 });
 
 // 数据获取
