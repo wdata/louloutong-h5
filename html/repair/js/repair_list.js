@@ -5,6 +5,8 @@ var page = null;   // 页数
 var searchType = 1;  // 报修类型
 var keyword = null;   // 搜索关键字；
 var pIdRepair = propertyId;  // 物业ID；
+var comment = 1;      //page数
+var dropload;
 
 //  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
 sessionStorage.setItem("repairJump",1);
@@ -30,168 +32,188 @@ var auth_7 = authMethod("/llt/repair/list/button/revoke");
 
 
 
-$(document).ready(function(){
-    htmlAjax.repairList(pIdRepair,page,searchType,keyword);
-    htmlAjax.listStatus();
-    //  楼栋切换；
-    tap.main();  // 调用总函数；
-});
-
 
 var htmlAjax = new HtmlAjax();
+htmlAjax.distribution();
+htmlAjax.listStatus();
+
+
 // 数据获取
 function HtmlAjax(){
-    this.repairList = function(proId,page,searchType,keyword){
-        var comment = 1;      //page数
-        $(".repair-list").dropload({
+    this.distribution = function(){
+        var _this = this;
+         dropload = $(".repair-list").dropload({
             scrollArea : $(".repair-list"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
-                $.ajax({
-                    type:'get',
-                    url:  server_url_repair + server_v1 + '/repair/list.json',
-                    data: {
-                        "userId":userId,
-                        "propertyId":proId,
-                        "page":comment,
-                        "size":5,
-                        "searchType":searchType,
-                        "keyword":keyword
-                    },
-                    dataType:'json',
-                    success:function(data){
-                        var list = $("#list");
-                        var html = '';
-                        if(data.code === 0 && data.data){
-                            $.each(data.data.items,function(index,val){
-                                var status = '',img = '',operating = '';
-                                var href = 'repair_details.html';
-                                switch (val.status){
-                                    case 1:
-                                        //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
-                                        if(auth_1){
-                                            status = '<div class="repair-status green">未派单</div>';
-                                            operating += '<a href="repair_sent.html?id='+ val.id +'&status=1" class="repair-operating single blue">派单</a>';
-                                        }else{
-                                            status = '<div class="repair-status green">待受理</div>';
-                                        }
-                                        //  有接单权限，可以接单；
-                                        if(auth_4){
-                                            operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                        }
-                                        break;
-                                    case 2:
-                                        //  判断维修ID等于登录ID，则显示“给我的”派单；
-                                        if(val.handlerId === parseInt(userId)){
-                                            if(auth_1){
-                                                status = '<div class="repair-status blue"><i class="mine-icon"></i>已派单</div>';
-                                            }else{
-                                                status = '<div class="repair-status green"><i class="mine-icon"></i>待受理</div>';
-                                            }
-                                            //  有接单权限，可以接单；
-                                            if(auth_4){
-                                                operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                            }
-                                        }else{
-                                            if(auth_1){
-                                                status = '<div class="repair-status blue">已派单</div>';
-                                            }else{
-                                                status = '<div class="repair-status green">待受理</div>';
-                                            }
-                                        }
-                                        break;
-                                    case 3:
-                                        if(val.handlerId === null){
-                                            if(auth_2){
-                                                status = '<div class="repair-status red">被移交</div>';
-                                                operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
-                                                //  有接单权限，可以接单；
-                                                if(auth_4){
-                                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                                }
-                                            }else{
-                                                status = '<div class="repair-status blue">已受理</div>';
-                                            }
-                                        }else{
-                                            status = '<div class="repair-status blue">已受理</div>';
-                                            if(auth_5){
-                                                operating += '<a href="repair_transfer.html?id='+ val.id +'" class="repair-operating transfer blue">移交</a>';
-                                            }
-                                            if(auth_6){
-                                                operating += '<a href="repair_result.html?id='+ val.id +'" class="repair-operating dealWith blue">填写处理</a>';
-                                            }
-                                        }
-                                        break;
-                                    case 4:
-                                        status = '<div class="repair-status green">待验收</div>';
-                                        if(auth_3 && parseInt(userId) === val.user.id){
-                                            operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
-                                        }
-                                        break;
-                                    case 5:status = '<div class="repair-status yellow">已确认</div>';
-                                        break;
-                                    case 6:
-                                        status = '<div class="repair-status gray">已撤销</div>';
-                                        href = 'repair_revoked_has.html';
-                                        break;
-                                }
-                                //  如果有撤销权限，切登录ID和发布ID相同，则可以撤销；
-                                if(auth_7 && parseInt(userId) === val.user.id && (val.status === 1 || val.status === 2)){
-                                    operating += '<a href="repair_revoked.html?id='+ val.id +'" class="repair-operating cancel red">撤销</a>';
-                                }
-                                //<div class="repair-status green">未派单</div>
-                                //<div class="repair-status red">被移交</div>
-                                //<div class="repair-status gray">已撤销</div>
-                                //<div class="repair-status green">待验收</div>
-                                //<div class="repair-status blue">已派单</div>
-                                //<div class="repair-status blue">已受理</div>
-                                //<div class="repair-status yellow">已确认</div>
-
-                                //<div class="repair-operating cancel red">撤销</div> 移交(transfer)
-                                //<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
-                                //<div class="repair-operating reappear blue">重新派单</div>
-                                //<div class="repair-operating confirm yellow">确认验收</div>
-                                if(val.repairImages){
-                                    $.each(val.repairImages,function(x,y){
-                                        img += '<img src="'+ server_url_img + y +'" alt="">';
-                                    })
-                                }
-                                var type = val.type===1?"办公区域":val.type===2?"公共区域":"未知";
-                                html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
-                                    ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ val.property +'</span></div> <div class="image"> '+ img +'' +
-                                    '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
-                                    '<footer> '+ operating +' </footer> </li>';
-                            });
-                            list.append(html);
-                            comment ++;
-                            if(data.data.pageCount === 0){
-                                me.lock();  //智能锁定，锁定上一次加载的方向
-                                me.noData();      //无数据
-                            }
-                        }else{
-                            me.lock();  //智能锁定，锁定上一次加载的方向
-                            me.noData();      //无数据
-                        }
-                        me.resetload();    //数据加载玩重置
-                    },
-                    error:function(data){
-                        ErrorReminder(data);
-                        me.noData();      //无数据
-                        me.resetload();    //数据加载玩重置
-                    }
-                })
+                _this.repairList(pIdRepair,searchType,keyword,me);
             }
         });
     };
+    this.road = function(){
+        $("#list").empty();            //清除列表数据;
+        comment = 1;
+        dropload.unlock();
+        dropload.noData(false);
+        dropload.resetload();
+    };
+    this.repairList = function(proId,searchType,keyword,me){
+        console.log("物业ID：" + proId + " 搜索类型：" + searchType + " 搜索内容：" + keyword + " page：" + comment);
+        $.ajax({
+            type:'get',
+            url:  server_url_repair + server_v1 + '/repair/list.json',
+            data: {
+                "userId":userId,
+                "propertyId":proId,
+                "page":comment,
+                "size":5,
+                "searchType":searchType,
+                "keyword":keyword
+            },
+            dataType:'json',
+            success:function(data){
+                var list = $("#list");
+                var html = '';
+                if(data.code === 0 && data.data){
+                    $.each(data.data.items,function(index,val){
+                        var status = '',img = '',operating = '';
+                        var color = ''; // 各种状态颜色；
+                        var mi = '';  //  给我的；
+                        var href = 'repair_details.html';
+                        switch (val.status){
+                            case 1:
+                                color = "green";
+                                //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
+                                if(auth_1){
+                                    operating += '<a href="repair_sent.html?id='+ val.id +'&status=1" class="repair-operating single blue">派单</a>';
+                                }
+                                //  有接单权限，可以接单；
+                                if(auth_4){
+                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
+                                }
+                                break;
+                            case 2:
+                                //  判断维修ID等于登录ID，则显示“给我的”派单；
+                                if(val.handlerId === parseInt(userId)){
+                                    mi = '<i class="mine-icon"></i>';
+                                    if(auth_1){
+                                        color = "blue";
+                                    }else{
+                                        color = "green";
+                                    }
+                                    //  有接单权限，可以接单；
+                                    if(auth_4){
+                                        operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
+                                    }
+                                }else{
+                                    if(auth_1){
+                                        color = "blue";
+                                    }else{
+                                        color = "green";
+                                    }
+                                }
+                                break;
+                            case 3:
+                                color = "blue";
+                                //  有移交权限
+                                if(auth_5){
+                                    operating += '<a href="repair_transfer.html?id='+ val.id +'" class="repair-operating transfer blue">移交</a>';
+                                }
+                                //  有填写处理权限；
+                                if(auth_6){
+                                    operating += '<a href="repair_result.html?id='+ val.id +'" class="repair-operating dealWith blue">填写处理</a>';
+                                }
+                                break;
+                            case 4:
+                                color = "red";
+                                //  有重新派单权限，可以派单；
+                                if(auth_2){
+                                    operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
+                                }
+                                //  有接单权限，可以接单；
+                                if(auth_4){
+                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
+                                }
+                                break;
+                            case 5:
+                                color = "green";
+                                if(auth_3 && parseInt(userId) === val.user.id){
+                                    operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
+                                }else if(auth_3 && val.type === 2 && userId !== val.handlerId){
+                                    operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
+                                }
+                                break;
+                            case 6:
+                                color = "yellow";
+                                break;
+                            case 7:
+                                color = "gray";
+                                href = 'repair_revoked_has.html';
+                                break;
+                        }
+                        //  如果有撤销权限，切登录ID和发布ID相同，则可以撤销；
+                        if(auth_7 && parseInt(userId) === val.user.id && (val.status === 1 || val.status === 2)){
+                            operating += '<a href="repair_revoked.html?id='+ val.id +'" class="repair-operating cancel red">撤销</a>';
+                        }
+                        status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
+                        //<div class="repair-status green">未派单</div>
+                        //<div class="repair-status red">被移交</div>
+                        //<div class="repair-status gray">已撤销</div>
+                        //<div class="repair-status green">待验收</div>
+                        //<div class="repair-status blue">已派单</div>
+                        //<div class="repair-status blue">已受理</div>
+                        //<div class="repair-status yellow">已确认</div>
+
+                        //<div class="repair-operating cancel red">撤销</div> 移交(transfer)
+                        //<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
+                        //<div class="repair-operating reappear blue">重新派单</div>
+                        //<div class="repair-operating confirm yellow">确认验收</div>
+                        if(val.repairImages){
+                            $.each(val.repairImages,function(x,y){
+                                img += '<img src="'+ server_url_img + y +'" alt="">';
+                            })
+                        }
+                        var type = '';var address = "";
+                        if(val.type === 1){
+                            type = "办公区域";
+                            address = val.address;
+                        }else if(val.type === 2){
+                            type = "公共区域";
+                            address = val.publicAddress;
+                        }
+                        html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
+                            ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ address +'</span></div> <div class="image"> '+ img +'' +
+                            '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
+                            '<footer> '+ operating +' </footer> </li>';
+                    });
+                    list.append(html);
+                    comment ++;
+                    if(data.data.pageCount === 0){
+                        me.lock();  //智能锁定，锁定上一次加载的方向
+                        me.noData();      //无数据
+                    }
+                }else{
+                    me.lock();  //智能锁定，锁定上一次加载的方向
+                    me.noData();      //无数据
+                }
+                me.resetload();    //数据加载玩重置
+            },
+            error:function(data){
+                ErrorReminder(data);
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+                me.resetload();    //数据加载玩重置
+            }
+        })
+    };
     this.listSearch = function(slef){
         keyword = $(slef).val();
-        if($(slef).val().length > 0){
-            $(".dropload-down").remove();   //清除暂无数据；
-            $("#list").empty();            //清除列表数据;
+        if(keyword.length > 0){
             $(".sBox-wrapper").addClass("hei");
 
-            this.repairList(pIdRepair,page,searchType,keyword);
+            this.road();  // 重置
+
         }else{
             $(".sBox-wrapper").removeClass("hei");
         }
@@ -204,11 +226,20 @@ function HtmlAjax(){
         });
         $(".back").click(function(){
             searchType = 1;  // 报修类型
+            $("#search_btn").val("");
         });
-        $('.sBox-wrapper .cancel').tap(function(){
-            //  清除搜索条件；
-            keyword = "";
-            _this.repairList();
+        $('#cancel').click(function(){
+
+            $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
+
+            searchType = 1;  // 报修类型
+            keyword = "";       //  清除搜索条件；
+
+            $("#list").empty();            //清除列表数据;
+            setTimeout(function(){
+                _this.road();  // 重置
+            },600);
+
         });
         $(document).on("click",".orders",function(){
             var self = $(this);
@@ -374,10 +405,15 @@ DongSwitch.prototype = {
             if(id){
                 pIdRepair = id;
             }
-            $(".dropload-down").remove();   //清除暂无数据；
-            $("#list").empty();   //    清除列表数据;
+
             keyword = text;
-            htmlAjax.repairList(pIdRepair,page,2,keyword);
+            searchType = 2;
+
+            htmlAjax.road();  // 重置
+
+            searchType = 1;  // 重置报修类型
+
+
         });
         //  重置
         var _this = this;

@@ -16,15 +16,21 @@ $(document).ready(function(){
 var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.releaseRpr = function(){
+        if(imgBur){
+            showMask("正在处理图片，请稍等！");
+            return
+        }
         var urls = [];
         var data = {};
         $.each(fileData,function(index,val){
-           urls.push(val.name);
+           urls.push(val.url);
         });
 
         var type = $(".addType .active").attr("data-id");  //类型;
         var content = $("#box").html();                     //报修内容
         var bespeakTime = '',expectTime = '',repairItemId = '',repairAddressId = '';
+        var serviceAdd = $("#service-address").attr("data-id");
+        var address = $("#pA").val();
         if(type === "1"){
             bespeakTime = $("#reservation").val();
             expectTime = $("#expected").val();
@@ -34,20 +40,31 @@ function HtmlAjax(){
             data["bespeakTime"] = bespeakTime;
             data["expectTime"] = expectTime;
             data["repairItemId"] = repairItemId;
+            data["repairAddressId"] = repairAddressId;
+            data["propertyId"] = propertyId;
 
         }else if(type === "2"){
-            repairAddressId = $("#service-address").attr("data-id");
+
+            if(serviceAdd){
+                data["propertyId"] = serviceAdd;
+            }else{
+                showMask("请选择服务地址！");
+                return;
+            }
+
+            if(reg.test(address) || content === ""){
+                showMask("请输入报修项目详细地址！");
+                return;
+            }
+
+            data["address"] = address;
         }
+
         //  判断是否为空！
         if(type === "1" && (!bespeakTime || !expectTime)){
             showMask("请选择预约和期望时间！");
             return;
         }
-        if(!repairAddressId){
-            showMask("请选择服务地址！");
-            return;
-        }
-        console.log();
         if(reg.test(content) || content === ""){
             showMask("请输入报修内容！");
             return;
@@ -55,9 +72,7 @@ function HtmlAjax(){
 
         data["urls"] = urls;
         data["userId"] = userId;
-        data["propertyId"] = propertyId;
         data["type"] = type;
-        data["repairAddressId"] = repairAddressId;
         data["content"] = content;
 
         $.ajax({
@@ -200,7 +215,7 @@ function Operating(){
             }
         });
         //  请选择服务地址；
-        $(".service-address").click(function(){
+        $(".service").click(function(){
            $(".repair-add-switch").addClass("active");
         });
 
@@ -223,8 +238,9 @@ function Operating(){
             $(".repair-add").removeClass("active");
             $(".service").removeClass("active");
 
-            $("#ads").text($(".addressList li.active .address").text()
-                .attr("data-id",$(".addressList li.active").attr("data-id")));
+            $("#ads").text($(".addressList li.active .address").text())
+                .attr("data-id",$(".addressList li.active").attr("data-id"));
+            return false;
         });
         //  下一步
         $(".next-step").on("click",function(){
