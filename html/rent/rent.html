@@ -16,7 +16,7 @@
 </head>
 <body>
 <div class="fix-bg"></div>
-    <div class="sBox-wrapper tran500 ">
+    <div class="sBox-wrapper tran500">
         <div class="top-search">
             <div class="back"><i class="icon icon-return"></i></div>
             <div class="inpu-w bgfff">
@@ -392,7 +392,7 @@
             <div class="tran-wrap fl">
                 <div class="tran-inner">
                     <header>
-                        <a class="return" href="javascipt:;" onclick="tranHide()">
+                        <a class="return" href="javascipt:;" onclick="returnTran()">
                             <img src="../../images/icon/back.png" alt=""><span></span>
                         </a>
                         接待分配
@@ -471,16 +471,41 @@
             </div>
             <div class="pic-wrap undis">
                 <header>
-                    <a class="return" href="javascipt:;" onclick="tranHide()">
+                    <div class="return">
                         <img src="../../images/icon/back.png" alt=""><span></span>
-                    </a>
+                    </div>
                     已选择<span id="pic_num">5</span>张照片
-                </header> 
+                </header>
+                <div class="pic-con">
+                    <div class="list-con">
+                        <!-- <div class="img-list">
+                            <img src="../../images/upload/pic1@2x.png" alt="">
+                            <i class="icon icon-del"></i>
+                        </div> 
+                        <div class="img-list">
+                            <img src="../../images/upload/pic1@2x.png" alt="">
+                            <i class="icon icon-del"></i>
+                        </div>
+                        <div class="img-list">
+                            <img src="../../images/upload/pic1@2x.png" alt="">
+                            <i class="icon icon-del"></i>
+                        </div>
+                        <div class="img-list">
+                            <img src="../../images/upload/pic1@2x.png" alt="">
+                            <i class="icon icon-del"></i>
+                        </div>
+                         -->
+                    </div>
+                    <div class="img-list add-list">
+                        <img src="../../images/icon/photo-add.png" alt="">
+                    </div>   
+                    <div class="clear"></div>
+                </div>
             </div>
             <div class="clear"></div>
         </div>
     </div>
-    <footer class="tap-footer " style="position:fixed">
+    <footer class="tap-footer" style="position:fixed">
         <a href="../../index.html"><i class="icon index-icon"></i><span>首页</span></a>
         <a class="active" href="rent.html"><i class="icon rent-icon"></i><span>出租</span></a>
         <a href="javascript:"><i class="icon circle-icon"></i><span>圈子</span></a>
