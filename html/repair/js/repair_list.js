@@ -290,18 +290,15 @@ function HtmlAjax(){
 }
 
 
-$(document).ready(function(){
 
-    var tap = new DongSwitch();
-//  楼栋切换；
-    tap.main();  // 调用总函数；
-});
+
+var tap = new DongSwitch();
 function DongSwitch(){
     this.louDong = null;       //   保存数据；
     this.addressList = $("#addressList");   //  楼栋列表父级元素
 }
 DongSwitch.prototype = {
-    constructor:DongSwitch,
+    constructor:dongSwitch,
     main:function(){
         this.dongAjax();     //  ajax事件获取数据，并将数据保存；
         this.dongSelect();   //    选择楼栋

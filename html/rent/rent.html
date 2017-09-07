@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../theme/plugin/flexible/flexible.css">
     <script src="../../theme/plugin/flexible/flexible.js"></script>
     <link rel="stylesheet" href="../../theme/plugin/swiper/css/swiper-3.3.1.min.css">
+    <link rel="stylesheet" href="../../theme/plugin/dropload-gh-pages/dist/dropload.css">
     <link rel="stylesheet" href="../../theme/css/reset.css">
     <link rel="stylesheet" href="../../theme/css/common.css">
     <link rel="stylesheet" href="../../theme/css/normal.css">
@@ -15,7 +16,7 @@
 </head>
 <body>
 <div class="fix-bg"></div>
-    <div class="sBox-wrapper tran500 z0">
+    <div class="sBox-wrapper tran500 ">
         <div class="top-search">
             <div class="back"><i class="icon icon-return"></i></div>
             <div class="inpu-w bgfff">
@@ -33,8 +34,8 @@
                     <div class="list-con">
                         <div class="inner">
                             <div class="list">标题</div>
-                            <div class="list">发布人</div>
                             <div class="list">租金</div>
+                            <div class="list">发布人</div>
                             <div class="list">距离</div>
                         </div>
                         <div class="inner undis">
@@ -55,9 +56,7 @@
                 </div>
             </div>
             <div class="tran-wrap fl bgfff">
-                <div class="hr-24"></div>
-                <div class="rent-box">
-                    <div class="hr-24"></div>
+                <div class="rent-box serCon-wrap">
                     <div class="rent-list-con"  id="searchCon">
                         <!-- <div class="list">
                                 <a class="p24" href="orent_detail.html">
@@ -470,26 +469,31 @@
                     </div>   
                 </div>
             </div>
-            <div class="pic-wrap">
-                 
+            <div class="pic-wrap undis">
+                <header>
+                    <a class="return" href="javascipt:;" onclick="tranHide()">
+                        <img src="../../images/icon/back.png" alt=""><span></span>
+                    </a>
+                    已选择<span id="pic_num">5</span>张照片
+                </header> 
             </div>
             <div class="clear"></div>
         </div>
     </div>
-<footer class="tap-footer z0" style="position:fixed">
-    <a href="../../index.html"><i class="icon index-icon"></i><span>首页</span></a>
-    <a class="active" href="rent.html"><i class="icon rent-icon"></i><span>出租</span></a>
-    <a href="javascript:"><i class="icon circle-icon"></i><span>圈子</span></a>
-    <a href="javascript:"><i class="icon more-icon"></i><span>小信</span></a>
-</footer>  
+    <footer class="tap-footer " style="position:fixed">
+        <a href="../../index.html"><i class="icon index-icon"></i><span>首页</span></a>
+        <a class="active" href="rent.html"><i class="icon rent-icon"></i><span>出租</span></a>
+        <a href="javascript:"><i class="icon circle-icon"></i><span>圈子</span></a>
+        <a href="javascript:"><i class="icon more-icon"></i><span>小信</span></a>
+    </footer>  
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/zepto.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/touch.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/swiper/js/swiper-3.3.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/dropload-gh-pages/dist/dropload.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/js/page.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/rent.js"></script> 
-<script type="text/javascript" charset="utf-8" src="js/issue.js"></script> 
 <script>        
     var mySwiper = new Swiper ('.rent-swiper', {
             loop: true,

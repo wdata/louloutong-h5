@@ -10,13 +10,13 @@ var auth_0=false;			//显示出租/求租
 	auth_6=false;			//接待
 	
     //if(auth_sum.indexOf('/llt/click/rent/showModel/rentorwanted')>0) 			auth_0=true;
-    /*if(auth_sum.indexOf('/llt/click/rent/showModel/bespeakoradd')>0) 			auth_1=true;
+    if(auth_sum.indexOf('/llt/click/rent/showModel/bespeakoradd')>0) 			auth_1=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/click/assignorno')>0) 		auth_2=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/click/handleorno')>0) 		auth_3=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/distribute')>0) 		auth_4=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/remind')>0) 			auth_5=true;
     if(auth_sum.indexOf('/llt/click/rent/showModel/bespeak/recept')>0) 			auth_6=true;
-*/
+
     //因权限而对页面显示控制
     if(auth_1){
     	$('.rent-tab .top .top-r1').show().siblings().hide();
@@ -30,7 +30,7 @@ var auth_0=false;			//显示出租/求租
     }
 
 var no_data="已经没有更多数据了",have_data="下拉刷新数据",loading_data="数据加载中";
-//wxConfig(wx);
+wxConfig(wx);
 
 //出租和求租
 var rent = new Object({
@@ -42,19 +42,24 @@ var rent = new Object({
 	keyword:"",
 	isHaveNextPage:true
 });
-rent.getList = function(elem){
+rent.getList = function(elem,me){
 	var _this=this;
 	$.ajax({
 		type:'get',
 		url:server_rent+server_v1+"/rents/search.json",
 		dataType:'json',
 		data:{
-			'type':this.type,'page':this.page,'size':this.size,'genre':this.genre,'searchType':this.searchType,'keyword':this.keyword
+			'type':_this.type,'page':_this.page,'size':_this.size,'genre':_this.genre,'searchType':_this.searchType,'keyword':_this.keyword
 		},
 		success:function(data){
 			var code="";
-			if(data.code!=0) return false;
-			if(!data.data) { $(elem).html(code); return false; }
+			if(!data.data || data.code!=0) {
+                $(elem).html(code); 
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+                me.resetload();
+                return false; 
+            }
 			$.each(data.data.items,function(index,item){
                 var imgCode="",botCode="";
                 if(item.images.length>1){
@@ -95,101 +100,53 @@ rent.getList = function(elem){
                     </div>
 				`	
 			})
-			$(elem).html(code);
-		}
-	})
-}
-rent.getMoreList = function(elem){
-	this.page++;
-	var _this=this;
-	$.ajax({
-		type:'get',
-		url:server_rent+server_v1+"/rents/search.json",
-		dataType:'json',
-		data:{
-			'type':this.type,'page':this.page,'size':this.size,'genre':this.genre,'searchType':this.searchType,'keyword':this.keyword
-		},
-		success:function(data){
-			var code="";
-			if(data.code!=0) return false;
-			if(_this.page>data.data.totalPages) { _this.isHaveNextPage=false;}  
-			$.each(data.data.items,function(index,item){
-                var imgCode="";
-                if(item.images.length>1){
-                    for(var i=0;i<item.images.length;i++){
-                        imgCode+=`
-                                <div class="pic-w fl">
-                                    <img src="${server_url_img+item.images[i].url}" alt="">
-                                </div>
-                            `;
-                    }
-                };
-                var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
-				code+=`
-					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="rent_detail.html">
-                            <div class="top">
-                                <div class="t-l fl">
-									<span class="tx" data-id=${item.user.id}><img src="${txCode}" alt=""></span>
-                                    <div class="txt">
-                                        <div class="tit">${item.user.name}</div>
-                                        <div class="time">${item.createTime}</div>
-                                    </div>
-                                </div>
-                                <div class="t-r fr">
-                                    距离距离
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                            <div class="mid">
-                                <div class="word overhide">
-                                    ${item.title}
-                                </div>
-                                <div class="tips price">${item.price}</div>    
-                            </div>
-                            <div class="bot">
-                                ${imgCode}
-                                <div class="clear"></div>
-                            </div>
-                        </a>
-                    </div>
-				`	
-			})
 			$(elem).append(code);
-		}
+            _this.page++;
+            if(data.data.pageCount === 0){
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+            }
+            me.resetload();    //数据加载完重置
+        },
+        error:function(data){
+            me.noData();      
+            me.resetload();    
+        }
 	})
 }
 
-rent.init = function(){
-	rent.getList('.rent-list-con');
-	//rent.isBot();
-}
-rent.init();
 //预约
 var order=new Object({
 	page:1,
 	size:1,
 	userId:userId,
 	status:0,    //状态， 0: 未分配或未处理， 1: 已分配或已处理
-	isHaveNextPage:true
+	keyword:null,
+    searchType:null
 })
-order.getList = function(elem){
-	$.ajax({
-		type:'get',
-		url:server_rent+server_v1+"/rentBespeaks/list.json",
-		dataType:'json',
-		data:{
-			'page':this.page,'size':this.size,'userId':this.userId,'status':this.status
-		},
-		success:function(data){
-			var code="";
-			if(data.code!=0) return false;
-			if(!data.data) { $(elem).html(code); return false; }
-			if(this.status==1){
-				$.each(data.data.items,function(index,item){
+order.getList = function(elem,me){
+    var _this=this;
+    $.ajax({
+        type:'get',
+        url:server_rent+server_v1+"/rentBespeaks/list.json",
+        dataType:'json',
+        data:{
+            'page':_this.page,'size':_this.size,'userId':_this.userId,'status':_this.status,'keyword':_this.keyword,'searchType':_this.searchType
+        },
+        success:function(data){
+            var code="";
+            if(data.code!=0 || !data.data ) { 
+                $(elem).html(code); 
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+                me.resetload();
+                return false; 
+            }
+            if(this.status==1){
+                $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
-					code+=`
-						 <div class="item">
+                    code+=`
+                         <div class="item">
                             <div class="p24">
                                 <div class="t-l fl">
                                     <div class="top">
@@ -221,13 +178,13 @@ order.getList = function(elem){
                                 <div class="clear"></div>
                             </div>
                         </div>
-					`;
-				})
-			}else{
-				$.each(data.data.items,function(index,item){
+                    `;
+                })
+            }else{
+                $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
-					code+=`
-						<div class="item">
+                    code+=`
+                        <div class="item">
                             <div class="p24">
                                 <div class="t-l fl">
                                     <div class="top">
@@ -257,124 +214,47 @@ order.getList = function(elem){
                                 <div class="clear"></div>
                             </div>
                         </div>
-					`
-				})
-			}
-			$(elem).html(code);
-		}
-	})
-}
-order.getMoreList = function(elem){
-	var _this=this;
-	this.page++;
-	$.ajax({
-		type:'get',
-		url:server_rent+server_v1+"/rentBespeaks/list.json",
-		dataType:'json',
-		data:{
-			'page':this.page,'size':this.size,'userId':this.userId,'status':this.status
-		},
-		success:function(data){
-			var code="";
-			if(data.code!=0) return false;
-			if(_this.page>=data.data.totalPages) { _this.isHaveNextPage=false; }
-			if(_this.status==1){
-				$.each(data.data.items,function(index,item){
-					code+=`
-						 <div class="item">
-                            <div class="p24">
-                                <div class="t-l fl">
-                                    <div class="top">
-                                        <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt=""></span>
-                                            <div class="txt">
-                                                <div class="tit">${item.beseakUser.name}</div>
-                                                <span>${item.createTime}</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <a href="order_detail.html">
-                                        <div class="mid">
-                                            <p class="line2">${item.beseakUser.rentTitle}</p>
-                                            <div class="time">预约时间：${item.bespeakTime}</div>
-                                            <div class="tips overhide">接待者：${item.receptUser.name}|&nbsp;结果：已接待，带客户考虑清楚再回复我们</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="t-r fl">
-                                    <div class="oper">
-                                        <button class="btn">提醒</button>
-                                        <a href="recei_reasult.html" class="btn">接待</a>
-                                    </div>
-                                    <a href="order_detail.html">
-                                        <img src="../../images/upload/tu1@2x.png" alt="">
-                                    </a>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                        </div>
-					`;
-				})
-			}else{
-				$.each(data.data.items,function(index,item){
-					code+=`
-						<div class="item">
-                            <div class="p24">
-                                <div class="t-l fl">
-                                    <div class="top">
-                                        <a href="">
-                                            <span class="tx"><img src="${item.beseakUser.photo}" alt=""></span>
-                                            <div class="txt">
-                                                <div class="tit">${item.beseakUser.name}</div>
-                                                <span>${item.createTime}</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <a href="order_detail.html">
-                                        <div class="mid">
-                                            <p class="line2">${item.rentTitle}</p>
-                                            <div class="time">预约时间：${item.bespeakTime}</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="t-r fl">
-                                    <div class="hr-48"></div>
-                                    <div class="order-area" onclick="tranShow()">
-                                        <div class="mask"></div>
-                                        <button class="abs">分配接待</button>
-                                        <img src="../../images/upload/tu1@2x.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-                        </div>
-					`
-				})
-			}
-			$(elem).append(code);
-		}
-	})
+                    `
+                })
+            }   
+            $(elem).append(code);
+            _this.page++;
+            if(data.data.pageCount === 0){
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+            }
+            me.resetload();    //数据加载完重置
+        },
+        error:function(data){
+        }
+    })        
 }
 //我的出租\求租列表
 var myrent=new Object({
 	page:1,
 	size:10,
 	userId:userId,
-	type:1
+	type:1,
+    keyword:null,
 })
-myrent.getList = function(elem){
+myrent.getList = function(elem,me){
     var _this=this;
 	$.ajax({
 		type:'get',
 		url:server_rent+server_v1+"/rents/user/"+this.userId+"/"+this.type+".json",
 		dataType:'json',
 		data:{
-			'page':this.page,'size':this.size,
+			'page':this.page,'size':this.size,'keyword':_this.keyword
 		},
 		success:function(data){
 			var code="";
-			if(data.code!=0) return false;
-			if(!data.data) { $(elem).html(code); return false; }
+			if(data.code!=0 || !data.data ) { 
+                $(elem).html(code); 
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+                me.resetload();
+                return false; 
+            }
 			$.each(data.data.items,function(index,item){
                 var imgCode="";
                 if(item.images.length>1){
@@ -409,7 +289,13 @@ myrent.getList = function(elem){
                     </div>
 				`	
 			})
-			$(elem).html(code);
+			$(elem).append(code);
+            _this.page++;
+            if(data.data.pageCount === 0){
+                me.lock();  //智能锁定，锁定上一次加载的方向
+                me.noData();      //无数据
+            }
+            me.resetload();    //数据加载完重置
 		}
 	})
 }
@@ -495,20 +381,21 @@ issue.scroll = function(){
                         `
                 })
                 $('.issue .photo .img-wrap').html(wimgCode);
+                console.info(localIds)
                 wx.uploadImage({
-                    localId: localIds, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: function (res) {
-                       // _this.picId.push(res.serverId); // 返回图片的服务器端ID
                        _this.picId=res.serverId;
-                       _this.imgUpload(); 
-
-                       $('.elem-02').val(_this.picId);   
+                       //alert(res.serverId)
+                       $('.elem-02').val(_this.picId); 
+                       //_this.imgUpload();   
                     },
                     error:function(res){
                         
                     }
                 });
+
             },
         }); 
 
@@ -526,8 +413,8 @@ issue.imgUpload = function(){
             
         }
      }) 
-}
-*/
+}*/
+
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
@@ -643,51 +530,48 @@ issue.add = function(){
 }
 
 function imgUpload(elem){
-    $(elem).click(function(){
-        wx.chooseImage({
-            count: 9, // 默认9
-            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-            success: function (res) {
-                console.info(res)
-                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                /*var wimgCode="";
-                $.each(res.localIds,function(index,item){
-                    wimgCode+=`
-                        <img src="${item}" alt="" class="full">
-                        `
-                })
-                $('.issue .photo .img-wrap').html(wimgCode);*/
-                wx.uploadImage({
-                    localId: localIds, // 需要上传的图片的本地ID，由chooseImage接口获得
-                    isShowProgressTips: 1, // 默认为1，显示进度提示
-                    success: function (res) {
-                        var picId=res.serverId;
-                        $.ajax({
-                            type:'post',
-                            url:'/weixin/downloadImage',
-                            dataType:'json',
-                            data:{
-                                mediaIds:picId
-                            },
-                            success:function(res){
-                                console.info(res)
-                                alert(res.data.urls)
-                                return res.data.urls;
-                            }
-                        }) 
-                    },
-                    error:function(res){
-                        
-                    }
-                });
-            },
-
-        })
+    var urls=[];
+    wx.chooseImage({
+        count: 9, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            syncUpload(localIds);
+        }
     })
+    var syncUpload = function(localIds){
+        var localId = localIds.pop();
+        wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: function (res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                $.ajax({
+                    type:'post',
+                    url:'/weixin/downloadImage',
+                    dataType:'json',
+                    data:{
+                        mediaIds:picId
+                    },
+                    success:function(res){
+                        urls.push(res.data.urls);
+                        $('.issue .photo .img-wrap').html(`<img src="${res.data.urls}" alt="" class="full">`);
+                    }
+                })
+                if(localIds.length > 0){
+                    syncUpload(localIds);
+                }
+            }
+        });
+    }
+   
 }
-imgUpload('.issue .photo .icon-wrap');
 
+
+$('.issue .photo .icon-wrap').click(function(){
+    alert(imgUpload());
+})
 
 function dongSwitch(){
     this.louDong = null;       //   保存数据；
@@ -862,6 +746,8 @@ $(document).ready(function(){
 //下拉刷新效果
 var i=0;
 var cur_ob=rent;  //当前列表
+var conIndex=1;
+var serIndex=1;
 $('.mainCon-wrap').scroll(function(){
     var isBottom = $('.mainCon-wrap').scrollTop()>=($('.mainCon-wrap').height()-$(window).height())-50;
     i++;
@@ -883,24 +769,88 @@ $('.mainCon-wrap').scroll(function(){
     }
 });
 
+var dropload = $('.mainCon-wrap').dropload({
+        scrollArea : $(".mainCon-wrap"),
+        autoLoad:true,
+        loadDownFn:function(me){
+            console.info(me)
+            switch(conIndex){
+                case 4:
+                    myrent.getList('.rent-list-con',me)
+                    break;
+                case 3:
+                    order.getList('.rent-list-con',me);
+                    break;
+                default:
+                    rent.getList('.rent-list-con',me);
+                    break;
+            }
+            
+        }
+})
 
+
+var i=0; var sdropload;
 $('#search_btn').on("input porpertychange",function(){
 	if($('#search_btn').val()){
 		$('.search-main').css('transform','translateX(-'+ww+'px)');	
+        $('.top-search').addClass('active');
 	}else{
 		$('.search-main').css('transform','translateX(0)');
+        $('.top-search').removeClass('active');
+        return false;
 	}
+    if(i==0){
+        sdropload = $('.serCon-wrap').dropload({
+                scrollArea : $(".serCon-wrap"),
+                autoLoad:true,
+                loadDownFn:function(me){
+                    switch(serIndex){
+                        case 3:
+                            myrent.getList('#searchCon',me);
+                            break;
+                        case 2:
+                            order.getList('#searchCon',me);
+                            break;
+                        default:
+                            rent.getList('#searchCon',me);
+                            break;
+                    }
+                    
+                }
+        })
+    }
+    i++;
 	var tIndex=$('.rent-tab .top .list.active').index();
 	var bIndex=$('.rent-tab .bot .list.active').index();
 	var _val=$('#search_btn').val();
 	var _type=$('.search-main .list-con .list.active').index()>0?$('.search-main .list-con .list.active').index():' ';
 	switch(tIndex){
+        case 3:
+            myrent.keyword=$('#search_btn').val();
+            serIndex=3;
+            myrent.page=1;
+            sdropload.unlock();
+            sdropload.noData(false);
+            sdropload.resetload();
+            break; 
 		case 2:
-			break;
+            order.keyword=$('#search_btn').val();
+            order.searchType=_type+1;
+            serIndex=2;
+            order.page=1;
+            sdropload.unlock();
+            sdropload.noData(false);
+            sdropload.resetload();
+            break;
 		default:
 			rent.keyword=$('#search_btn').val();
-			rent.searchType=_type;
-			rent.getList('#searchCon');
+			rent.searchType=_type+1;
+            serIndex=1;
+            rent.page=1;
+            sdropload.unlock();
+            sdropload.noData(false);
+            sdropload.resetload();
 			break;
 	}
 })
@@ -915,7 +865,11 @@ $('.rent-tab .top .list').click(function(){
 	switch(tIndex){
 		case 2:
 			cur_ob=order;
-			order.getList('.rent-list-con');
+            conIndex=tIndex+1;
+            order.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
 			$('.rent-list-con').show();
 			$('.issue').hide();
 			break;
@@ -928,7 +882,12 @@ $('.rent-tab .top .list').click(function(){
 			$('.rent-list-con').show();
 			$('.issue').hide();
 			rent.type=tIndex+1;
-			rent.getList('.rent-list-con');
+            conIndex=tIndex+1;
+            rent.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
+
 	}
 })			
 
@@ -940,7 +899,12 @@ $('.rent-tab .bot .list').click(function(){
 	switch(tIndex){
 		case 2:
 			order.status=bIndex;
-			order.getList('.rent-list-con');
+			conIndex=tIndex+1;
+            $('.rent-list-con').html(' ');
+            order.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
 			break;
 		case 3:
 			switch(bIndex){
@@ -952,18 +916,28 @@ $('.rent-tab .bot .list').click(function(){
 					issue.isShow=false;
 					issue.init();
 					myrent.type=bIndex;
-					myrent.getList('.rent-list-con');
+                    $('.rent-list-con').html(' ');
+                    conIndex=tIndex+1;
+                    myrent.page=1;
+                    dropload.unlock();
+                    dropload.noData(false);
+                    dropload.resetload();
+					/*myrent.getList('.rent-list-con');*/
 					break;
 			}
 			break;
 		default:
 			rent.genre=bIndex+1;
 			rent.type=tIndex+1;
-			rent.getList('.rent-list-con');
+			conIndex=tIndex+1;
+            rent.page=1;
+            $('.rent-list-con').html(' ');
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
 			break;
 	}
 })
-
 
 //我要出租/我要求租返回列表页
 function returnList(){
@@ -976,3 +950,20 @@ function link(id,type){
     sessionStorage.setItem('rent_ob',elem)
 }
 
+//点击关键字后
+$('.sBox-wrapper .list-con .list').click(function(){
+    $(this).addClass('active').siblings().removeClass('active');
+    $('#search_btn').attr('placeholder',$(this).text());
+    $('.search-main').css('transform','translateX(-'+ww+'px)'); 
+    $('.sBox-wrapper .top-search').addClass('active')
+    $('#searchCon').html(' ');
+})
+//取消回到列表页
+$('.sBox-wrapper .cancel').click(function(){
+    $('.search-main').css('transform','translateX(0)'); 
+    $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
+    $('#search_btn').attr('placeholder','搜索').val('');
+    rent.searchType=null;
+    rent.keyword=null;
+    rent.genre=1;
+})
