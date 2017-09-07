@@ -33,6 +33,8 @@ var auth_7 = authMethod("/llt/repair/list/button/revoke");
 $(document).ready(function(){
     htmlAjax.repairList(pIdRepair,page,searchType,keyword);
     htmlAjax.listStatus();
+    //  楼栋切换；
+    tap.main();  // 调用总函数；
 });
 
 
@@ -64,15 +66,15 @@ function HtmlAjax(){
                         if(data.code === 0 && data.data){
                             $.each(data.data.items,function(index,val){
                                 var status = '',img = '',operating = '';
-                                var color = ''; // 各种状态颜色；
-                                var mi = '';  //  给我的；
                                 var href = 'repair_details.html';
                                 switch (val.status){
                                     case 1:
-                                        color = "green";
                                         //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
                                         if(auth_1){
+                                            status = '<div class="repair-status green">未派单</div>';
                                             operating += '<a href="repair_sent.html?id='+ val.id +'&status=1" class="repair-operating single blue">派单</a>';
+                                        }else{
+                                            status = '<div class="repair-status green">待受理</div>';
                                         }
                                         //  有接单权限，可以接单；
                                         if(auth_4){
@@ -82,11 +84,10 @@ function HtmlAjax(){
                                     case 2:
                                         //  判断维修ID等于登录ID，则显示“给我的”派单；
                                         if(val.handlerId === parseInt(userId)){
-                                            mi = '<i class="mine-icon"></i>';
                                             if(auth_1){
-                                                color = "blue";
+                                                status = '<div class="repair-status blue"><i class="mine-icon"></i>已派单</div>';
                                             }else{
-                                                color = "green";
+                                                status = '<div class="repair-status green"><i class="mine-icon"></i>待受理</div>';
                                             }
                                             //  有接单权限，可以接单；
                                             if(auth_4){
@@ -94,45 +95,44 @@ function HtmlAjax(){
                                             }
                                         }else{
                                             if(auth_1){
-                                                color = "blue";
+                                                status = '<div class="repair-status blue">已派单</div>';
                                             }else{
-                                                color = "green";
+                                                status = '<div class="repair-status green">待受理</div>';
                                             }
                                         }
                                         break;
                                     case 3:
-                                        color = "blue";
-                                        //  有移交权限
-                                        if(auth_5){
-                                            operating += '<a href="repair_transfer.html?id='+ val.id +'" class="repair-operating transfer blue">移交</a>';
-                                        }
-                                        //  有填写处理权限；
-                                        if(auth_6){
-                                            operating += '<a href="repair_result.html?id='+ val.id +'" class="repair-operating dealWith blue">填写处理</a>';
+                                        if(val.handlerId === null){
+                                            if(auth_2){
+                                                status = '<div class="repair-status red">被移交</div>';
+                                                operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
+                                                //  有接单权限，可以接单；
+                                                if(auth_4){
+                                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
+                                                }
+                                            }else{
+                                                status = '<div class="repair-status blue">已受理</div>';
+                                            }
+                                        }else{
+                                            status = '<div class="repair-status blue">已受理</div>';
+                                            if(auth_5){
+                                                operating += '<a href="repair_transfer.html?id='+ val.id +'" class="repair-operating transfer blue">移交</a>';
+                                            }
+                                            if(auth_6){
+                                                operating += '<a href="repair_result.html?id='+ val.id +'" class="repair-operating dealWith blue">填写处理</a>';
+                                            }
                                         }
                                         break;
                                     case 4:
-                                        color = "red";
-                                        //  有重新派单权限，可以派单；
-                                        if(auth_2){
-                                            operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
-                                        }
-                                        //  有接单权限，可以接单；
-                                        if(auth_4){
-                                            operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                        }
-                                        break;
-                                    case 5:
-                                        color = "green";
+                                        status = '<div class="repair-status green">待验收</div>';
                                         if(auth_3 && parseInt(userId) === val.user.id){
                                             operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                         }
                                         break;
-                                    case 6:
-                                        color = "yellow";
+                                    case 5:status = '<div class="repair-status yellow">已确认</div>';
                                         break;
-                                    case 7:
-                                        color = "gray";
+                                    case 6:
+                                        status = '<div class="repair-status gray">已撤销</div>';
                                         href = 'repair_revoked_has.html';
                                         break;
                                 }
@@ -140,7 +140,6 @@ function HtmlAjax(){
                                 if(auth_7 && parseInt(userId) === val.user.id && (val.status === 1 || val.status === 2)){
                                     operating += '<a href="repair_revoked.html?id='+ val.id +'" class="repair-operating cancel red">撤销</a>';
                                 }
-                                status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
                                 //<div class="repair-status green">未派单</div>
                                 //<div class="repair-status red">被移交</div>
                                 //<div class="repair-status gray">已撤销</div>
@@ -260,18 +259,15 @@ function HtmlAjax(){
 }
 
 
-$(document).ready(function(){
 
-    var tap = new DongSwitch();
-//  楼栋切换；
-    tap.main();  // 调用总函数；
-});
+
+var tap = new DongSwitch();
 function DongSwitch(){
     this.louDong = null;       //   保存数据；
     this.addressList = $("#addressList");   //  楼栋列表父级元素
 }
 DongSwitch.prototype = {
-    constructor:DongSwitch,
+    constructor:dongSwitch,
     main:function(){
         this.dongAjax();     //  ajax事件获取数据，并将数据保存；
         this.dongSelect();   //    选择楼栋
