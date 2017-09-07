@@ -78,6 +78,20 @@ function noTd(elem){
     return elem?elem:' ';
 }
 
+//  将值存入dataSession
+function deposited(name,value){
+    dataSession[""+ name +""] = value;
+    sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
+}
+//  获取dataSession值
+function obtain(name){
+    var data = false;
+    if(sessionStorage.getItem("dataSession")){
+        data = JSON.parse(sessionStorage.getItem("dataSession"))[name];
+    }
+    return data;
+}
+
 //选择全部
 function checkAll(elem,_this){
     if($(_this).prop('checked')){

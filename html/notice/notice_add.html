@@ -78,7 +78,7 @@
             </header>
             <div class="search">
                 <div class="search-heart">
-                    <input type="text" placeholder="请输入接收人"><i class="icon"></i>
+                    <input type="text" id="search" onkeyup="dataFilter(this)"  placeholder="请输入接收人"><i onclick="processing($('#search').val())" class="icon"></i>
                 </div>
             </div>
            <div class="list-con">
