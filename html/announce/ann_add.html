@@ -36,8 +36,7 @@
                 </div>
                 <div class="main">
                     <input type="hidden" id="target">
-                    <div class="article-content" id="editor_box"></div>
-                    <input id="content" type="hidden" name="content">
+                    <div class="article-content" id="editor_box" contenteditable="true" placeholder="添加正文"></div>
                 </div>
             </div>
             <div class="add-bot">
@@ -48,20 +47,21 @@
                 <div class="pic inlist">
                     <img src="../../images/icon/photo.png" alt="">
                     <div>图片</div>
-                    <input class="input-file" id="imageUpload" type="file"  name="file" accept="image/*">
+                    <input class="input-file" id="imageUpload" type="file" onchange="uploadPictureA(this)" accept="image/*">
                 </div>
             </div>
         </form>
         <div class="receive-box fl">
             <header>
-                <a class="return" href="javascipt:;" onclick="rePublish()">
+                <a class="return" href="javascript:" onclick="rePublish()">
                     <img src="../../images/icon/back.png" alt=""><span>返回</span>
                 </a>
                 选择接收人
             </header>
             <div class="search">
                 <div class="search-heart">
-                    <input type="text" placeholder="请输入接收人"><i class="icon"></i>
+                    <input type="text" id="search"   placeholder="请输入接收人"><i onclick="processing($('#search').val())" class="icon"></i>
+                    <!--onkeyup="dataFilter(this)"-->
                 </div>
             </div>
            <div class="list-con">

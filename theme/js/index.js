@@ -63,6 +63,7 @@ dongSwitch.prototype = {
                     });
                     _this.addressList.append(html);
                     _this.Default(one);    // 显示本地存储内楼栋名；
+
                 }
             },
             error:function(data){
@@ -168,6 +169,7 @@ dongSwitch.prototype = {
         }else{
             sessionStorage.setItem("propertyId",data.id);
             sessionStorage.setItem("propertyName",data.name);
+            $("#address").text(data.name);
         }
     },
     superior:function(){
@@ -305,7 +307,7 @@ function IndexAjax(proPertyId){
             dataType:'json',
             success:function(data){
                 if(data.code === 0 && data.data){
-                    if(data.data.noticeCount >= 0){
+                    if(data.data.noticeCount > 0){
                         $(".features a").eq(1).find(".red-icon").show();
                     }
                 }
@@ -403,16 +405,17 @@ function IndexAjax(proPertyId){
                             case 2:span = '<span class="tag-gray tag">已派单</span>';
                                 break;
                         }
-                        var name = '',color = '';
+                        var name = '',color = '';var address = "";
                         switch (val.type){
-                            case 1:name = "办公区域";color = 'blue';
+                            case 1:
+                                name = "办公区域";color = 'blue';address = val.address;
                                 break;
-                            case 2:name = "公共区域";color = 'pluple';
+                            case 2:
+                                name = "公共区域";color = 'pluple';address = val.publicAddress;
                                 break;
                         }
-
                         html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
-                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ val.property +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
+                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
                     })
                 }
                 repair.append(html);

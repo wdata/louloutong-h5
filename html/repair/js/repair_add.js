@@ -23,7 +23,7 @@ function HtmlAjax(){
         var urls = [];
         var data = {};
         $.each(fileData,function(index,val){
-           urls.push(val.name);
+           urls.push(val.url);
         });
 
         var type = $(".addType .active").attr("data-id");  //类型;
@@ -44,14 +44,22 @@ function HtmlAjax(){
             data["propertyId"] = propertyId;
 
         }else if(type === "2"){
+
             if(serviceAdd){
                 data["propertyId"] = serviceAdd;
             }else{
                 showMask("请选择服务地址！");
                 return;
             }
+
+            if(reg.test(address) || content === ""){
+                showMask("请输入报修项目详细地址！");
+                return;
+            }
+
             data["address"] = address;
         }
+
         //  判断是否为空！
         if(type === "1" && (!bespeakTime || !expectTime)){
             showMask("请选择预约和期望时间！");
@@ -59,10 +67,6 @@ function HtmlAjax(){
         }
         if(reg.test(content) || content === ""){
             showMask("请输入报修内容！");
-            return;
-        }
-        if(reg.test(address) || content === ""){
-            showMask("请输入报修项目详细地址！");
             return;
         }
 
@@ -234,8 +238,9 @@ function Operating(){
             $(".repair-add").removeClass("active");
             $(".service").removeClass("active");
 
-            $("#ads").text($(".addressList li.active .address").text()
-                .attr("data-id",$(".addressList li.active").attr("data-id")));
+            $("#ads").text($(".addressList li.active .address").text())
+                .attr("data-id",$(".addressList li.active").attr("data-id"));
+            return false;
         });
         //  下一步
         $(".next-step").on("click",function(){

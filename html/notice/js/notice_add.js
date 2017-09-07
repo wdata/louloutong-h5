@@ -1,3 +1,5 @@
+var urls = [];  // 记录file内上传；
+
 $(document).ready(function(){
     var u=$(window).width()>750?54:$(window).width()/10;
     var ww=$(window).width();
@@ -50,7 +52,12 @@ function getDocu(_this){
 
             `;
         $('#up_attach').append(code);
-        console.info($('.p-layout').height())
+        // console.info($('.p-layout').height());
+
+        $.each($(_this)[0].files,function(index,val){
+            urls.push(val);
+        });
+        console.log(urls);
     }
 }
 //删除附件
@@ -63,11 +70,15 @@ function delDocu(_this){
 
 
 function release(){
-    if($("#title").val().length < 4){
+
+    var content = $("#editor_box").html();  // 内容
+    var title = $("#title").val();       //标题
+
+    if(title.length < 4){
         showMask("请输入长度大于4个字符的标题！");
         return;
     }
-    if($(".placeholader").length === 1){
+    if(reg.test(content)||content === ""){
         showMask("请输入正文！");
         return;
     }
@@ -76,10 +87,8 @@ function release(){
         return;
     }
 
-    $("#content").val($("#editor_box").html());
-
     var form = new FormData($("#newForm")[0]);       //需要是JS对象
-    var firmIds = "";
+    var firmIds = "";             // 接收数组
     $.each($(".firmIds:checked"),function(x,y){
         if(x === 0){
             firmIds += $(y).attr("data-id");
@@ -89,20 +98,24 @@ function release(){
     });
 
 
+
+
     form.append("propertyId",propertyId);
     form.append("userId",userId);
-    form.append("title",$("#title").val());
+    form.append("content",content);
+    form.append("urls",urls);       // 附件数组
+    form.append("requiredReceipt",1);
     form.append("firmIds",firmIds);
 
     $.ajax({
         type:'post',
-        url:  server_url_notice + server_v1 + '/notice.json',
+        url:  server_url_notice + server_v1 + '/notify.json',
         data: form,
         contentType: false,
         processData: false,
         success:function(data){
             if(data.code === 0 && data.message === "SUCCESS"){
-                window.location.href = "ann_list.html";
+                // window.location.href = "notice_list.html";
             }
         },
         error:function(data){ErrorReminder(data);}
@@ -117,6 +130,7 @@ $.ajax({
     dataType:'json',
     success:function(data){
         var list = $(".list-con");
+        $(".list-top").siblings().remove();  // 清除其他
         var html = '';
         if(data.code === 0 && data.data){
             $.each(data.data,function(index,val){

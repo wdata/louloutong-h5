@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="p-layout tran500">
-       <div class="publish-box fl">
+       <form id="newForm" class="publish-box fl">
             <div class="return-column">
                 <div class="return-column-heart">
                     <a class="header-return" href="notice_list.html" ><i class="header-return-icon"></i><span>返回</span></a>
@@ -26,13 +26,12 @@
             <div class="publish-add-box">
                 <div class="tt">
                     <div class="p32">
-                        <select name="" id="">
-                            <option value="">缴费通知</option>
-                            <option value="">缴费通知</option>
-                            <option value="">缴费通知</option>
+                        <select name="type" id="">
+                            <option value="1">普通通知</option>
+                            <option value="2">缴费通知</option>
                         </select>
                     </div>
-                    <input type="text" placeHolder="添加标题（必填）">
+                    <input type="text" name="title" id="title" placeHolder="添加标题（必填）">
                     <div class="row" onclick="receiveShow()">
                         <div class="fl overhide" id="recei_comp">全部企业</div>
                         <div class="icon-wrap fr">
@@ -43,9 +42,8 @@
                     </div>
                 </div>
                 <div class="main">
-                    <input type="hidden" id="target">
-                    <div class="article-content" id="editor_box" contenteditable='true'>
-                    </div>
+                    <input name="title" type="hidden" id="target">
+                    <div class="article-content" id="editor_box" contenteditable='true'></div>
                     <div class="p48">
                         <ul class="annex" id="up_attach">
                             <!--文件类型有word，execl，pdf。获取数据时择其一-->
@@ -70,7 +68,7 @@
                     <input class="input-file" type="file"  name="fileInput"  onchange="getDocu(this)" accept="application/pdf">
                 </div>
             </div>
-        </div>    
+        </form>
         <div class="receive-box fl">
             <header>
                 <a class="return" href="javascipt:;" onclick="rePublish()">
@@ -92,42 +90,15 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道科技有限公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="list">
-                    <div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>
-                    <div class="tit fl">小道公司</div>
-                    <div class="check-box fr">
-                        <input type="checkbox" />
-                        <label for=""></label>
-                    </div>
-                    <div class="clear"></div>
-                </div>
+                <!--<div class="list">-->
+                    <!--<div class="tx fl"><img src="../../images/icon/photo.png" alt="" class="full"></div>-->
+                    <!--<div class="tit fl">小道科技有限公司</div>-->
+                    <!--<div class="check-box fr">-->
+                        <!--<input type="checkbox" />-->
+                        <!--<label for=""></label>-->
+                    <!--</div>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
             </div> 
         </div> 
     </div>

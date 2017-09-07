@@ -29,7 +29,7 @@ $(".tap a").click(function(){
     }
 });
 //  未读和已读跳转
-$(".notice-list footer a").click(function(){
+$(document).on("click",".notice-list footer a",function(){
     if($(this).is(".unread")){
         sessionStorage.setItem("judgment",true);
     }
@@ -55,9 +55,11 @@ $(".notice-list footer a").click(function(){
 //  是否有公告发布按钮；/llt/notice/list/button/add
 if(authMethod("/llt/notice/list/button/add")){
     $("#release").removeClass("hide");
-}else{
-    $(".notice-list ul footer").addClass("hide");
 }
+//  是否显示未接收和已接收：/llt/notify/list/readorunread
+var read = authMethod("/llt/notice/list/button/add");
+
+
 
 $(document).ready(function(){
     htmlAjax.main();
@@ -68,7 +70,7 @@ var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.main = function(){
         var _this = this;
-        dropload = $(".content").dropload({
+        dropload = $(".notice").dropload({
             scrollArea : window,
             autoLoad:true,
             loadDownFn : function(me){
@@ -97,15 +99,28 @@ function HtmlAjax(){
                 var html = '';
                 if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
+                        var status = '';
+                        //  0:普通通知；1：缴费通知
+                        switch (val.status){
+                            case 0:
+                                break;
+                            case 1:status = '<div class="types">缴费通知</div>';
+                                break;
+                        }
+                        // 如果未读或已读人数为0，则字体变灰；
+                        var acA = val.unreadCount <=0 ?"active":"";
+                        var acB = val.readCount <=0 ?"active":"";
+                        var footer = "";
+                        if(read){
+                            footer = '<footer><a href="receive_list.html?id='+ val.id +'" class="unread'+ acA +'"><span>'+ val.unreadCount +'</span>人未读</a> ' +
+                                '<a href="receive_list.html?id='+ val.id +'" class="have-read'+ acB +'"><span>'+ val.readCount +'</span>人已读</a> </footer> ';
+                        }
                         html += '' +
                             '<li> <a href="notice_details.html?id='+ val.id +'" class="">' +
                             ' <header> <div class="title">'+ val.title +'</div> ' +
                             '<time>'+ val.createTime +'</time> </header> <div class="release">' +
                             '<p>'+ val.author.name +'</p>' +
-                            '<div class="types">缴费通知</div></div> <i class="icon"></i> </a> <footer> ' +
-                            '<a href="receive_list.html?id='+ val.id +'" class="unread"><span>'+ val.unreadCount +'</span>人未读</a> ' +
-                            '<a href="receive_list.html?id='+ val.id +'" class="have-read active"><span>'+ val.readCount +'</span>人已读</a> </footer> ' +
-                            '</li>'
+                            ''+ status +'</div> <i class="icon"></i> </a> '+ footer + '</li>'
                     });
                     list.append(html);
 
@@ -151,6 +166,7 @@ function HtmlAjax(){
             dropload.lock('down');
             dropload.noData();
         }
+        dropload.resetload();    //数据加载玩重置
     }
 }
 
