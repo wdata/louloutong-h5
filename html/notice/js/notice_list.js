@@ -30,11 +30,14 @@ $(".tap a").click(function(){
 });
 //  未读和已读跳转
 $(document).on("click",".notice-list footer a",function(){
+    dataSession["DataUnread"] = parseInt($(this).parent().attr("data-unread"));
+    dataSession["DataHaveRead"] = parseInt($(this).parent().attr("data-haveRead"));
     if($(this).is(".unread")){
-        sessionStorage.setItem("judgment",true);
-    }
-    if($(this).is(".have-read")){
-        sessionStorage.setItem("judgment",false);
+        dataSession["judgment"] = true;
+        sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
+    }else if($(this).is(".have-read")){
+        dataSession["judgment"] = false;
+        sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
     }
 });
 
@@ -112,7 +115,7 @@ function HtmlAjax(){
                         var acB = val.readCount <=0 ?"active":"";
                         var footer = "";
                         if(read){
-                            footer = '<footer><a href="receive_list.html?id='+ val.id +'" class="unread'+ acA +'"><span>'+ val.unreadCount +'</span>人未读</a> ' +
+                            footer = '<footer data-unread="'+ val.unreadCount +'" data-haveRead="'+ val.readCount +'"><a href="receive_list.html?id='+ val.id +'" class="unread '+ acA +'"><span>'+ val.unreadCount +'</span>人未读</a> ' +
                                 '<a href="receive_list.html?id='+ val.id +'" class="have-read'+ acB +'"><span>'+ val.readCount +'</span>人已读</a> </footer> ';
                         }
                         html += '' +

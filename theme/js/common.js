@@ -13,8 +13,13 @@ var server_core = server_IP + "/louloutong-core/api";                  // 文件
 var server_url_img = '';
 var server_uel_user_img = '';
 
-var userId = "1977";
-var propertyId = sessionStorage.getItem("propertyId");
+var dataS = JSON.parse(sessionStorage.getItem("dataSession"));   // 本地存储；
+var dataSession = dataS?dataS:{};   // 本地存储对象,添加判断，以继承本地存储内数据；如果没有本地存储则创建一个对象；
+
+var userId = "1977";    //  用户ID；
+var propertyId = dataS?dataS["propertyId"]:null;              //  物业ID；
+var propertyName = dataS?dataS["propertyName"]:null;              //  物业名；
+
 // var propertyId = "1";
 var authority = JSON.parse(sessionStorage.getItem("authority"));       //  权限
 var firmId = "1762";                                    //  公司ID
