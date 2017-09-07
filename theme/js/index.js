@@ -34,10 +34,42 @@ function dongSwitch(){
 dongSwitch.prototype = {
     constructor:dongSwitch,
     main:function(){
-        this.dongAjax();     //  ajax事件获取数据，并将数据保存；
-        this.dongSelect();   //    选择楼栋
-        this.superior();      //  顶部导航重新选择同级楼栋；
-        this.animation();     // 首页到切换页面动画；
+        this.animation();    //  确定功能；和动画切换效果；（这个是可以随意编辑的，）
+        this.dongAjax();     //  ajax事件获取数据，并将数据保存；（这个是获取数据）
+        this.dongSelect();   //  选择下一级
+        this.superior();     //  顶部导航重新选择同级楼栋；
+    },
+    animation:function(){
+        var _this = this;
+        // 平移动画效果
+        $(document).on("click","#address",function(){
+            $(".index").addClass("active");
+            $(".switch").addClass("active");
+        });
+        $(".switch .header-return,#determine").click(function(){
+            $(".index").removeClass("active");
+            $(".switch").removeClass("active");
+
+            //  判断是确定还是返回；
+            var selected = $("#addressList li.active");
+            if($(this).is("#determine")){
+                var text = null;
+                $.each(_this.louDong,function(index,val){
+                    if(selected.attr("data-id") === val.id + ""){
+                        text = val.name;
+                    }
+                });
+                //  将物业ID存入本地存储；（非首页可删除）；
+                dataSession["propertyId"] = selected.attr("data-id");
+                dataSession["propertyName"] = text;
+                sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
+
+                //  修改首页顶部物业名
+                $("#address").text(text);
+                var indexAjax = new IndexAjax(selected.attr("data-id"));
+                indexAjax.main();
+            }
+        });
     },
     dongAjax:function(){
         var _this = this;
@@ -63,7 +95,6 @@ dongSwitch.prototype = {
                     });
                     _this.addressList.append(html);
                     _this.Default(one);    // 显示本地存储内楼栋名；
-
                 }
             },
             error:function(data){
@@ -77,7 +108,7 @@ dongSwitch.prototype = {
 
         var _this = this;
         $(document).on("click","#addressList li",function(){
-
+            var self = this;
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");
@@ -85,7 +116,7 @@ dongSwitch.prototype = {
             var id = $(this).attr("data-id");
 
 
-            var bur = _this.judgment(id,_this.louDong);  // 判断有没有下一级；
+            var bur = _this.judgment(id);  // 判断有没有下一级；
             if(bur){
                 //  判断是不是点击的全部；
                 if(!$(this).is(".all")){
@@ -96,8 +127,8 @@ dongSwitch.prototype = {
 
 
                     if($("#prompt").is(".active")){
-                        //  将选择的放入顶部导航；
-                        $("#prompt").before('<li data-pid="'+ $(this).attr("data-pid") +'" data-id="'+ $(this).attr("data-id") +'">'+ $(this).text() +'</li>');
+
+                        _this.topApend($(this).attr("data-id"),$(this).attr("data-pid"),$(this).text());
                         //  位移到滚动条最后面；
                         $(".nav").scrollLeft( $('.nav')[0].scrollWidth );
                     }else{
@@ -105,13 +136,13 @@ dongSwitch.prototype = {
                             .siblings().removeClass("active");
 
                         //  判断是不是点击了之前的元素;
-                        $.each($(".switch .nav li"),function(index,val){
-                            if($(val).attr("data-pid") === $(this).attr("data-id")){
+                        $.each($("#prompt").siblings(),function(index,val){
+                            if($(val).attr("data-pid") === $(self).attr("data-pid")){
                                 $(val).attr({
-                                    "data-id":$(this).attr("data-id"),
-                                    "data-pid":$(this).attr("data-pid")
+                                    "data-id":$(self).attr("data-id"),
+                                    "data-pid":$(self).attr("data-pid")
                                 });
-                                $(val).text($(this).text());
+                                $(val).text($(self).text());
                             }
                         });
                     }
@@ -128,47 +159,28 @@ dongSwitch.prototype = {
             }
         });
     },
-    animation:function(){
-        var _this = this;
-        // 平移动画效果
-        $(document).on("click","#address",function(){
-            $(".index").addClass("active");
-            $(".switch").addClass("active");
-        });
-        $(".switch .header-return,#determine").click(function(){
-            $(".index").removeClass("active");
-            $(".switch").removeClass("active");
-
-            // console.log($(this).is("#determine"));
-            //  判断是确定还是返回；
-            var selected = $("#addressList li.active");
-            if($(this).is("#determine")){
-                var text = null;
-                $.each(_this.louDong,function(index,val){
-                    if(selected.attr("data-id") === val.id + ""){
-                        text = val.name;
-                    }
-                });
-                //  将物业ID存入本地存储；
-                sessionStorage.setItem("propertyId",selected.attr("data-id"));
-                sessionStorage.setItem("propertyName",text);
-                //  修改首页顶部物业名
-                $("#address").text(text);
-                propertyId = sessionStorage.getItem("propertyId");
-                var indexAjax = new IndexAjax(propertyId);
-                indexAjax.main();
-            }
-        });
-    },
     Default:function(data){
+        var _this = this;
         //  判断sessionStorage存储的ID和name是否为空;
-        var propertyId = sessionStorage.getItem("propertyId");
-        var propertyName = sessionStorage.getItem("propertyName");
         if(propertyId && propertyName){
+            //  如果有数据，则楼栋显示为
             $("#address").text(propertyName);
+
+            $.each(_this.louDong,function(index,val){
+                if(parseInt(propertyId) === val.id){
+                    _this.SameLevel(propertyId,val.parentId + "");
+                    //  如果父级ID为不为空，则添加父级ID到顶部导航；
+                    _this.repeatAdd(val.parentId);  // 重复添加父级，一直到父级ID为null
+                }
+            })
+
+
+
         }else{
-            sessionStorage.setItem("propertyId",data.id);
-            sessionStorage.setItem("propertyName",data.name);
+            //  如果没有，则选择第一级第一个数据作为物业名和物业ID；
+            dataSession["propertyId"] = data.id;
+            dataSession["propertyName"] = data.name;
+            sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
             $("#address").text(data.name);
         }
     },
@@ -179,7 +191,6 @@ dongSwitch.prototype = {
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");
-            $("#determine").addClass("hide");
 
             //  如果顶部点击元素和“请选择”中间有其他元素，需要删除它；
             var index = $("#prompt").index() - $(this).index();
@@ -199,15 +210,20 @@ dongSwitch.prototype = {
         });
     },
     SameLevel:function(id,pid){
-        //  获取同级楼栋；
+        //  获取同级楼栋；pid使用的是字符串
         var html = '';
         this.addressList.empty();
         if(!(pid === "null")){
-            html = '<li class="all" data-id="'+ id +'"><i></i>全部</li>';
+            html = '<li class="all" data-id="'+ pid +'"><i></i>全部</li>';
         }
         $.each(this.louDong,function(index,val){
+            var IndexActive = "";
             if(val.parentId + "" === pid){
-                html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
+                //  保证刷新后突出显示
+                if(propertyId && parseInt(propertyId) === val.id){
+                    IndexActive = "active";
+                }
+                html += '<li class="'+ IndexActive +'" data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
             }
 
         });
@@ -225,10 +241,39 @@ dongSwitch.prototype = {
         });
         this.addressList.append(html);
     },
-    judgment:function(id,louDong){
+    repeatAdd:function(pid){
+        var ParData = this.topSuperior(pid);
+        var pidData = ParData?ParData.parentId:"null";
+        if(ParData){
+            //  如果父级ID不为"null"，则重复添加；   ****** 此操作在前，以此让顶部菜单排列正确！*********
+            if(!(pidData === "null")){
+                this.repeatAdd(pidData);
+            }
+            this.topApend(ParData.id,pidData,ParData.name);
+        }
+    },
+    topApend:function(id,pid,text){
+        //  将选择的放入顶部导航；id:当前ID ， pid：当前父级ID， text：当前名
+        $("#prompt").before('<li data-pid="'+ pid +'" data-id="'+ id +'">'+ text +'</li>');
+    },
+    topSuperior:function(pid){
+        //  判断是否有上一级,如果有上一级则返回数据，如果没有则返回null
+        var bur = null;
+        //  pid为null时，不遍历；
+        if(parseInt(pid)){
+            $.each(this.louDong,function(index,val){
+                if(parseInt(pid) === val.id){
+                    bur = val;
+                }
+            });
+        }
+        return bur;
+
+    },
+    judgment:function(id){
         //  判断是否有下一级
         var bur = false;
-        $.each(louDong,function(index,val){
+        $.each(this.louDong,function(index,val){
             if(parseInt(id) === val.parentId){
                 bur = true;
             }

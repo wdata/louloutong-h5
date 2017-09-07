@@ -6,9 +6,13 @@ var tapSwitchA = true;     //  是否有数据；
 var tapSwitchB = true;     //  是否有数据；
 var dropload = null;
 
-var judgment = sessionStorage.getItem("judgment");
-switch(judgment){
-    case "true":
+var judgment = JSON.parse(sessionStorage.getItem("dataSession"));
+
+$(".tap-unread .number").text("(" + judgment["DataUnread"] + ")");
+$(".tap-have-read .number").text("(" + judgment["DataHaveRead"] + ")");
+
+switch(judgment["judgment"]){
+    case true:
         //  tap添加active样式
         $(".tap-unread").addClass("active")
             .siblings().removeClass("active");
@@ -17,7 +21,7 @@ switch(judgment){
             .siblings(".receive-list").addClass('hide');
         itemIndex = 0;
         break;
-    case "false":
+    case false:
         $(".tap-have-read").addClass("active")
             .siblings().removeClass("active");
         $(".have-read-list").removeClass("hide")
@@ -25,6 +29,7 @@ switch(judgment){
         itemIndex = 1;
         break;
 }
+
 
 
 //  tap导航切换

@@ -560,6 +560,8 @@ time{
 }
 .list .anounce-list li .no-price article{
     margin:.6133333rem 0 .6933333rem;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 /*  +++++++++++++++++++++++公告详情(通知详情大部分共用)+++++++++++++++++++  */
