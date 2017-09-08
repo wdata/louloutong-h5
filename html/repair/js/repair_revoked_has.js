@@ -47,7 +47,7 @@ function HtmlAjax(){
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>');
+                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>').attr("href",headJumps(dataD.user.id));
                     //  报修类型；
                     $("#aspect").text(data.data.repairItem);
                     //  报修内容;

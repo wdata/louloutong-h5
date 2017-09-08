@@ -9,6 +9,7 @@ var server_url_repair = server_IP + "/louloutong-repair/api";          // 物业
 var server_url_notice = server_IP + "/louloutong-notice/api";          // 通知管理
 var server_rent = server_IP + "/louloutong-rent/api";                  // 租房管理
 var server_core = server_IP + "/louloutong-core/api";                  // 文件管理
+var server_zuui = server_IP + "zuui/louloutong-core/api";
 // var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_url_img = '';
 var server_uel_user_img = '';
@@ -33,6 +34,10 @@ var reg = /^[\s]*$/;  //为空判断；
 function ErrorReminder(data){
     console.log("报错：" + data.status);
 };
+//  头像跳转；
+function headJumps(data){
+    return "javascript:";
+}
 
 // GET http://ip:port/louloutong-repair/api/v1/property/manager/{userId}.json
 

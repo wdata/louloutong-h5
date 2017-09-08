@@ -20,7 +20,7 @@ $.ajax({
         list.empty();
         if(data.code === 0){
             $.each(data.data,function(index,val){
-                html += '<li> <a href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.photo +'" alt="avatar"> </a> <a data-id="'+ val.id +'" class="orders" href="javascript:"> <div class="information"> <div class="name"><span class="na">'+ val.name +'</span><span class="position">'+ val.duty[0] +'</span></div> <time>上班时间：08:00-23:00</time> <div class="picked-up">已有'+ val.count +'单</div> </div> </a> </li>'
+                html += '<li> <a href="'+ headJumps(val.id) +'"> <img class="avatar" src="'+ server_uel_user_img + val.photo +'" alt="avatar"> </a> <a data-id="'+ val.id +'" class="orders" href="javascript:"> <div class="information"> <div class="name"><span class="na">'+ val.name +'</span><span class="position">'+ val.duty[0] +'</span></div> <time>上班时间：08:00-23:00</time> <div class="picked-up">已有'+ val.count +'单</div> </div> </a> </li>'
             })
         }
         list.append('<div class="team"> <header class="head"><i class="shrink-icon"></i><div class="title">'+ data.data[0].orgName +'</div></header> <ul>'+ html +'</ul> </div>');
@@ -91,7 +91,6 @@ function processing(data){
     // })
 }
 $('.cancel').click(function(){
-    $(".sBox-wrapper").removeClass("hei").removeClass("heiA");
     $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
     $(".team li").show();
 });

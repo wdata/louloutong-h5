@@ -1,6 +1,15 @@
 /**
  * Created by Administrator on 2017/8/18.
  */
+
+var htmlAjax = new HtmlAjax();
+var dropload;
+var comment = 1;
+/*
+*  dropload：评论的滚动插件；
+*  comment：滚动插件需要的page全局变量；
+* */
+
 //  显示评论和点赞按钮
 $(".prompt").on("click",function(){
     $("#CLbutton").toggleClass("hide");
@@ -14,9 +23,6 @@ $("#comment").on("click",function(){
     }
 });
 
-//  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
-sessionStorage.setItem("repairJump",2);
-
 var auth_1 = authMethod("/llt/repair/list/button/sendOrders");
 var auth_2 = authMethod("/llt/repair/list/button/sendAgain");
 var auth_3 = authMethod("/llt/repair/list/button/check");
@@ -25,23 +31,30 @@ var auth_5 = authMethod("/llt/repair/list/button/handover");
 var auth_6 = authMethod("/llt/repair/list/button/handle");
 var auth_7 = authMethod("/llt/repair/list/button/revoke");
 
+
+//<div class="repair-status green">未派单</div>
+//<div class="repair-status red">被移交</div>
+//<div class="repair-status gray">已撤销</div>
+//<div class="repair-status green">待验收</div>
+//<div class="repair-status blue">已派单</div>
+//<div class="repair-status blue">已受理</div>
+//<div class="repair-status yellow">已确认</div>
+
+//<div class="repair-operating cancel red">撤销</div> 移交(transfer)
+//<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
+//<div class="repair-operating reappear blue">重新派单</div>
+//<div class="repair-operating confirm yellow">确认验收</div>
+
+
 $(document).ready(function(){
    htmlAjax.details();  //详情；
     htmlAjax.features(); // 接单和确认颜色操作；
 });
 
 
-var htmlAjax = new HtmlAjax();
-var dropload;
-var comment = 1;
-
 function HtmlAjax(){
     this.userId = userId;   // 用户ID；
     this.propertyId = propertyId;   // 物业ID；
-
-    this.main = function(){
-        this.details();
-    };
     this.details = function(){
         var _this = this;
         $.ajax({
@@ -53,83 +66,65 @@ function HtmlAjax(){
             dataType:'json',
             success:function(data){
                 if(data.code === 0){
-                    var status = '',img = '',operating = '';
-                    var color = ''; // 各种状态颜色；
-                    var mi = '';  //  给我的；
-                    var href = 'repair_details.html';
-                    switch (data.data.status){
+                    var img = '',operating = '',color = '',mi = '',href = 'repair_details.html',type = '',address = "",dataD = data.data;
+                    /* color：各种状态不同的颜色；
+                     *  mi：如果登录人和被派单人相同则显示“给我的”；
+                     *  href：撤销和其他状态是两个不同的页面；
+                     *  img：保存图片HTML代码；
+                     *  operating：例如派单、撤销、移交等操作；
+                     *  type：办公区域和公共区域；
+                     *  address：两种区域的地方参数不同；
+                     *  dataD：数据
+                     * */
+                    switch (dataD.status){
                         case 1:
                             color = "green";
                             //  如果是物业管理人员则显示未派单；如果是租户，则显示待受理；
                             if(auth_1){
-                                operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=1" class="repair-operating single blue">派单</a>';
+                                operating += '<a href="repair_sent.html?id='+ dataD.id +'&status=1" class="repair-operating single blue">派单</a>';
                             }
-                            //  有接单权限，可以接单；
-                            if(auth_4){
-                                operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
-                            }
+                            operating += _this.odr(dataD.id);  // 接单
                             break;
                         case 2:
                             //  判断维修ID等于登录ID，则显示“给我的”派单；
-                            if(data.data.handlerId === parseInt(userId)){
+                            if(dataD.handlerId === parseInt(userId)){
                                 mi = '<i class="mine-icon"></i>';
-                                if(auth_1){
-                                    color = "blue";
-                                }else{
-                                    color = "green";
-                                }
-                                //  有接单权限，可以接单；
-                                if(auth_4){
-                                    operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
-                                }
+                                color = auth_1?"blue":"green";  // 有派单权限，显示蓝色；没有显示绿色；
+                                operating += _this.odr(dataD.id);  // 接单
                             }else{
-                                if(auth_1){
-                                    color = "blue";
-                                }else{
-                                    color = "green";
-                                }
+                                color = auth_1?"blue":"green";  // 有派单权限，显示蓝色；没有显示绿色；
                             }
                             break;
                         case 3:
                             color = "blue";
                             if(auth_5){
-                                operating += '<a href="repair_transfer.html?id='+ data.data.id +'" class="repair-operating transfer blue">移交</a>';
+                                operating += '<a href="repair_transfer.html?id='+ dataD.id +'" class="repair-operating transfer blue">移交</a>';
                             }
                             if(auth_6){
-                                operating += '<a href="repair_result.html?id='+ data.data.id +'" class="repair-operating dealWith blue">填写处理</a>';
+                                operating += '<a href="repair_result.html?id='+ dataD.id +'" class="repair-operating dealWith blue">填写处理</a>';
                             }
                             break;
                         case 4:
                             color = "red";
                             //  有重新派单权限，可以派单；
                             if(auth_2){
-                                operating += '<a href="repair_sent.html?id='+ data.data.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
+                                operating += '<a href="repair_sent.html?id='+ dataD.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
                             }
-                            //  有接单权限，可以接单；
-                            if(auth_4){
-                                operating += '<div data-id="'+ data.data.id +'" class="repair-operating orders blue">接单</div>';
-                            }
+                            operating += _this.odr(dataD.id);  // 接单
                             break;
                         case 5:
                             color = "green";
-                            if(auth_3 && parseInt(userId) === data.data.user.id){
-                                //  只有在待验收情况下显示确认验收；详情中确认颜色显示在最下面；
-                                // operating += '<div class="repair-operating confirm yellow">确认验收</div>';
-                                $("#confirm").removeClass("hide").attr("data-id",data.data.id);
-                                $(".hr-96").removeClass("hide");
-                            }else if(auth_3 && data.data.type === 2 && parseInt(userId) !== data.data.handlerId){
-                                // operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
-                                $("#confirm").removeClass("hide").attr("data-id",data.data.id);
-                                $(".hr-96").removeClass("hide");
+                            if(auth_3 && parseInt(userId) === dataD.user.id){
+                                _this.apt(dataD.id);  // 显示确认验收
+                            }else if(auth_3 && dataD.type === 2 && parseInt(userId) !== dataD.handlerId){
+                                _this.apt(dataD.id);  // 显示确认验收
                             }else{
-                                $(".comment-box").removeClass("hide").addClass("auth");
-                                $(".hr-96").removeClass("hide");
+                                _this.cmt();   // 显示评论，并提示点击评论出现按钮，不能显示确认验收；
                             }
                             break;
                         case 6:
-                            $(".comment-box").removeClass("hide").addClass("auth");
-                            $(".hr-96").removeClass("hide");
                             color = "yellow";
+                            _this.cmt();   // 显示评论，并提示点击评论出现按钮，不能显示确认验收；
                             break;
                         case 7:
                             color = "gray";
@@ -138,73 +133,42 @@ function HtmlAjax(){
                             break;
                     }
                     //  如果有撤销权限，切登录ID和发布ID相同，则可以撤销；
-                    if(auth_7 && parseInt(userId) === data.data.user.id && (data.data.status === 1 || data.data.status === 2)){
-                        operating += '<a href="repair_revoked.html?id='+ data.data.id +'" class="repair-operating cancel red">撤销</a>';
+                    if(auth_7 && parseInt(userId) === dataD.user.id && (dataD.status === 1 || dataD.status === 2)){
+                        operating += '<a href="repair_revoked.html?id='+ dataD.id +'" class="repair-operating cancel red">撤销</a>';
                     }
-                    status = '<div class="repair-status '+ color +'">'+ mi + data.data.statusName +'</div>';
-                    //<div class="repair-status green">未派单</div>
-                    //<div class="repair-status red">被移交</div>
-                    //<div class="repair-status gray">已撤销</div>
-                    //<div class="repair-status green">待验收</div>
-                    //<div class="repair-status blue">已派单</div>
-                    //<div class="repair-status blue">已受理</div>
-                    //<div class="repair-status yellow">已确认</div>
-
-                    //<div class="repair-operating cancel red">撤销</div> 移交(transfer)
-                    //<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
-                    //<div class="repair-operating reappear blue">重新派单</div>
-                    //<div class="repair-operating confirm yellow">确认验收</div>
-                    if(data.data.repairImages){
-                        $.each(data.data.repairImages,function(x,y){
+                    var status = '<div class="repair-status '+ color +'">'+ mi + dataD.statusName +'</div>';
+                    if(dataD.repairImages){
+                        $.each(dataD.repairImages,function(x,y){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
                         })
                     }
 
-                    var type = '';var address = "";
-                    if(data.data.type === 1){
-                        type = "办公区域";
-                        address = data.data.address;
-                    }else if(data.data.type === 2){
-                        type = "公共区域";
-                        address = data.data.publicAddress;
-                    }
-                    //  公共区域没有类型，时间等；
-                    if(data.data.type ===2){
-                        var ped = $("#pending ul li");
-                        ped.eq(1).addClass("hide");
-                        ped.eq(5).addClass("hide");
-                        ped.eq(6).addClass("hide");
+                    // 报修类型
+                    switch (dataD.type){
+                        case 1:type = "办公区域";address = dataD.address;break;
+                        case 2:type = "公共区域";address = dataD.publicAddress;$(".pbc").hide();break; //  公共区域没有类型，时间等；
                     }
 
 
-                    var ss = $(".status>span");
-                    var tr = $(".transparent");
                     var su = null; // 给顶部显示维修人员定位；
                     //  头部状态；
-                    if(data.data.status >= 1){
-                        ss.eq(0).addClass("active");
-                        tr.eq(0).addClass("active");
-                        if(data.data.status >= 3){
-
-                            ss.eq(1).addClass("active");
-                            tr.eq(1).addClass("active");
-                            //  当已受理时，显示报修头像和报修人
-                            $(".process").addClass("active");
+                    if(dataD.status >= 1){
+                        _this.stu(0);   // 四个状态显示；
+                        if(dataD.status >= 3){
+                            _this.stu(1);   // 四个状态显示；
+                            $(".process").addClass("active"); //  当已受理时，显示报修头像和报修人
                             su = "one";
-
-                            if(data.data.status >= 5){
-                                ss.eq(2).addClass("active");
-                                tr.eq(2).addClass("active");
+                            if(dataD.status >= 5){
+                                _this.stu(2);   // 四个状态显示；
                                 su = "two";
                                 //  显示点赞，评论，显示处理详情；
                                 $(".result").removeClass("hide");
                                 $(".con-main").removeClass("hide");
 
-                                _this.comList();  //    评论；
+                                _this.comList();  //    评论列表；
                                 _this.likeList();  //   点赞头像列表；
-                                if(data.data.status >= 6){
-                                    ss.eq(3).addClass("active");
-                                    tr.eq(3).addClass("active");
+                                if(dataD.status >= 6){
+                                    _this.stu(3);   // 四个状态显示；
                                     su = "three";
                                 }
                             }
@@ -215,21 +179,21 @@ function HtmlAjax(){
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>');
+                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + dataD.user.photo +'"> <div class="information"> <div class="name">'+ dataD.user.name +'</div> <time>'+ dataD.createTime +'</time> </div>').attr("href",headJumps(dataD.user.id));
                     //  订单状态；
                     $("#status").empty().append(status);
                     //  报修类型；
-                    $("#aspect").text(data.data.repairItem);
+                    $("#aspect").text(dataD.repairItem);
                     //  报修内容;
-                    $("#content").text(data.data.content);
+                    $("#content").text(dataD.content);
                     //  图片；
                     $("#image").empty().append(img);
                     //  地址;
                     $("#property").text(address);
                     //  预约上门时间;
-                    $("#reservation").text(data.data.bespeakTime);
+                    $("#reservation").text(dataD.bespeakTime);
                     //  期待完成时间;
-                    $("#carryOut").text(data.data.expectTime);
+                    $("#carryOut").text(dataD.expectTime);
 
 
 
@@ -237,36 +201,32 @@ function HtmlAjax(){
 
                     //  已受理；以上会有维修人头像和名字：
                     var html = '';
-                    if(data.data.handlerUsers){
-                        if(data.data.handlerUsers.length > 1){
+                    if(dataD.handlerUsers){
+                        if(dataD.handlerUsers.length > 1){
                             html = '<div class="most frame '+ su +'"> ' +
-                                '<a class="service over"  href="javascript:?id='+ data.data.handlerUsers[1].id +'"><img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[1].photo +'" alt=""></a> ' +
-                                '<a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                                '<a class="service over"  href="'+ headJumps(dataD.handlerUsers[1].id) +'"><img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[1].photo +'" alt=""></a> ' +
+                                '<a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
                         }else{
-                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="javascript:?id='+ data.data.handlerUsers[0].id +'"> <img class="avatar" src="'+ server_uel_user_img + data.data.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ data.data.handlerUsers[0].name +'</p></div> </a> </div>'
+                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
                         }
                         $(".repair-man").empty().append(html);
                     }
 
 
                     //  待确认；
-                    img = "";
-                    if(data.data.repairRecordImages){
-                        $.each(data.data.repairRecordImages,function(x,y){
+                    if(dataD.repairRecordImages){
+                        $.each(dataD.repairRecordImages,function(x,y){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
                         });
                         $("#images").empty().append(img);
                     }
                     //  处理内容
-                    $("#dealCon").text(data.data.remark);
+                    $("#dealCon").text(dataD.remark);
                     //  处理时间；
-                    $("#rRDate").text(data.data.repairRecordDate);
+                    $("#rRDate").text(dataD.repairRecordDate);
 
                     //  评论是否点赞；
-                    if(data.data.isUpvote === true){
-                        $(".like-btn").addClass("active");
-                    }
-
+                    dataD.isUpvote === true?$(".like-btn").addClass("active"):"";
                     //  显示
                     $("#pending").removeClass("hide");
                 }
@@ -275,8 +235,29 @@ function HtmlAjax(){
                 ErrorReminder(data);
             }
         });
+        _this.odr = function(data){
+            //  有接单权限，可以接单；
+            if(auth_4){
+                return '<div data-id="'+ data +'" class="repair-operating orders blue">接单</div>';
+            }else{
+                return "";
+            }
+        };
+        _this.apt = function(data){
+            $("#confirm").removeClass("hide").attr("data-id",data);
+            $(".hr-96").removeClass("hide");
+        };
+        _this.cmt = function(){
+            $(".comment-box").removeClass("hide").addClass("auth");
+            $(".hr-96").removeClass("hide");
+        };
+        _this.stu = function(data){
+            $(".status>span").eq(data).addClass("active");
+            $(".transparent").eq(data).addClass("active");
+        };
     };
     this.comList = function(){
+        var _this = this;
         //  报修评论列表；
         dropload = $('#list').dropload({
             scrollArea : $(".repair-details"),
@@ -296,34 +277,39 @@ function HtmlAjax(){
                         var html = '';
                         if(comment === 1 && data.code === 0 && data.data){
                             $(".comment").addClass("hide");   //没有评论时隐藏评论列表；
+                            return false;
                         }
                         if(data.code === 0 && data.data){
                             $(".comment").removeClass("hide");   //有评论时显示评论列表；
                             $.each(data.data.items,function(index,val){
-                                html += '<li> <a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
+                                html += '<li> <a href="'+ headJumps(val.id) +'"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
                             });
                             $("#listCom").append(html);
 
                             comment++;
-                            if(data.data.pageCount === 0){
-                                me.lock();  //智能锁定，锁定上一次加载的方向
-                                me.noData();      //无数据
+                            if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
+                                _this.noData(me);   // 无数据
                             }
                         }else{
-                            me.lock();  //智能锁定，锁定上一次加载的方向
-                            me.noData();      //无数据
+                            _this.noData(me);   // 无数据
                         }
                         me.resetload();    //数据加载玩重置
                     },
                     error:function(data){
                         ErrorReminder(data);
+
                         $(".comment").addClass("hide");   //没有评论时隐藏评论列表；
-                        me.noData();      //无数据
+
+                        _this.noData(me);   // 无数据
                         me.resetload();    //数据加载玩重置
                     }
                 })
             }
         });
+        _this.noData = function(me){
+            me.lock();  //智能锁定，锁定上一次加载的方向
+            me.noData();      //无数据
+        };
 
     };
     this.releaseCom = function(){

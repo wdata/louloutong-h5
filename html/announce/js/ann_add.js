@@ -192,7 +192,7 @@ function release(){
         processData: false,
         success:function(data){
             if(data.code === 0 && data.message === "SUCCESS"){
-                // window.location.href = "notice_list.html";
+                window.location.href = "notice_list.html";
             }
         },
         error:function(data){ErrorReminder(data);}
