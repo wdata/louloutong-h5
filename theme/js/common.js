@@ -129,9 +129,10 @@ function showMask(msg){
     }
 });*/
 
+var curTime=(new Date()).getTime();
+$('.tap-footer a').eq(1).attr('src','/html/rent/rent.html?cur='+curTime)
 
 function wxConfig(wx) {
-    var curTime=(new Date()).getTime();
     $.ajax({
         url: '/weixin/permissionValidation',
         type: 'get',

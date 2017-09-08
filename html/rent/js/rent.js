@@ -29,7 +29,7 @@ var auth_0=false;			//显示出租/求租
     	$('.rent-tab .bot .inner-r2').show().siblings().hide();
     }
 
-/*wxConfig(wx);*/
+wxConfig(wx);
 
 //出租和求租
 var rent = new Object({
@@ -348,8 +348,9 @@ var wxImg = new Object({
 wxImg.imgUpload = function(){
     var _this=this;
     var i=0;
+    $('#pic_num').text(this.urls.length);
     wx.chooseImage({
-        count: 8, // 默认9
+        count: 8-this.urls.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: function (res) {
@@ -413,7 +414,7 @@ wxImg.init = function(){
         $('.sBox-wrapper,.tap-footer').removeClass('z0');
     })   
 }
-
+wxImg.init();
 
 //发布
 var issue=new Object({
@@ -455,6 +456,7 @@ issue.add = function(){
         data:{
             'type':this.type,
             'userId':this.userId,
+            'urls':wxImg.urls,
             'propertyId':$('#addressList li.active').data('id'),
             'community':$('.elem-02').val(),
             'section':$('.elem-03').val(),
@@ -530,7 +532,7 @@ issue.event = function(){
         var m=$('.diff-orent .elem-05').val();
         var n=$('.diff-irent .elem-05').val();
         _this.price=(m)?m:n;
-        //if(_this.type==1 && urls.length<=0)                                             { showMask('请至少上传一张图片！'); return false; }
+        if(_this.type==1 && wxImg.urls.length<=0)                                             { showMask('请至少上传一张图片！'); return false; }
         if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
         if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
         if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
