@@ -8,9 +8,6 @@ var pIdRepair = propertyId;  // 物业ID；
 var comment = 1;      //page数
 var dropload;
 
-//  1、如果从列表跳转进入例如：派单、填写处理页面，返回应该是列表；2、如果是详情页面跳转进入应该返回详情；
-sessionStorage.setItem("repairJump",1);
-
 
 //  权限； 报修列表按钮
 // /llt/repair/list/button/sendOrders 派单
@@ -38,8 +35,22 @@ htmlAjax.distribution();
 htmlAjax.listStatus();
 
 
+//<div class="repair-status green">未派单</div>
+//<div class="repair-status red">被移交</div>
+//<div class="repair-status gray">已撤销</div>
+//<div class="repair-status green">待验收</div>
+//<div class="repair-status blue">已派单</div>
+//<div class="repair-status blue">已受理</div>
+//<div class="repair-status yellow">已确认</div>
+
+//<div class="repair-operating cancel red">撤销</div> 移交(transfer)
+//<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
+//<div class="repair-operating reappear blue">重新派单</div>
+//<div class="repair-operating confirm yellow">确认验收</div>
+
 // 数据获取
 function HtmlAjax(){
+    this.Dlist = $("#list");
     this.distribution = function(){
         var _this = this;
          dropload = $(".repair-list").dropload({
@@ -52,13 +63,16 @@ function HtmlAjax(){
         });
     };
     this.road = function(){
-        $("#list").empty();            //清除列表数据;
+        var _this = this;
+
+        _this.Dlist.empty();            //清除列表数据;
         comment = 1;
         dropload.unlock();
         dropload.noData(false);
         dropload.resetload();
     };
     this.repairList = function(proId,searchType,keyword,me){
+        var _this = this;
         console.log("物业ID：" + proId + " 搜索类型：" + searchType + " 搜索内容：" + keyword + " page：" + comment);
         $.ajax({
             type:'get',
@@ -73,14 +87,18 @@ function HtmlAjax(){
             },
             dataType:'json',
             success:function(data){
-                var list = $("#list");
                 var html = '';
                 if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
-                        var status = '',img = '',operating = '';
-                        var color = ''; // 各种状态颜色；
-                        var mi = '';  //  给我的；
-                        var href = 'repair_details.html';
+                        var img = '',operating = '',color = '',mi = '',href = 'repair_details.html',type = '',address = "";
+                        /* color：各种状态不同的颜色；
+                        *  mi：如果登录人和被派单人相同则显示“给我的”；
+                        *  href：撤销和其他状态是两个不同的页面；
+                        *  img：保存图片HTML代码；
+                        *  operating：例如派单、撤销、移交等操作；
+                        *  type：办公区域和公共区域；
+                        *  address：两种区域的地方参数不同；
+                        * */
                         switch (val.status){
                             case 1:
                                 color = "green";
@@ -88,30 +106,16 @@ function HtmlAjax(){
                                 if(auth_1){
                                     operating += '<a href="repair_sent.html?id='+ val.id +'&status=1" class="repair-operating single blue">派单</a>';
                                 }
-                                //  有接单权限，可以接单；
-                                if(auth_4){
-                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                }
+                                operating += _this.odr(val.id);  // 接单
                                 break;
                             case 2:
                                 //  判断维修ID等于登录ID，则显示“给我的”派单；
                                 if(val.handlerId === parseInt(userId)){
                                     mi = '<i class="mine-icon"></i>';
-                                    if(auth_1){
-                                        color = "blue";
-                                    }else{
-                                        color = "green";
-                                    }
-                                    //  有接单权限，可以接单；
-                                    if(auth_4){
-                                        operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                    }
+                                    color = auth_1?"blue":"green";  // 有派单权限，显示蓝色；没有显示绿色；
+                                    operating += _this.odr(val.id);  // 接单
                                 }else{
-                                    if(auth_1){
-                                        color = "blue";
-                                    }else{
-                                        color = "green";
-                                    }
+                                    color = auth_1?"blue":"green";  // 有派单权限，显示蓝色；没有显示绿色；
                                 }
                                 break;
                             case 3:
@@ -131,16 +135,15 @@ function HtmlAjax(){
                                 if(auth_2){
                                     operating += '<a href="repair_sent.html?id='+ val.id +'&status=2" class="repair-operating reappear blue">重新派单</a>';
                                 }
-                                //  有接单权限，可以接单；
-                                if(auth_4){
-                                    operating += '<div data-id="'+ val.id +'" class="repair-operating orders blue">接单</div>';
-                                }
+                                operating += _this.odr(val.id);  // 接单
                                 break;
                             case 5:
                                 color = "green";
                                 if(auth_3 && parseInt(userId) === val.user.id){
+                                    // 办公区域
                                     operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                 }else if(auth_3 && val.type === 2 && userId !== val.handlerId){
+                                    // 公共区域
                                     operating += '<div data-id="'+ val.id +'" class="repair-operating confirm yellow">确认验收</div>';
                                 }
                                 break;
@@ -156,92 +159,86 @@ function HtmlAjax(){
                         if(auth_7 && parseInt(userId) === val.user.id && (val.status === 1 || val.status === 2)){
                             operating += '<a href="repair_revoked.html?id='+ val.id +'" class="repair-operating cancel red">撤销</a>';
                         }
-                        status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
-                        //<div class="repair-status green">未派单</div>
-                        //<div class="repair-status red">被移交</div>
-                        //<div class="repair-status gray">已撤销</div>
-                        //<div class="repair-status green">待验收</div>
-                        //<div class="repair-status blue">已派单</div>
-                        //<div class="repair-status blue">已受理</div>
-                        //<div class="repair-status yellow">已确认</div>
-
-                        //<div class="repair-operating cancel red">撤销</div> 移交(transfer)
-                        //<div class="repair-operating single blue">派单</div>，接单(orders)，填写处理(dealWith)
-                        //<div class="repair-operating reappear blue">重新派单</div>
-                        //<div class="repair-operating confirm yellow">确认验收</div>
+                        // 状态
+                        var status = '<div class="repair-status '+ color +'">'+ mi + val.statusName +'</div>';
+                        // 判断是否有图片
                         if(val.repairImages){
                             $.each(val.repairImages,function(x,y){
                                 img += '<img src="'+ server_url_img + y +'" alt="">';
                             })
                         }
-                        var type = '';var address = "";
-                        if(val.type === 1){
-                            type = "办公区域";
-                            address = val.address;
-                        }else if(val.type === 2){
-                            type = "公共区域";
-                            address = val.publicAddress;
+                        // 报修类型
+                        switch (val.type){
+                            case 1:type = "办公区域";address = val.address;break;
+                            case 2:type = "公共区域";address = val.publicAddress;break;
                         }
-                        html += '<li> <a class="header"  href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
+                        html += '<li> <a class="header"  href="'+ headJumps(val.id) +'"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
                             ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ address +'</span></div> <div class="image"> '+ img +'' +
                             '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
                             '<footer> '+ operating +' </footer> </li>';
                     });
-                    list.append(html);
+                    _this.Dlist.append(html);
                     comment ++;
                     if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
-                        me.lock();  //智能锁定，锁定上一次加载的方向
-                        me.noData();      //无数据
+                        _this.noData(me);   // 无数据
                     }
                 }else{
-                    me.lock();  //智能锁定，锁定上一次加载的方向
-                    me.noData();      //无数据
+                    _this.noData(me);   // 无数据
                 }
                 me.resetload();    //数据加载玩重置
             },
             error:function(data){
                 ErrorReminder(data);
-                me.lock();  //智能锁定，锁定上一次加载的方向
-                me.noData();      //无数据
+                _this.noData(me);   // 无数据
                 me.resetload();    //数据加载玩重置
             }
-        })
+        });
+        _this.odr = function(data){
+            //  有接单权限，可以接单；
+            if(auth_4){
+                return '<div data-id="'+ data +'" class="repair-operating orders blue">接单</div>';
+            }else{
+                return "";
+            }
+        };
+        _this.noData = function(me){
+            me.lock();  //智能锁定，锁定上一次加载的方向
+            me.noData();      //无数据
+        };
     };
     this.listSearch = function(slef){
         keyword = $(slef).val();
         if(keyword.length > 0){
             $(".sBox-wrapper").addClass("hei");
-
             this.road();  // 重置
-
         }else{
             $(".sBox-wrapper").removeClass("hei");
         }
     };
     this.listStatus = function(){
         var _this = this;
-        $(document).on("click",".list-con div",function(){
+        $(".list-con").on("tap",".list-con div",function(){
             // 搜索类型 1：报修人 2：报修状态 3：服务地址 4：报修类型
             searchType = $(this).attr("data-id");
         });
-        $(".back").click(function(){
+        $(".back").on("tap",function(){
             searchType = 1;  // 报修类型
             $("#search_btn").val("");
         });
-        $('#cancel').click(function(){
+        $('#cancel').on("tap",function(){
 
             $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
 
             searchType = 1;  // 报修类型
             keyword = "";       //  清除搜索条件；
 
-            $("#list").empty();            //清除列表数据;
+            _this.Dlist.empty();            //清除列表数据;
             setTimeout(function(){
                 _this.road();  // 重置
             },600);
 
         });
-        $(document).on("click",".orders",function(){
+        $(document).on("tap",".orders",function(){
             var self = $(this);
             //  接单；
             $.ajax({
@@ -264,7 +261,7 @@ function HtmlAjax(){
                 }
             })
         });
-        $(document).on("click",".confirm",function(){
+        $(document).on("tap",".confirm",function(){
             var self = $(this);
             //  确认验收；
             $.ajax({

@@ -1,7 +1,6 @@
 /**
  * Created by Administrator on 2017/8/15.
  */
-
 $(document).ready(function(){
 
     htmlAjax.project();   //  获取报修项目；

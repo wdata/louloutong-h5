@@ -21,10 +21,22 @@ $.ajax({
             var html = '';
             if(data.data.file){
                 $.each(data.data.file,function(index,val){
+                    var da = val.fileName.split('"')[1].split(".");
+                    var i = "";
+                    switch(da[1]){
+                        case "pdf":i = '<i class="suffix-icon pdf-icon"></i>';
+                            break;
+                        case "excel":i = '<i class="suffix-icon excel-icon"></i>';
+                            break;
+                        case "word":i = '<i class="suffix-icon word-icon"></i>';
+                            break;
+                        default:i = '<i class="suffix-icon pdf-icon"></i>';
+                            break;
+                    }
                     // <i class="suffix-icon pdf-icon"></i>
                     // <i class="suffix-icon excel-icon"></i>
                     // <i class="suffix-icon word-icon"></i>
-                    html += '<li><p class=""><span>7月份缴费清单1111111111111111111111111111111</span>.execl</p> <a href="'+ val.url +'" class="icon-wrap"><i class="download-icon"></i></a> </li>'
+                    html += '<li>'+ i +'<p class=""><span>'+ da[0] +'</span>.'+ da[1] +'</p> <a download href="'+ val.url +'" class="icon-wrap"><i class="download-icon"></i></a> </li>'
                 });
                 $(".annex").empty().append(html);
             }

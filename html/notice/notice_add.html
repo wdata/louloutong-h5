@@ -26,12 +26,12 @@
             <div class="publish-add-box">
                 <div class="tt">
                     <div class="p32">
-                        <select name="type" id="">
+                        <select id="type" >
                             <option value="1">普通通知</option>
                             <option value="2">缴费通知</option>
                         </select>
                     </div>
-                    <input type="text" name="title" id="title" placeHolder="添加标题（必填）">
+                    <input type="text" id="title" placeHolder="添加标题（必填）">
                     <div class="row" onclick="receiveShow()">
                         <div class="fl overhide" id="recei_comp">全部企业</div>
                         <div class="icon-wrap fr">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="main">
-                    <input name="title" type="hidden" id="target">
+                    <input  type="hidden" id="target">
                     <div class="article-content" id="editor_box" contenteditable='true'></div>
                     <div class="p48">
                         <ul class="annex" id="up_attach">
@@ -65,7 +65,7 @@
                 <div class="pic inlist">
                     <img src="../../images/icon/docu.png" alt="">
                     <div>附件</div>
-                    <input class="input-file" type="file"  name="fileInput"  onchange="getDocu(this)" accept="application/pdf">
+                    <input class="input-file" type="file" onchange="getDocu(this)">
                 </div>
             </div>
         </form>

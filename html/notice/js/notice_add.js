@@ -1,5 +1,3 @@
-var urls = [];  // 记录file内上传；
-
 $(document).ready(function(){
     var u=$(window).width()>750?54:$(window).width()/10;
     var ww=$(window).width();
@@ -31,6 +29,7 @@ function rePublish(){
 
 
 //上传附件
+var fileData = [];var imgBur = false;  //如果图片正在上传则禁止发送请求；
 function getDocu(_this){
     var name=_this.value;
     var postfix=name.substring(name.lastIndexOf(".") + 1).toLowerCase();
@@ -54,15 +53,67 @@ function getDocu(_this){
         $('#up_attach').append(code);
         // console.info($('.p-layout').height());
 
+        var form = new FormData($("#newForm")[0]);       //需要是JS对象
         $.each($(_this)[0].files,function(index,val){
-            urls.push(val);
+            form.append("file",val);
+            console.log(val);
         });
-        console.log(urls);
+
+//      添加文件；
+        $.ajax({
+            type:'post',
+            url:  server_zuui + '/file/upload.json',
+            data: form,
+            contentType: false,
+            processData: false,
+            success:function(data){
+                if(data.code === 0 && data.data){
+                    $.each(data.data,function(index,val){
+                        fileData.push(val);
+                    })
+                }else{
+                    showMask("文件太大了！");
+                }
+            },
+            beforeSend:function(){
+                imgBur = true;
+            },
+            complete:function(){
+                imgBur = false;
+            },
+            error:function(data){
+                ErrorReminder(data);
+            }
+        });
+
     }
 }
 //删除附件
 function delDocu(_this){
-    $(_this).parent().parent().remove();
+    var name = $(_this).siblings("p").text();
+    $.ajax({
+        type:'post',
+        url:  server_core + server_v1 + '/file/delete.json',
+        data: {
+            "name":name
+        },
+        dataType:'json',
+        success:function(data){
+            if(data.code === 0 && data.message === "SUCCESS"){
+                $(_this).parent().parent().remove();
+                fileData.splice(ind,1); //删除呗删除图片数据；
+            }
+        },
+        beforeSend:function(){
+            imgBur = true;
+        },
+        complete:function(){
+            imgBur = false;
+        },
+        error:function(data){
+            ErrorReminder(data);
+        }
+    });
 }
 
 
@@ -73,6 +124,13 @@ function release(){
 
     var content = $("#editor_box").text();  // 内容
     var title = $("#title").val();       //标题
+    var data = {};
+    var urls = [];
+
+    if(imgBur){
+        showMask("文件正在上传！");
+        return;
+    }
 
     if(title.length < 4){
         showMask("请输入长度大于4个字符的标题！");
@@ -87,7 +145,6 @@ function release(){
         return;
     }
 
-    var form = new FormData($("#newForm")[0]);       //需要是JS对象
     var firmIds = "";             // 接收数组
     $.each($(".firmIds:checked"),function(x,y){
         if(x === 0){
@@ -96,21 +153,25 @@ function release(){
             firmIds += "," + $(y).attr("data-id");
         }
     });
+    $.each(fileData,function(index,val){
+        urls.push(val.url);
+    });
 
-
-    form.append("propertyId",propertyId);
-    form.append("userId",userId);
-    form.append("content",content);
-    form.append("urls",urls);       // 附件数组
-    form.append("requiredReceipt",1);
-    form.append("firmIds",firmIds);
+    var type = $("#type").val();     // 通知类型
+    data["propertyId"] = propertyId;
+    data["userId"] = userId;
+    data["title"] = title;
+    data["content"] = content;
+    data["type"] = type;
+    data["urls"] = urls;      // 附件数组
+    data["firmIds"] = firmIds;
 
     $.ajax({
         type:'post',
         url:  server_url_notice + server_v1 + '/notify.json',
-        data: form,
-        contentType: false,
-        processData: false,
+        data: data,
+        dataType:'json',
+        traditional:true,
         success:function(data){
             if(data.code === 0 && data.message === "SUCCESS"){
                 // window.location.href = "notice_list.html";

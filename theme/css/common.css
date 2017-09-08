@@ -257,7 +257,7 @@ body{overflow: hidden;}
 }
 .annex li p span{
     /*保证单行*/
-    width: 80%;
+    max-width: 80%;
     display: inline-block;
     overflow: hidden;
     text-overflow:ellipsis;
