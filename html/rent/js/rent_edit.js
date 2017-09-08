@@ -16,8 +16,8 @@ var modify = new Object({
     userId:userId,
     acreage:null,
     price:null,
-    picId:null,
-    propertyId:null
+    propertyId:null,
+    imgArr:[]
 })
 modify.update = function(){
 	var p=$('.diff-orent .unit-choosed').html();
@@ -53,7 +53,7 @@ modify.update = function(){
 }
 modify.event = function(){
 	var _this=this;
-	$('.submit-btn').click(function(){
+	$('.submit-btn').tap(function(){
 	    _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
 	    var m=$('.diff-orent .elem-05').val();
 	    var n=$('.diff-irent .elem-05').val();
@@ -79,7 +79,85 @@ modify.event = function(){
 
 
 
-modify.event()
+modify.event();
+
+var wxImg = new Object({
+    urls:[],
+})
+wxImg.imgUpload = function(){
+    var _this=this;
+    var i=0;
+    this.urls.push(modify.imgArr);
+    $('#pic_num').text(this.urls.length);
+    wx.chooseImage({
+        count: 8-this.urls.length, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            syncUpload(localIds);
+        }
+    })
+    var syncUpload = function(localIds){
+        var localId = localIds.pop();
+        var code=`
+                <div class="img-list">
+                    <img src="${localId}" alt="">
+                    <i class="icon icon-del" onclick="del(this)"></i>
+                </div> 
+                `;
+        $('.pic-wrap .pic-con .list-con').append(code);
+        $('.issue .photo .img-wrap').html(`<img src="${localIds[0]}" alt="" class="full">`);
+        wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: function (res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+                $.ajax({
+                    type:'post',
+                    url:'/weixin/downloadImage',
+                    dataType:'json',
+                    data:{
+                        mediaIds:serverId
+                    },
+                    success:function(res){
+                        _this.urls.push(res.data.urls);
+                    }
+                })
+                if(localIds.length > 0){
+                    syncUpload(localIds);
+                }
+            }
+        });
+    }   
+}
+wxImg.serImg = function(src){
+	$('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
+}
+wxImg.init = function(){
+    var _this=this;
+    $('.issue .photo').click(function(){
+        if(_this.urls.length>=1){
+            $('.pic-wrap').show();
+            $('.sBox-wrapper,.tap-footer').addClass('z0');
+        }else{
+           _this.imgUpload(); 
+        }
+    })
+    $('.pic-wrap .pic-con .add-list').click(function(){
+        if(_this.urls.length>=8){
+            showMask('最多只能上传8张！');
+            return false;
+        }
+        _this.imgUpload(); 
+    })
+
+    $('.pic-wrap .return').click(function(){
+        $('.pic-wrap').hide();
+        $('.sBox-wrapper,.tap-footer').removeClass('z0');
+    })   
+}
+wxImg.init();
 
 
 function modify(){
@@ -101,11 +179,11 @@ dongSwitch.prototype = {
     animation:function(){
         var _this = this;
         // 平移动画效果
-        $(document).on("click","#address",function(){
+        $(document).on("tap","#address",function(){
             $(".index").addClass("active");
             $(".switch").addClass("active");
         });
-        $(".switch .header-return,#determine").click(function(){
+        $(".switch .header-return,#determine").tap(function(){
             $(".index").removeClass("active");
             $(".switch").removeClass("active");
 
@@ -164,6 +242,10 @@ dongSwitch.prototype = {
 										$('.elem-10').val(res.data.phone);
 										$('.unit').text(res.data.unit);
 										_this.Default(res.data.propertyId);
+										$.each(res.data.images,function(index,item){
+											modify.imgArr.push(item.url);
+										})
+										wxImg.serImg(res.data.images[0].url)
 									}
 								}
 							})
@@ -181,7 +263,7 @@ dongSwitch.prototype = {
         //  点击下一级；
 
         var _this = this;
-        $(document).on("click","#addressList li",function(){
+        $(document).on("tap","#addressList li",function(){
             var self = this;
             //  提示
             $(this).addClass("active")
@@ -249,7 +331,7 @@ dongSwitch.prototype = {
     superior:function(){
         //  选择同级；
         var _this = this;
-        $(document).on("click",".switch .nav li",function(){
+        $(document).on("tap",".switch .nav li",function(){
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");

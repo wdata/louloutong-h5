@@ -13,11 +13,11 @@ dongSwitch.prototype = {
     animation:function(){
         var _this = this;
         // 平移动画效果
-        $(document).on("click","#address",function(){
+        $(document).on("tap","#address",function(){
             $(".index").addClass("active");
             $(".switch").addClass("active");
         });
-        $(".switch .header-return,#determine").click(function(){
+        $(".switch .header-return,#determine").tap(function(){
             $(".index").removeClass("active");
             $(".switch").removeClass("active");
 
@@ -79,7 +79,7 @@ dongSwitch.prototype = {
         //  点击下一级；
 
         var _this = this;
-        $(document).on("click","#addressList li",function(){
+        $(document).on("tap","#addressList li",function(){
             var self = this;
             //  提示
             $(this).addClass("active")
@@ -146,7 +146,7 @@ dongSwitch.prototype = {
     superior:function(){
         //  选择同级；
         var _this = this;
-        $(document).on("click",".switch .nav li",function(){
+        $(document).on("tap",".switch .nav li",function(){
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");

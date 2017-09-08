@@ -31,6 +31,8 @@ var auth_0=false;			//显示出租/求租
 
 wxConfig(wx);
 
+
+
 //出租和求租
 var rent = new Object({
 	page:1,
@@ -113,6 +115,32 @@ rent.getList = function(elem,me){
         }
 	})
 }
+
+//下拉刷新效果
+var i=0;
+var cur_ob=rent;     //当前列表
+var conIndex=1;
+var serIndex=1;
+var sdropload;      //搜索下拉
+var dropload = $('.mainCon-wrap').dropload({
+        scrollArea : $(".mainCon-wrap"),
+        autoLoad:true,
+        loadDownFn:function(me){
+            switch(conIndex){
+                case 4:
+                    myrent.getList('.rent-list-con',me)
+                    break;
+                case 3:
+                console.info(conIndex)
+                    order.getList('.rent-list-con',me);
+                    break;
+                default:
+                    rent.getList('.rent-list-con',me);  
+                    break;
+            }
+        }
+})
+
 
 //预约
 var order=new Object({
@@ -313,7 +341,11 @@ myrent.refresh = function(id){
         url:server_rent+server_v1+'/rents/refresh/'+this.userId+'/'+id+'.json',
         dataType:'json',
         success:function(res){
-            _this.getList('.rent-list-con');
+           $('.rent-list-con').html(' ');
+            myrent.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
         }
     })
 }
@@ -325,7 +357,11 @@ myrent.changeStatus = function(id,status){
         url:server_rent+server_v1+'/rents/shelfStatus/'+this.userId+'/'+id+'/'+c_status+'.json',
         dataType:'json',
         success:function(res){
-            _this.getList('.rent-list-con');
+            $('.rent-list-con').html(' ');
+            myrent.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
         }
    })
 }
@@ -337,13 +373,18 @@ myrent.del = function(id,status){
         url:server_rent+server_v1+'/rents/delete/'+this.userId+'/'+id+'.json',
         dataType:'json',
         success:function(res){
-            _this.getList('.rent-list-con');
+            $('.rent-list-con').html(' ');
+            myrent.page=1;
+            dropload.unlock();
+            dropload.noData(false);
+            dropload.resetload();
         }
    })
 }
 
 var wxImg = new Object({
     urls:[],
+    local_url:[]
 })
 wxImg.imgUpload = function(){
     var _this=this;
@@ -359,13 +400,16 @@ wxImg.imgUpload = function(){
         }
     })
     var syncUpload = function(localIds){
+        i++;
         var localId = localIds.pop();
+        _this.local_url.push({'num':i,'url':localId});
+        _this.setImg(_this.local_url[0].url);
         var code=`
-                <div class="img-list">
-                    <img src="${localId}" alt="">
-                    <i class="icon icon-del" onclick="del(this)"></i>
-                </div> 
-                `;
+            <div class="img-list">
+                <img src="${localId}" alt="">
+                <i class="icon icon-del" onclick="wxImg.del(this)"></i>
+            </div> 
+            `;
         $('.pic-wrap .pic-con .list-con').append(code);
         wx.uploadImage({
             localId: localId,
@@ -380,8 +424,7 @@ wxImg.imgUpload = function(){
                         mediaIds:serverId
                     },
                     success:function(res){
-                        _this.urls.push(res.data.urls);
-                        $('.issue .photo .img-wrap').html(`<img src="${_this.urls[0]}" alt="" class="full">`);
+                        _this.urls.push({'num':i,'url':res.data.urls[0]});
                     }
                 })
                 if(localIds.length > 0){
@@ -391,10 +434,30 @@ wxImg.imgUpload = function(){
         });
     }   
 }
+
+wxImg.del = function(cur){
+    var _this=this;
+    $(cur).parent().remove();
+    var t_num;
+    $.each(_this.local_url,function(index,item){
+        if(item.url ==$(cur).parent().find('img').attr('src')){
+            _this.local_url.splice(index,1);
+            _this.urls.splice(index,1);
+        }
+    })
+    if(_this.local_url.length>=1){
+        _this.setImg(_this.local_url[0].url)
+    }else{
+        _this.setImg(default_img);
+    }            
+}
+wxImg.setImg = function(src){
+    $('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
+}
 wxImg.init = function(){
     var _this=this;
     $('.issue .photo').click(function(){
-        if(_this.urls.length>=1){
+        if(_this.local_url.length>=1){
             $('.pic-wrap').show();
             $('.sBox-wrapper,.tap-footer').addClass('z0');
         }else{
@@ -402,7 +465,7 @@ wxImg.init = function(){
         }
     })
     $('.pic-wrap .pic-con .add-list').click(function(){
-        if(_this.urls.length>=8){
+        if(_this.local_url.length>=8){
             showMask('最多只能上传8张！');
             return false;
         }
@@ -449,15 +512,22 @@ issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
     var unit=this.type==1?p:q
+    // $('#addressList li.active').data('id') wxImg.urls
+    /*alert(wxImg.urls);*/
+    var picUrl=[];
+    $.each(wxImg.urls,function(index,item){
+        picUrl.push(item.url)
+    })
     $.ajax({
         type:'post',
         url:server_rent+server_v1+'/rents/save.json',
         dataType:'json',
+        traditional: true,  
         data:{
             'type':this.type,
             'userId':this.userId,
-            'urls':wxImg.urls,
-            'propertyId':$('#addressList li.active').data('id'),
+            'urls':picUrl,
+            'propertyId':2,
             'community':$('.elem-02').val(),
             'section':$('.elem-03').val(),
             'acreage':this.acreage,
@@ -472,7 +542,11 @@ issue.add = function(){
             'traffic':'地铁',
             'matingFacility':'花园'
         },
+        beforeSend:function(data){
+            showMask('请求处理中！');
+        },
         success:function(data){
+            closeMask();
             showMask('添加成功！');
             clearForm('#rent_form');
         }
@@ -527,14 +601,14 @@ issue.event = function(){
         $(this).addClass('on').siblings().removeClass('on');
     })
     //提交  
-    $('.submit-btn').tap(function(){
+    $('.submit-btn').click(function(){
         _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
         var m=$('.diff-orent .elem-05').val();
         var n=$('.diff-irent .elem-05').val();
         _this.price=(m)?m:n;
-        if(_this.type==1 && wxImg.urls.length<=0)                                             { showMask('请至少上传一张图片！'); return false; }
-        if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
-        if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
+        //if(_this.type==1 && wxImg.urls.length<=0)                                       { showMask('请至少上传一张图片！'); return false; }
+        //if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
+        /*if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
         if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
         if(!$('.elem-06').val())                                                        { showMask('请填写类型！'); return false; }
         if(!($('.elem-07').val().length>=8 && $('.elem-07').val().length<=18))          { showMask('请填写标题，且在8-28个字之间！'); return false; }
@@ -547,7 +621,7 @@ issue.event = function(){
         }
         if($('.elem-03').val()){
             if(!($('.elem-03').val().length>=2 && $('.elem-03').val().length<=12))      { showMask('所填写地段字数应为2-12个字'); return false; }
-        }
+        }*/
         _this.add();
     })
 }
@@ -557,34 +631,7 @@ issue.init = function(){
     this.event();
 }
 
-//下拉刷新效果
-var i=0;
-var cur_ob=rent;  //当前列表
-var conIndex=1;
-var serIndex=1;
 
-var dropload = $('.mainCon-wrap').dropload({
-        scrollArea : $(".mainCon-wrap"),
-        autoLoad:true,
-        loadDownFn:function(me){
-            switch(conIndex){
-                case 4:
-                    myrent.getList('.rent-list-con',me)
-                    break;
-                case 3:
-                console.info(conIndex)
-                    order.getList('.rent-list-con',me);
-                    break;
-                default:
-                    rent.getList('.rent-list-con',me);  
-                    break;
-            }
-            
-        }
-})
-
-
-var i=0; var sdropload;
 $('#search_btn').on("input porpertychange",function(){
 	if($('#search_btn').val()){
 		$('.search-main').css('transform','translateX(-'+ww+'px)');	

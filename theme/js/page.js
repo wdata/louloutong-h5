@@ -1,4 +1,5 @@
-var default_tx="../../images/upload/touxiang@2x.png"
+var default_tx="../../images/upload/touxiang@2x.png";           //默认头像
+var default_img='../../images/upload/pic2@2x.png';              //默认上传的底图
 
 //显示
 var ww=$(window).width();
