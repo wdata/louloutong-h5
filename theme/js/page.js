@@ -48,7 +48,7 @@ function nullCheck(elem){
 //搜索相关js
 $('.search-main,.p-layout').width(ww*2);
 
-$('.main-wrap,.tran-wrap,.tap-footer,.issue-editbox').width(ww);
+$('.main-wrap,.tran-wrap,.tap-footer,.issue-editbox,.pic-wrap').width(ww);
 
 $('#search_btn').focus(function(){
 	$('.sBox-wrapper').addClass('active');

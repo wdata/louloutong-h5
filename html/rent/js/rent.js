@@ -29,10 +29,7 @@ var auth_0=false;			//显示出租/求租
     	$('.rent-tab .bot .inner-r2').show().siblings().hide();
     }
 
-wxConfig(wx);
-
-
-
+wxConfig(wx);       //微信授权
 //出租和求租
 var rent = new Object({
 	page:1,
@@ -115,6 +112,13 @@ rent.getList = function(elem,me){
         }
 	})
 }
+rent.reloadList = function(){
+    $('.rent-list-con').html(' ');
+    rent.page=1;
+    dropload.unlock();
+    dropload.noData(false);
+    dropload.resetload();
+}
 
 //下拉刷新效果
 var i=0;
@@ -131,7 +135,6 @@ var dropload = $('.mainCon-wrap').dropload({
                     myrent.getList('.rent-list-con',me)
                     break;
                 case 3:
-                console.info(conIndex)
                     order.getList('.rent-list-con',me);
                     break;
                 default:
@@ -147,10 +150,11 @@ var order=new Object({
 	page:1,
 	size:1,
 	userId:userId,
-	status:0,          //状态， 0: 未分配或未处理， 1: 已分配或已处理
+	status:0,          //状态， 0: 未， 1: 已
 	keyword:null,
     searchType:null,
-    state:auth_2?0:1        //0：未分配或已分配     1：已分配或已处理
+    state:auth_2?0:1,        //0：分配     1：处理
+    curId:null              //当前要操作的预约id
 })
 order.getList = function(elem,me){
     var _this=this;
@@ -170,10 +174,32 @@ order.getList = function(elem,me){
                 me.resetload();
                 return false; 
             }
-            
-            if(_this.status==0){
+            console.info(order.status+","+order.state)
+            if(_this.status==1){
                 $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
+                    var imgCode=item.imageUrl?item.imageUrl:default_img;
+                    var diffCode;
+                    if(_this.state==1){               //未分配   可以分配接待
+                        diffCode=`
+                            <div class="hr-48"></div>
+                            <div class="order-area" onclick="tranShow()">
+                                <div class="mask"></div>
+                                <button class="abs">分配接待</button>
+                                <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                            </div>
+                        `;
+                    }else{
+                        diffCode=`
+                            <div class="oper">
+                                <button class="btn" onclick="order.remind('${item.id}')">提醒</button>
+                                <button class="btn" onclick="order.tranShow('${item.id}')">接待</button>
+                            </div>
+                            <a href="order_detail.html" onclick="session('order_id',${item.id})">
+                                <img src="${imgCode}" alt="">
+                            </a>
+                        `;
+                    }
                     code+=`
                          <div class="item">
                             <div class="p24">
@@ -191,18 +217,12 @@ order.getList = function(elem,me){
                                         <div class="mid">
                                             <p class="line2">${item.beseakUser.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
-                                            <div class="tips overhide">接待者：${item.receptUser.name}|&nbsp;结果：已接待，带客户考虑清楚再回复我们</div>
+                                            <div class="tips overhide">接待者：${item.receptUser.name}</div>
                                         </div>
                                     </a>
                                 </div>
                                 <div class="t-r fl">
-                                    <div class="oper">
-                                        <button class="btn">提醒</button>
-                                        <a href="recei_reasult.html" class="btn">接待</a>
-                                    </div>
-                                    <a href="order_detail.html" onclick="session('order_id',${item.id})">
-                                        <img src="${server_url_img+item.imageUrl}" alt="">
-                                    </a>
+                                    ${diffCode}
                                 </div>
                                 <div class="clear"></div>
                             </div>
@@ -212,11 +232,9 @@ order.getList = function(elem,me){
             }else{
                 $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
-                    console.info(_this.status)
-                    console.info(_this.state)
                     var resCode="";
                     if(_this.state==1){           //已处理 有接待结果
-                        resCode=`<div>接待人：${item.receptUser.result}</div>`;
+                        resCode=`div class="tips overhide">接待者：${item.receptUser.name}|&nbsp;结果：${item.receptUser.result}</div>`;
                     }
                     code+=`
                         <div class="item">
@@ -266,10 +284,72 @@ order.getList = function(elem,me){
         }
     })        
 }
+order.remind = function(id){
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+"/rentBespeaks/remind/"+id+".json",
+        dataType:'json',
+        success:function(data){
+            if(data.code==0){
+                showMask('提醒成功！');
+            }else{
+                showMask('提醒失败！');
+            }
+        },
+        error:function(){
+            showMask('提醒失败！');
+        }
+    })
+}
+order.tranShow = function(id){
+    tranShow(4);
+    this.curId=id;
+}
+order.recept = function(){
+    var _this=this;
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+"/rentBespeaks/recept.json",
+        dataType:'json',
+        data:{
+            'bespeakId':this.curId,
+            'content':$('.reasult-box textarea').val()
+        },
+        success:function(data){
+            if(data.code==0){
+                showMask('提交接待成功！');
+                setTimeout(function(){
+                    closeMask();
+                    returnTran();
+                    _this.reloadList();  
+                },1000)
+            }else{
+                showMask('提交接待失败！');
+            }
+        },
+        error:function(){
+            showMask('提交接待失败！');
+        }
+    })
+}
+order.init = function(){
+    var _this=this;
+    $('.recept-oper').click(function(){
+        _this.recept();
+    })
+}
+order.reloadList = function(){
+    $('.rent-list-con').html(' ');
+    order.page=1;
+    dropload.unlock();
+    dropload.noData(false);
+    dropload.resetload();
+}
+order.init();
 //我的出租\求租列表
 var myrent=new Object({
 	page:1,
-	size:1,
+	size:10,
 	userId:userId,
 	type:1,
     keyword:null,
@@ -294,7 +374,7 @@ myrent.getList = function(elem,me){
             }
 			$.each(data.data.items,function(index,item){
                 var imgCode="";
-                if(item.images.length>1){
+                if(item.images.length>=1){
                     for(var i=0;i<item.images.length;i++){
                         imgCode+=`
                                 <div class="pic-w fl">
@@ -381,6 +461,13 @@ myrent.del = function(id,status){
         }
    })
 }
+myrent.reloadList = function(){
+    $('.rent-list-con').html(' ');
+    myrent.page=1;
+    dropload.unlock();
+    dropload.noData(false);
+    dropload.resetload();
+}
 
 var wxImg = new Object({
     urls:[],
@@ -434,7 +521,6 @@ wxImg.imgUpload = function(){
         });
     }   
 }
-
 wxImg.del = function(cur){
     var _this=this;
     $(cur).parent().remove();
@@ -442,7 +528,11 @@ wxImg.del = function(cur){
     $.each(_this.local_url,function(index,item){
         if(item.url ==$(cur).parent().find('img').attr('src')){
             _this.local_url.splice(index,1);
-            _this.urls.splice(index,1);
+            $.each(_this.urls,function(i,t){
+                if(t.num==item.num){
+                    _this.urls.splice(i,1);
+                }
+            })
         }
     })
     if(_this.local_url.length>=1){
@@ -511,8 +601,8 @@ issue.scroll = function(){
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
-    var unit=this.type==1?p:q
-    // $('#addressList li.active').data('id') wxImg.urls
+    var unit=this.type==1?q:p
+    //  wxImg.urls  /api/v1/rents/save.json
     /*alert(wxImg.urls);*/
     var picUrl=[];
     $.each(wxImg.urls,function(index,item){
@@ -520,14 +610,14 @@ issue.add = function(){
     })
     $.ajax({
         type:'post',
-        url:server_rent+server_v1+'/rents/save.json',
+        url:server_rent+server_v1+'/api/v1/rents/save.json',
         dataType:'json',
         traditional: true,  
         data:{
             'type':this.type,
             'userId':this.userId,
             'urls':picUrl,
-            'propertyId':2,
+            'propertyId':$('#addressList li.active').data('id'),
             'community':$('.elem-02').val(),
             'section':$('.elem-03').val(),
             'acreage':this.acreage,
@@ -705,19 +795,16 @@ $('.rent-tab .top .list').tap(function(){
 	$('.search-main .list-con .inner').eq(tIndex).show().siblings().hide();
 	switch(tIndex){
 		case 2:
-			cur_ob=order;
             conIndex=tIndex+1;
-            $('.rent-list-con').html(' ');
-            order.page=1;
-            dropload.unlock();
-            dropload.noData(false);
-            dropload.resetload();
+			cur_ob=order;
 			$('.rent-list-con').show();
 			$('.issue').hide();
+            order.reloadList();
 			break;
 		case 3:
-			issue.isShow=true;
-			issue.init();
+            conIndex=4;
+            issue.isShow=true;
+            issue.init();
 			break;
 		default:
 			cur_ob=rent;
@@ -725,11 +812,7 @@ $('.rent-tab .top .list').tap(function(){
 			$('.issue').hide();
 			rent.type=tIndex+1;
             conIndex=tIndex+1;
-            $('.rent-list-con').html(' ');
-            rent.page=1;
-            dropload.unlock();
-            dropload.noData(false);
-            dropload.resetload();
+            rent.reloadList();
 	}
 })			
 
@@ -742,11 +825,7 @@ $('.rent-tab .bot .list').tap(function(){
 		case 2:
 			order.status=bIndex;
 			conIndex=tIndex+1;
-            $('.rent-list-con').html(' ');
-            order.page=1;
-            dropload.unlock();
-            dropload.noData(false);
-            dropload.resetload();
+            order.reloadList();
 			break;
 		case 3:
 			switch(bIndex){
@@ -757,13 +836,9 @@ $('.rent-tab .bot .list').tap(function(){
 				default:
 					issue.isShow=false;
 					issue.init();
-                    $('.rent-list-con').html(' ');
+                    myrent.reloadList();
 					myrent.type=bIndex;
                     conIndex=tIndex+1;
-                    myrent.page=1;
-                    dropload.unlock();
-                    dropload.noData(false);
-                    dropload.resetload();
 					break;
 			}
 			break;
@@ -771,14 +846,12 @@ $('.rent-tab .bot .list').tap(function(){
 			rent.genre=bIndex+1;
 			rent.type=tIndex+1;
 			conIndex=tIndex+1;
-            rent.page=1;
-            $('.rent-list-con').html(' ');
-            dropload.unlock();
-            dropload.noData(false);
-            dropload.resetload();
+            rent.reloadList();
 			break;
 	}
 })
+
+
 
 //我要出租/我要求租返回列表页
 function returnList(){
@@ -812,3 +885,29 @@ $('.sBox-wrapper .cancel').tap(function(){
     rent.keyword=null;
     rent.genre=1;
 })
+
+$('.reasult-editer').focus(function(){
+    $('.placeholder').remove();
+})
+$('.reasult-editer').blur(function(){
+    if($.trim($(this).val()).length<=0){
+        $('.reasult-box').append(`<div class="placeholder">请填写接待结果<span>(30个字以内)</span></div>`);
+    }
+})
+
+
+/*$.ajax({
+    type:'post',
+    url:server_rent+server_v1+'/rentBespeaks.json',
+    dataType:'json',
+    data:{
+        'rentId':19,
+        'bespeakUserId':11,
+        'contacter':'联系人',
+        'phone':'15623568956',
+        'bespeakTime':'2017-10-23 15:32'
+    },
+    success:function(res){
+
+    }
+})*/

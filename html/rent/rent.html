@@ -453,7 +453,7 @@
                        <textarea placeholder="10字以上"></textarea>
                     </div>
                 </div>
-                <div class="tran-inner">
+                <div class="tran-inner undis">
                     <header>
                         <a class="return" href="javascipt:;" onclick="returnTran()">
                             <img src="../../images/icon/back.png" alt=""><span></span>
@@ -466,6 +466,21 @@
                             <li>元/月</li>
                             <li>元/m<sup>2</sup>/月</li>
                         </ul>
+                    </div>   
+                </div>
+                <div class="tran-inner undis bgfe">
+                    <header>
+                        <a class="return" href="javascipt:;" onclick="returnTran()">
+                            <img src="../../images/icon/back.png" alt=""><span></span>
+                        </a>
+                        接待
+                        <a class="right-oper recept-oper" href="javascript:">完成</a>
+                    </header>
+                    <div class="p24">
+                        <div class="reasult-box">
+                             <textarea name="" id="" cols="30" rows="10" maxLength="30" class="reasult-editer"></textarea>
+                            <div class="placeholder">请填写接待结果<span style="color:#999">(30个字以内)</span></div>
+                        </div>    
                     </div>   
                 </div>
             </div>
@@ -521,12 +536,7 @@
 <script type="text/javascript" charset="utf-8" src="js/dong.js"></script> 
 <script type="text/javascript" charset="utf-8" src="js/rent.js"></script> 
 <script>        
-    var mySwiper = new Swiper ('.rent-swiper', {
-            loop: true,
-            pagination: '.swiper-pagination',
-            autoplay: 1500,
-            autoplayDisableOnInteraction: false
-    })        
+    
   </script>
 </body>
 </html>
