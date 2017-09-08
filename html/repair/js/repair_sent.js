@@ -20,7 +20,7 @@ $.ajax({
         list.empty();
         if(data.code === 0){
             $.each(data.data,function(index,val){
-                html += '<li> <a href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.photo +'" alt="avatar"> </a> <a data-id="'+ val.id +'" class="orders" href="javascript:"> <div class="information"> <div class="name">'+ val.name +'<span class="position">'+ val.duty[0] +'</span></div> <time>上班时间：08:00-23:00</time> <div class="picked-up">已有'+ val.count +'单</div> </div> </a> </li>'
+                html += '<li> <a href="javascript:"> <img class="avatar" src="'+ server_uel_user_img + val.photo +'" alt="avatar"> </a> <a data-id="'+ val.id +'" class="orders" href="javascript:"> <div class="information"> <div class="name"><span class="na">'+ val.name +'</span><span class="position">'+ val.duty[0] +'</span></div> <time>上班时间：08:00-23:00</time> <div class="picked-up">已有'+ val.count +'单</div> </div> </a> </li>'
             })
         }
         list.append('<div class="team"> <header class="head"><i class="shrink-icon"></i><div class="title">'+ data.data[0].orgName +'</div></header> <ul>'+ html +'</ul> </div>');
@@ -60,4 +60,38 @@ $(document).on("click",".orders",function(){
             ErrorReminder(data);
         }
     });
+});
+
+// 搜索接收人
+function dataFilter(_this){
+    if($(_this).val() <= 0){
+        $(".sBox-wrapper").removeClass("heiA");
+    }else{
+        $(".sBox-wrapper").addClass("heiA");
+        processing($(_this).val());
+    }
+}
+function processing(data){
+    //  如果搜索内容和公司名像匹配，则显示；其他则隐藏；
+    $.each($(".name .na"),function(index,val){
+        if($(val).text().match(data)){
+            $(val).parents("li").show();
+        }else{
+            $(val).parents("li").hide();
+        }
+    });
+    //  如果所属部门没有查询的人，则隐藏这个部门；
+    // $.each($(".team"),function(index,val){
+    //     console.log($(val).find("ul").css("height"));
+    //     if($(val).find("ul").css("height") === "0px"){
+    //         $(val).hide();
+    //     }else{
+    //         $(val).show();
+    //     }
+    // })
+}
+$('.cancel').click(function(){
+    $(".sBox-wrapper").removeClass("hei").removeClass("heiA");
+    $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
+    $(".team li").show();
 });

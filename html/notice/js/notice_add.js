@@ -71,7 +71,7 @@ function delDocu(_this){
 
 function release(){
 
-    var content = $("#editor_box").html();  // 内容
+    var content = $("#editor_box").text();  // 内容
     var title = $("#title").val();       //标题
 
     if(title.length < 4){
@@ -96,8 +96,6 @@ function release(){
             firmIds += "," + $(y).attr("data-id");
         }
     });
-
-
 
 
     form.append("propertyId",propertyId);
@@ -143,7 +141,28 @@ $.ajax({
 });
 
 
-
+// 搜索接收人
+function dataFilter(_this){
+    processing($(_this).val());
+}
+$(document).keypress(function(e){
+    if(e.keyCode === 13) {
+        //  处理相关逻辑
+        processing($('#search').val());
+        //  禁止页面刷新
+        window.event.returnValue = false;
+    }
+});
+function processing(data){
+    //  如果搜索内容和公司名像匹配，则显示；其他则隐藏；
+    $.each($(".list-top").siblings(),function(index,val){
+        if($(val).find(".tit").text().match(data)){
+            $(val).show();
+        }else{
+            $(val).hide();
+        }
+    })
+}
 
 
 

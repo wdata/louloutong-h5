@@ -33,11 +33,11 @@ dongSwitch.prototype = {
     animation:function(){
         var _this = this;
         // 平移动画效果
-        $(document).on("click","#address",function(){
+        $(document).on("tap","#address",function(){
             $(".index").addClass("active");
             $(".switch").addClass("active");
         });
-        $(".switch .header-return,#determine").click(function(){
+        $(".switch .header-return,#determine").tap(function(){
             $(".index").removeClass("active");
             $(".switch").removeClass("active");
 
@@ -80,7 +80,7 @@ dongSwitch.prototype = {
                         if(val.parentId === null){
                             html += '<li data-pid="'+ val.parentId +'" data-id = "'+ val.id +'"><i></i>'+ val.name +'</li>';
                             if(sum === 1){
-                                one = val
+                                one = val;
                             }
                             sum++;
                         }

@@ -6,6 +6,16 @@ var tapSwitchA = true;     //  是否有数据；
 var tapSwitchB = true;     //  是否有数据；
 var dropload = null;
 
+var sum = obtain("tapNot");
+if(sum){
+    itemIndex = sum;
+    $(".tap a").eq(sum).addClass("active")
+        .siblings().removeClass("active");
+    $(".notice-list").eq(sum).removeClass("hide")
+        .siblings(".notice-list").addClass("hide");
+}
+
+
 //  tap导航切换
 $(".tap a").click(function(){
     $(this).addClass("active")
@@ -19,6 +29,7 @@ $(".tap a").click(function(){
 
         htmlAjax.judgment(tapSwitchA);
 
+        deposited("tapNot",0);  // 将键值对输入本地存储dataSession中；
     }else if(itemIndex === 1){
         //  判断是不是已读
         $(".have-read-list").removeClass("hide")
@@ -26,6 +37,7 @@ $(".tap a").click(function(){
 
         htmlAjax.judgment(tapSwitchB);
 
+        deposited("tapNot",1);  // 将键值对输入本地存储dataSession中；
     }
 });
 //  未读和已读跳转
@@ -104,10 +116,10 @@ function HtmlAjax(){
                     $.each(data.data.items,function(index,val){
                         var status = '';
                         //  0:普通通知；1：缴费通知
-                        switch (val.status){
-                            case 0:
+                        switch (val.type){
+                            case 1:
                                 break;
-                            case 1:status = '<div class="types">缴费通知</div>';
+                            case 2:status = '<div class="types">缴费通知</div>';
                                 break;
                         }
                         // 如果未读或已读人数为0，则字体变灰；
@@ -132,7 +144,7 @@ function HtmlAjax(){
                     }else if(status === 1){
                         commentB ++;
                     }
-                    if(data.data.pageCount === 0){
+                    if(data.data.pageNum*data.data.pageSize >= data.data.totalCount){
                         me.lock();  //智能锁定，锁定上一次加载的方向
                         me.noData();      //无数据
                         if(status === 0){

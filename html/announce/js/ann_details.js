@@ -11,7 +11,7 @@ $.ajax({
             $(".title").text(data.data.title);  // 标题；
             $(".name span").text(data.data.author.name);  // 发布人；
             $(".personal time").text(data.data.createTime);  //时间；
-            $("article").text(data.data.content);     //内容；
+            $("article").html(data.data.content);     //内容；
 
             $(".content").removeClass("hide");
         }
