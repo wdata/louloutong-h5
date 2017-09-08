@@ -7,8 +7,7 @@ if(rent_modify.type==1){
     $('.diff-orent').show();
     $('.diff-irent').hide();
 }
-
-
+wxConfig(wx);
 
 var modify = new Object({
 	id:rent_modify.id, 
@@ -22,14 +21,20 @@ var modify = new Object({
 modify.update = function(){
 	var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
-    var unit=this.type==1?p:q
+    var unit=this.type==1?q:p;
+    var picUrl=[];
+    $.each(wxImg.urls,function(index,item){
+        picUrl.push(item.url)
+    })
 	$.ajax({
 		type:'post',
 		url:server_rent+server_v1+'/rents/update.json',
 		dataType:'json',
+		traditional: true,  
 		data:{
 			'id':this.id,
 			'type':this.type,
+			'urls':picUrl,
             'userId':this.userId,
             'propertyId':$('#addressList li.active').data('id'),
             'community':$('.elem-02').val(),
@@ -51,8 +56,20 @@ modify.update = function(){
 		}
 	})
 }
+modify.tranBack = function(){
+     $('.p-layout').css('transform','translateX(0)');
+}
 modify.event = function(){
 	var _this=this;
+	//选择单位
+    $('.unit-con ul li').tap(function(){
+        if(_this.type==1){
+           $('.diff-irent .unit-choosed').html($(this).html()) 
+        }else{
+           $('.diff-orent .unit-choosed').html($(this).html())  
+        }
+        _this.tranBack();
+    })
 	$('.submit-btn').tap(function(){
 	    _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
 	    var m=$('.diff-orent .elem-05').val();
@@ -83,11 +100,11 @@ modify.event();
 
 var wxImg = new Object({
     urls:[],
+    local_url:[]
 })
 wxImg.imgUpload = function(){
     var _this=this;
     var i=0;
-    this.urls.push(modify.imgArr);
     $('#pic_num').text(this.urls.length);
     wx.chooseImage({
         count: 8-this.urls.length, // 默认9
@@ -99,15 +116,11 @@ wxImg.imgUpload = function(){
         }
     })
     var syncUpload = function(localIds){
+        i++;
         var localId = localIds.pop();
-        var code=`
-                <div class="img-list">
-                    <img src="${localId}" alt="">
-                    <i class="icon icon-del" onclick="del(this)"></i>
-                </div> 
-                `;
-        $('.pic-wrap .pic-con .list-con').append(code);
-        $('.issue .photo .img-wrap').html(`<img src="${localIds[0]}" alt="" class="full">`);
+        _this.local_url.push({'num':i,'url':localId});
+        _this.setImg(_this.local_url[0].url);
+        _this.serLocalImg(localId);
         wx.uploadImage({
             localId: localId,
             isShowProgressTips: 1,
@@ -121,7 +134,7 @@ wxImg.imgUpload = function(){
                         mediaIds:serverId
                     },
                     success:function(res){
-                        _this.urls.push(res.data.urls);
+                        _this.urls.push({'num':i,'url':res.data.urls[0]});
                     }
                 })
                 if(localIds.length > 0){
@@ -131,13 +144,45 @@ wxImg.imgUpload = function(){
         });
     }   
 }
-wxImg.serImg = function(src){
-	$('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
+wxImg.del = function(cur){
+    var _this=this;
+    $(cur).parent().remove();
+    var t_num;
+    $.each(_this.local_url,function(index,item){
+        if(item.url ==$(cur).parent().find('img').attr('src')){
+            _this.local_url.splice(index,1);
+            $.each(_this.urls,function(i,t){
+            	if(t.num==item.num){
+            		_this.urls.splice(i,1);
+            	}
+            })
+            
+        }
+    })
+
+    if(_this.local_url.length>=1){
+        _this.setImg(_this.local_url[0].url)
+    }else{
+        _this.setImg(default_img);
+    }            
+}
+wxImg.setImg = function(src){
+    $('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
+}
+wxImg.setLocalImg = function(src){
+	var code=`
+            <div class="img-list">
+                <img src="${src}" alt="">
+                <i class="icon icon-del" onclick="wxImg.del(this)"></i>
+            </div> 
+            `;
+    $('.pic-wrap .pic-con .list-con').append(code);
 }
 wxImg.init = function(){
     var _this=this;
     $('.issue .photo').click(function(){
-        if(_this.urls.length>=1){
+    	console.info(_this.local_url)
+        if(_this.local_url.length>=1){
             $('.pic-wrap').show();
             $('.sBox-wrapper,.tap-footer').addClass('z0');
         }else{
@@ -145,7 +190,7 @@ wxImg.init = function(){
         }
     })
     $('.pic-wrap .pic-con .add-list').click(function(){
-        if(_this.urls.length>=8){
+        if(_this.local_url.length>=8){
             showMask('最多只能上传8张！');
             return false;
         }
@@ -160,8 +205,7 @@ wxImg.init = function(){
 wxImg.init();
 
 
-function modify(){
-	
+function modify(){	
 }
 
 function dongSwitch(){
@@ -240,12 +284,17 @@ dongSwitch.prototype = {
 										$('.elem-08').val(res.data.content);
 										$('.elem-09').val(res.data.contacter);
 										$('.elem-10').val(res.data.phone);
-										$('.unit').text(res.data.unit);
+										$('.unit-choosed').text(res.data.unit);
 										_this.Default(res.data.propertyId);
 										$.each(res.data.images,function(index,item){
 											modify.imgArr.push(item.url);
 										})
-										wxImg.serImg(res.data.images[0].url)
+										wxImg.setImg(res.data.images[0].url);
+										$.each(res.data.images,function(index,item){
+											wxImg.urls.push({'num':index,'url':item.url.substring(item.url.indexOf('com/')+3,item.url.length) })
+											wxImg.local_url.push({'num':index,'url':item.url});
+											wxImg.setLocalImg(item.url);
+										})
 									}
 								}
 							})
