@@ -12,7 +12,7 @@ $(".carry").on("click",function(){
         }
         var urls = [];
         $.each(wxImg.fileData,function(index,val){
-            urls.push(val.name);
+            urls.push(val.url);
         });
         $.ajax({
             type:'post',

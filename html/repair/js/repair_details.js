@@ -213,12 +213,13 @@ function HtmlAjax(){
                     }
 
 
-                    //  待确认；
+                    //  待验收；
+                    var imgA = "";
                     if(dataD.repairRecordImages){
                         $.each(dataD.repairRecordImages,function(x,y){
-                            img += '<img src="'+ server_url_img + y +'" alt="">';
+                            imgA += '<img src="'+ server_url_img + y +'" alt="">';
                         });
-                        $("#images").empty().append(img);
+                        $("#images").empty().append(imgA);
                     }
                     //  处理内容
                     $("#dealCon").text(dataD.remark);
