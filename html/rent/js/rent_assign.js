@@ -9,7 +9,7 @@ $(document).on("click",".head",function(){
 //  获取接单人列表；
 $.ajax({
     type:'get',
-    url:  server_url_repair + server_v1 + '/user/list/maintainer.json',
+    url:  server_url_repair + server_v1 + '/user/list/receptionist.json',
     data: {
         "firmId":firmId
     },
@@ -39,7 +39,7 @@ $(document).on("click",".orders",function(){
         sum = 'sendAgain';
     }
    //   点击接单人派单；
-    $.ajax({
+    /*$.ajax({
         type:'post',
         url:  server_url_repair + server_v1 + '/repair/'+ sum +'.json',
         data: {
@@ -58,7 +58,31 @@ $(document).on("click",".orders",function(){
         error:function(data){
             ErrorReminder(data);
         }
-    });
+    });*/
+    $.ajax({
+        type:'post',
+        url:server_rent+server_v1+'/rentBespeaks/allot.json',
+        dataType:'json',
+        data:{
+            'bespeakId':urlParams("id"),
+            'receptUserId':_this.attr("data-id"),
+            'allocationUserId':userId
+        },
+        success:function(res){
+            if(res.code==0){
+                showMask('分配成功！');
+                setTimeout(function(){
+                    closeMask();
+                    window.location.href = "rent.html?show=3";
+                },1000)
+            }else{
+                showMask('分配失败！');
+            }
+        },
+        error:function(res){
+            showMask('分配失败！');
+        }
+    })
 });
 
 // 搜索接收人

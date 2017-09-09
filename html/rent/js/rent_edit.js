@@ -51,9 +51,16 @@ modify.update = function(){
             'traffic':'地铁',
             'matingFacility':'花园'
 		},
-		success:function(res){
-
-		}
+		beforeSend:function(data){
+            showMask('请求处理中！');
+        },
+        success:function(data){
+            if(data.code==0){
+                closeMask();
+                showMask('添加成功！');
+                clearForm('#rent_form');    
+            }
+        }
 	})
 }
 modify.tranBack = function(){
@@ -105,7 +112,6 @@ var wxImg = new Object({
 wxImg.imgUpload = function(){
     var _this=this;
     var i=0;
-    $('#pic_num').text(this.urls.length);
     wx.chooseImage({
         count: 8-this.urls.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -120,7 +126,8 @@ wxImg.imgUpload = function(){
         var localId = localIds.pop();
         _this.local_url.push({'num':i,'url':localId});
         _this.setImg(_this.local_url[0].url);
-        _this.serLocalImg(localId);
+        _this.setLocalImg(localId);
+        $('#pic_num').text(_this.local_url.length);
         wx.uploadImage({
             localId: localId,
             isShowProgressTips: 1,
@@ -181,7 +188,6 @@ wxImg.setLocalImg = function(src){
 wxImg.init = function(){
     var _this=this;
     $('.issue .photo').click(function(){
-    	console.info(_this.local_url)
         if(_this.local_url.length>=1){
             $('.pic-wrap').show();
             $('.sBox-wrapper,.tap-footer').addClass('z0');
@@ -290,6 +296,7 @@ dongSwitch.prototype = {
 											modify.imgArr.push(item.url);
 										})
 										wxImg.setImg(res.data.images[0].url);
+                                        $('#pic_num').text(res.data.images.length);
 										$.each(res.data.images,function(index,item){
 											wxImg.urls.push({'num':index,'url':item.url.substring(item.url.indexOf('com/')+3,item.url.length) })
 											wxImg.local_url.push({'num':index,'url':item.url});

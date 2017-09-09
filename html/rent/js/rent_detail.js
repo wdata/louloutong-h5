@@ -1,8 +1,11 @@
 var cur_ob=JSON.parse(sessionStorage.getItem('rent_ob'));
 
-if(cur_ob.type=1){
+
+if(parseInt(cur_ob.type)==1){
 	$('.header-title').text('出租详情');
+	$('.header-return').attr('href','rent.html?show=0');
 }else{
+	$('.header-return').attr('href','rent.html?show=1');
 	$('.header-title').text('求租详情');
 }
 

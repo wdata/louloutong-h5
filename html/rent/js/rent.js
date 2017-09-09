@@ -1,4 +1,6 @@
 
+
+
 //获取当前用户的权限  
 var auth_sum=sessionStorage.getItem('authority');
 var auth_0=false;			//显示出租/求租  
@@ -125,24 +127,7 @@ var i=0;
 var cur_ob=rent;     //当前列表
 var conIndex=1;
 var serIndex=1;
-var sdropload;      //搜索下拉
-var dropload = $('.mainCon-wrap').dropload({
-        scrollArea : $(".mainCon-wrap"),
-        autoLoad:true,
-        loadDownFn:function(me){
-            switch(conIndex){
-                case 4:
-                    myrent.getList('.rent-list-con',me)
-                    break;
-                case 3:
-                    order.getList('.rent-list-con',me);
-                    break;
-                default:
-                    rent.getList('.rent-list-con',me);  
-                    break;
-            }
-        }
-})
+var sdropload,dropload;      //搜索下拉
 
 
 //预约
@@ -175,7 +160,7 @@ order.getList = function(elem,me){
                 return false; 
             }
             console.info(order.status+","+order.state)
-            if(_this.status==1){
+            if(_this.status==0){
                 $.each(data.data.items,function(index,item){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
                     var imgCode=item.imageUrl?item.imageUrl:default_img;
@@ -183,10 +168,10 @@ order.getList = function(elem,me){
                     if(_this.state==1){               //未分配   可以分配接待
                         diffCode=`
                             <div class="hr-48"></div>
-                            <div class="order-area" onclick="tranShow()">
+                            <div class="order-area">
                                 <div class="mask"></div>
-                                <button class="abs">分配接待</button>
-                                <img src="../../images/upload/tu1@2x.png" alt="" class="full">
+                                <button class="abs" onclick="order.assignLink('${item.id}')">分配接待</button>
+                                <img src="${imgCode}" alt="" class="full">
                             </div>
                         `;
                     }else{
@@ -214,10 +199,10 @@ order.getList = function(elem,me){
                                         </a>
                                     </div>
                                     <a href="order_detail.html" onclick="session('order_id',${item.id})">
-                                        <div class="mid">
+                                        <div class="mid mm">
                                             <p class="line2">${item.beseakUser.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
-                                            <div class="tips overhide">接待者：${item.receptUser.name}</div>
+                                            <div class="tips overhide mm">接待者：${item.receptUser.name}</div>
                                         </div>
                                     </a>
                                 </div>
@@ -234,7 +219,7 @@ order.getList = function(elem,me){
                     var txCode=item.beseakUser.photo?server_uel_user_img+item.beseakUser.photo:default_tx;
                     var resCode="";
                     if(_this.state==1){           //已处理 有接待结果
-                        resCode=`div class="tips overhide">接待者：${item.receptUser.name}|&nbsp;结果：${item.receptUser.result}</div>`;
+                        resCode=`<div class="tips overhide">接待者：${item.receptUser.name}|&nbsp;结果：${item.receptUser.result}</div>`;
                     }
                     code+=`
                         <div class="item">
@@ -251,7 +236,7 @@ order.getList = function(elem,me){
                                     </div>
                                     <a href="order_detail.html" onclick="session('order_id',${item.id})">
                                         <div class="mid">
-                                            <p class="line2">${item.rentTitle}</p>
+                                            <p class="line2">${item.rentTitle+"1"}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
                                             <div>接待人：${item.receptUser.name}</div>
                                             ${resCode}
@@ -261,7 +246,6 @@ order.getList = function(elem,me){
                                 <div class="t-r fl">
                                     <div class="hr-48"></div>
                                     <div class="order-area" onclick="tranShow()">
-                                        
                                         <button class="abs">分配接待</button>
                                         <img src="${server_url_img+item.imageUrl}" alt="">
                                     </div>
@@ -284,6 +268,7 @@ order.getList = function(elem,me){
         }
     })        
 }
+//提醒
 order.remind = function(id){
     $.ajax({
         type:'post',
@@ -301,10 +286,17 @@ order.remind = function(id){
         }
     })
 }
+//分配接待
+order.assignLink = function(id){
+    /*sessionStorage.setItem('aorder_ob',{'id':id,'isOrder':true});*/
+    window.location.href="rent_assign.html?id="+id;
+    
+}
 order.tranShow = function(id){
     tranShow(4);
     this.curId=id;
 }
+//写接待结果
 order.recept = function(){
     var _this=this;
     $.ajax({
@@ -414,6 +406,7 @@ myrent.getList = function(elem,me){
 		}
 	})
 }
+//刷新
 myrent.refresh = function(id){
     var _this=this;
     $.ajax({
@@ -429,6 +422,7 @@ myrent.refresh = function(id){
         }
     })
 }
+//上下架
 myrent.changeStatus = function(id,status){
     var _this=this;
     var c_status=status==1?0:1
@@ -445,6 +439,7 @@ myrent.changeStatus = function(id,status){
         }
    })
 }
+//删除
 myrent.del = function(id,status){
     var _this=this;
     if(status != 1) { showMask('该商品还未下架，不能进行删除！'); return false; }
@@ -476,7 +471,6 @@ var wxImg = new Object({
 wxImg.imgUpload = function(){
     var _this=this;
     var i=0;
-    $('#pic_num').text(this.urls.length);
     wx.chooseImage({
         count: 8-this.urls.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -491,6 +485,7 @@ wxImg.imgUpload = function(){
         var localId = localIds.pop();
         _this.local_url.push({'num':i,'url':localId});
         _this.setImg(_this.local_url[0].url);
+        $('#pic_num').text(this.urls.length);
         var code=`
             <div class="img-list">
                 <img src="${localId}" alt="">
@@ -636,9 +631,11 @@ issue.add = function(){
             showMask('请求处理中！');
         },
         success:function(data){
-            closeMask();
-            showMask('添加成功！');
-            clearForm('#rent_form');
+            if(data.code==0){
+                closeMask();
+                showMask('添加成功！');
+                clearForm('#rent_form');    
+            }
         }
     })
 }
@@ -836,9 +833,9 @@ $('.rent-tab .bot .list').tap(function(){
 				default:
 					issue.isShow=false;
 					issue.init();
-                    myrent.reloadList();
-					myrent.type=bIndex;
+                    myrent.type=bIndex;
                     conIndex=tIndex+1;
+                    myrent.reloadList();
 					break;
 			}
 			break;
@@ -895,19 +892,47 @@ $('.reasult-editer').blur(function(){
     }
 })
 
-
-/*$.ajax({
-    type:'post',
-    url:server_rent+server_v1+'/rentBespeaks.json',
-    dataType:'json',
-    data:{
-        'rentId':19,
-        'bespeakUserId':11,
-        'contacter':'联系人',
-        'phone':'15623568956',
-        'bespeakTime':'2017-10-23 15:32'
-    },
-    success:function(res){
-
+//根据url的show参数来确定初始化哪个tab
+var j=0;
+function rentInit(){
+    var cur_show=parseInt(urlParams('show'));
+    $('.rent-tab .top .list').eq(cur_show).addClass('active').siblings().removeClass('active');
+    $('.rent-tab .bot .inner').eq(cur_show).show().siblings().hide();
+    if(cur_show<=1){                   //出租求租情况下
+        rent.type=cur_show+1;
+        conIndex=cur_show+1;
     }
-})*/
+    if(j==0){
+        dropload= $('.mainCon-wrap').dropload({
+                scrollArea : $(".mainCon-wrap"),
+                autoLoad:true,
+                loadDownFn:function(me){
+                    switch(conIndex){
+                        case 4:
+                            myrent.getList('.rent-list-con',me)
+                            break;
+                        case 3:
+                            order.getList('.rent-list-con',me);
+                            break;
+                        default:
+                            rent.getList('.rent-list-con',me);  
+                            break;
+                    }
+                }
+        })
+    }
+    j++;
+    switch(cur_show){
+        case 2:
+            conIndex=cur_show+1;
+            order.reloadList();
+            break;
+        case 3:
+            issue.isShow=true;
+            issue.init(); 
+            break;
+        default:
+            break;
+    } 
+}
+rentInit();
