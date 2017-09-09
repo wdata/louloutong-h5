@@ -40,23 +40,20 @@ function getDocu(_this){
         return false;
     }else{
         var icon_class=postfix.indexOf('do')!=-1?'word-icon':postfix.indexOf('xl')!=-1?'excel-icon':'pdf-icon';
-        var code=`
-                <li>
-                    <i class="suffix-icon pdf-icon hide"></i>
-                    <i class="suffix-icon ${icon_class}"></i>
-                    <i class="suffix-icon word-icon hide"></i>
-                    <p class=""><span>${name.substring(name.lastIndexOf("\\")+1,name.lastIndexOf(".")+1)}</span>${postfix}</p>
-                    <i class="delete-icon" onclick="delDocu(this)"></i>
-                </li>
-
-            `;
+        var code = ' ' +
+            '<li> ' +
+            '<i class="suffix-icon pdf-icon hide"></i> ' +
+            '<i class="suffix-icon ${icon_class}"></i> ' +
+            '<i class="suffix-icon word-icon hide"></i> ' +
+            '<p class=""><span>'+ name.substring(name.lastIndexOf("\\")+1,name.lastIndexOf(".")+1) +'</span>'+ postfix +'</p> ' +
+            '<i class="delete-icon" onclick="delDocu(this)"></i> ' +
+            '</li>';
         $('#up_attach').append(code);
         // console.info($('.p-layout').height());
 
         var form = new FormData($("#newForm")[0]);       //需要是JS对象
         $.each($(_this)[0].files,function(index,val){
             form.append("file",val);
-            console.log(val);
         });
 
 //      添加文件；

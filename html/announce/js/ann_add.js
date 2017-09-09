@@ -49,54 +49,6 @@ $(document).ready(function(){
 //     });
 // });
 
-//  多图片上传
-var fileData = [];var imgBur = false;  //如果图片正在上传则禁止发送请求；
-function uploadPictureA(_this){
-    //新增，调用新增ajax
-    var form = new FormData($("#newForm")[0]);       //需要是JS对象
-    var html = '';
-    var shoot = $("#shoot");
-    $.each($(_this)[0].files,function(index,val){
-        var img_ext = val.name.substring(val.name.length-3,val.name.length);
-        var img_size = Math.floor((val.size)/1024);   //单位为KB
-        if(img_ext !== "jpg" && img_ext !== "png"&& img_ext !== "gif"){
-            console.log("已过滤不符合格式图片");
-        }else if(img_size >  2048){
-            console.log("已过滤不符合大小");
-        }else{
-            form.append("file",val);
-        }
-    });
-
-    //  添加图片；
-    $.ajax({
-        type:'post',
-        url:  server_core + server_v1 + '/file/uploads.json',
-        data: form,
-        contentType: false,
-        processData: false,
-        success:function(data){
-            if(data.code === 0 && data.data){
-                $.each(data.data,function(index,val){
-                    html += '<img src="'+ val.domain + val.url +'" alt="">';
-                    fileData.push(val);
-                });
-                $("#editor_box").append(html);
-            }else{
-                showMask("文件太大了！");
-            }
-        },
-        beforeSend:function(){
-            imgBur = true;
-        },
-        complete:function(){
-            imgBur = false;
-        },
-        error:function(data){
-            ErrorReminder(data);
-        }
-    });
-}
 
 
 
@@ -119,36 +71,7 @@ function rePublish(){
     }
 }
 
-function sub(){
-    var elem=new FormData($('#form')[0]);
-    $.ajax({
-        type:'post',
-        url:'/im/user/upload',
-        processData:false,
-        contentType:false,
-        data:elem,
-        success:function(data){
 
-        }
-    })   
-}
-
-
-
-/*var form = new FormData($("#newForm")[0]);
-        $.ajax({
-            type:'post',
-            url:  DMBserver_image_url + '/party-app-server/web/api/activity/add.json',
-            data:form,
-            contentType: false,
-            processData: false,
-            success:function(data){
-                if(data.code === 0){
-                    returnMessage(1,'添加成功');
-                }else{
-                    returnMessage(2,data.message);
-                }
-            },*/
 function release(){
     var title = $("#title").val();
 

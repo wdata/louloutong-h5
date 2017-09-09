@@ -11,8 +11,8 @@ $(".carry").on("click",function(){
             return
         }
         var urls = [];
-        $.each(fileData,function(index,val){
-            urls.push(val.name);
+        $.each(wxImg.fileData,function(index,val){
+            urls.push(val.url);
         });
         $.ajax({
             type:'post',
@@ -28,9 +28,7 @@ $(".carry").on("click",function(){
             traditional:true,
             success:function(data){
                 if(data.code === 0){
-                    if(data.data === true){
-                        window.location.href = "repair_details.html?id="+ urlParams("id") +"";
-                    }
+                    window.location.href = "repair_details.html?id="+ urlParams("id") +"";
                 }
             },
             error:function(data){

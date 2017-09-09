@@ -27,7 +27,8 @@
         <div id="remark" class="the-reason" placeholder = "请填写详细处理原因..."  contenteditable="true"></div>
         <ul class="upload">
             <!--<li><img src="../../images/anounce/typhoon.png" alt=""><i class="delete-icon"></i><input type="hidden" name="file"></li>-->
-            <li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)" multiple="multiple" type="file"></li>
+            <!--<li id="shoot" class="shoot"><input accept="image/*" onchange="uploadPicture(this)"  type="file"></li>-->
+            <li id="shoot" class="shoot"></li>
         </ul>
     </form>
     <div onclick="carry()" class="carry">完成</div>
@@ -35,8 +36,10 @@
 
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/zepto.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/touch.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/zepto/fx.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/plugin/wx/jweixin-1.2.0.js"></script>
 <script type="text/javascript" charset="utf-8" src="../../theme/js/common.js"></script>
-<script type="text/javascript" charset="utf-8" src="../../theme/js/exlse.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../theme/js/wxImage.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/repair_result.js"></script>
 </body>
 </html>

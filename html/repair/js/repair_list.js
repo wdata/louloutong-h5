@@ -251,9 +251,7 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
-                        }
+                        window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
                     }
                 },
                 error:function(data){
@@ -273,9 +271,7 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
-                        }
+                        window.location.href = "repair_details.html?id="+ self.attr("data-id") +"";
                     }
                 },
                 error:function(data){

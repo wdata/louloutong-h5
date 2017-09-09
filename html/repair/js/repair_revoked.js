@@ -15,9 +15,7 @@ function revoked(){
             dataType:'json',
             success:function(data){
                 if(data.code === 0){
-                    if(data.data === true){
-                        window.location.href = "repair_revoked_has.html?id="+ urlParams("id") +"";
-                    }
+                    window.location.href = "repair_revoked_has.html?id="+ urlParams("id") +"";
                 }
             },
             error:function(data){
