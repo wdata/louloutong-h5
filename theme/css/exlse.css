@@ -1591,8 +1591,8 @@ time{
 }
 .repair .upload li .delete-icon{
     display: block;
-    width: .36rem;
-    height: .36rem;
+    width: .5rem;
+    height: .5rem;
     background-image: url("../../images/repair/delete.png");
     background-size: cover;
     position: absolute;

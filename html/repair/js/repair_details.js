@@ -275,7 +275,7 @@ function HtmlAjax(){
                     dataType:'json',
                     success:function(data){
                         var html = '';
-                        if(comment === 1 && data.code === 0 && data.data){
+                        if(comment === 1 && data.code === 0 && data.data && data.data.items <= 0){
                             $(".comment").addClass("hide");   //没有评论时隐藏评论列表；
                             return false;
                         }
@@ -328,15 +328,13 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            showMask("评论发布成功！");
-                            $("#listCom").empty();  // 删除列表数据；
-                            $("#comCon").val("");  // 清空评论；
-                            comment = 1;
-                            dropload.unlock();
-                            dropload.noData(false);
-                            dropload.resetload();
-                        }
+                        showMask("评论发布成功！");
+                        $("#listCom").empty();  // 删除列表数据；
+                        $("#comCon").val("");  // 清空评论；
+                        comment = 1;
+                        dropload.unlock();
+                        dropload.noData(false);
+                        dropload.resetload();
                     }
                 },
                 error:function(data){
@@ -363,10 +361,8 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            $(self).removeClass("active");
-                            _this.likeList();
-                        }
+                        $(self).removeClass("active");
+                        _this.likeList();
                     }
                 },
                 error:function(data){
@@ -386,10 +382,8 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            $(self).addClass("active");
-                            _this.likeList();
-                        }
+                        $(self).addClass("active");
+                        _this.likeList();
                     }
                 },
                 error:function(data){
@@ -443,9 +437,7 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            history.go(0); //   刷新页面；
-                        }
+                        history.go(0); //   刷新页面；
                     }
                 },
                 error:function(data){
@@ -465,9 +457,7 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        if(data.data === true){
-                            history.go(0); //   刷新页面；
-                        }
+                        history.go(0); //   刷新页面；
                     }
                 },
                 error:function(data){

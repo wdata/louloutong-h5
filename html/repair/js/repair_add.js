@@ -21,7 +21,7 @@ function HtmlAjax(){
         }
         var urls = [];
         var data = {};
-        $.each(fileData,function(index,val){
+        $.each(wxImg.fileData,function(index,val){
            urls.push(val.url);
         });
 
@@ -82,9 +82,7 @@ function HtmlAjax(){
             traditional:true,
             success:function(data){
                 if(data.code === 0){
-                    if(data.data === true){
-                        window.location.href = "repair_list.html";
-                    }
+                    window.location.href = "repair_list.html";
                 }
             },
             error:function(data){
@@ -178,9 +176,7 @@ function HtmlAjax(){
             dataType:'json',
             success:function(data){
                 if(data.code === 0){
-                    if(data.data === true){
-                        console.log("修改默认成功！");
-                    }
+                    console.log("修改默认成功！");
                 }
             },
             error:function(data){
