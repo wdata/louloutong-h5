@@ -562,6 +562,7 @@ time{
     margin:.6133333rem 0 .6933333rem;
     overflow: hidden;
     word-wrap: break-word;
+    max-height: 6rem;
 }
 
 /*  +++++++++++++++++++++++公告详情(通知详情大部分共用)+++++++++++++++++++  */
@@ -594,7 +595,7 @@ time{
 .details .content article img{
     width:100%;
     display: block;
-    height:3.6533333rem;
+    /*height:3.6533333rem;*/
     margin:.37333333rem 0 .61rem;
 }
 

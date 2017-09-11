@@ -4,7 +4,7 @@
 function carry(){
     var reason = $("#remark").text();
     if(!(reg.test(reason)||reason === "")){
-        if(imgBur){
+        if(!wxImg.imgBur){
             showMask("正在处理图片，请稍等！");
             return
         }
