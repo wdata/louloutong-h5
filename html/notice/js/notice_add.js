@@ -16,13 +16,13 @@ function rePublish(){
     $('input[type=checkbox]:checked').each(function(){
         recei_str+=$(this).parents('.list').find('.tit').text()+',';
         recei_num++;
-    })
+    });
     if(recei_str){
         $('#recei_comp').text(recei_str);
-        $('.icon-wrap').addClass('cblue').text('共'+recei_num+'个接收人');
+        $('#icon-wrap').addClass('cblue').text('共'+recei_num+'个接收人');
     }else{
         $('#recei_comp').text('全部企业'); 
-        $('.icon-wrap').removeClass('cblue').html("选择接收人<i class='icon icon-in'></i>");
+        $('#icon-wrap').removeClass('cblue').html("选择接收人<i class='icon icon-in'></i>");
     }
     
 }
@@ -40,15 +40,6 @@ function getDocu(_this){
         return false;
     }else{
         var icon_class=postfix.indexOf('do')!=-1?'word-icon':postfix.indexOf('xl')!=-1?'excel-icon':'pdf-icon';
-        var code = ' ' +
-            '<li> ' +
-            '<i class="suffix-icon pdf-icon hide"></i> ' +
-            '<i class="suffix-icon ${icon_class}"></i> ' +
-            '<i class="suffix-icon word-icon hide"></i> ' +
-            '<p class=""><span>'+ name.substring(name.lastIndexOf("\\")+1,name.lastIndexOf(".")+1) +'</span>'+ postfix +'</p> ' +
-            '<i class="delete-icon" onclick="delDocu(this)"></i> ' +
-            '</li>';
-        $('#up_attach').append(code);
         // console.info($('.p-layout').height());
 
         var form = new FormData($("#newForm")[0]);       //需要是JS对象
@@ -59,15 +50,30 @@ function getDocu(_this){
 //      添加文件；
         $.ajax({
             type:'post',
-            url:  server_zuui + '/file/upload.json',
+            url:  server_zuui + server_v1 + '/file/upload.json',
             data: form,
             contentType: false,
             processData: false,
             success:function(data){
                 if(data.code === 0 && data.data){
-                    $.each(data.data,function(index,val){
-                        fileData.push(val);
-                    })
+                    fileData.push(data.data);
+
+                    var da = data.data.originalName.split(".");
+                    var i = "";
+                    switch(da[1]){
+                        case "pdf":i = '<i class="suffix-icon pdf-icon"></i>';
+                            break;
+                        case "excel":i = '<i class="suffix-icon excel-icon"></i>';
+                            break;
+                        case "word":i = '<i class="suffix-icon word-icon"></i>';
+                            break;
+                        // default:i = '<i class="suffix-icon pdf-icon"></i>';
+                        //     break;
+                    }
+
+                    var code = '<li> ' + i + '<p class=""><span>'+ da[0] +'</span>'+ da[1] +'</p><i class="delete-icon" data-name="'+ data.data.url +'" onclick="delDocu(this)"></i></li>';
+
+                    $('#up_attach').append(code);
                 }else{
                     showMask("文件太大了！");
                 }
@@ -87,7 +93,8 @@ function getDocu(_this){
 }
 //删除附件
 function delDocu(_this){
-    var name = $(_this).siblings("p").text();
+    var name = $(_this).attr("data-name");
+    var ind = $(_this).parents("li").index();
     $.ajax({
         type:'post',
         url:  server_core + server_v1 + '/file/delete.json',
@@ -97,7 +104,7 @@ function delDocu(_this){
         dataType:'json',
         success:function(data){
             if(data.code === 0 && data.message === "SUCCESS"){
-                $(_this).parent().parent().remove();
+                $(_this).parent("li").remove();
                 fileData.splice(ind,1); //删除呗删除图片数据；
             }
         },
@@ -153,7 +160,7 @@ function release(){
     $.each(fileData,function(index,val){
         urls.push(val.url);
     });
-
+    console.log(urls);
     var type = $("#type").val();     // 通知类型
     data["propertyId"] = propertyId;
     data["userId"] = userId;

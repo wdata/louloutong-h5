@@ -34,20 +34,23 @@ function HtmlAjax(){
             dataType:'json',
             success:function(data){
                 if(data.code === 0){
-                    var img = '',operating = '';
+                    var img = '',operating = '',type = "",address = "";
 
                     if(data.data.repairImages){
                         $.each(data.data.repairImages,function(x,y){
                             img += '<img src="'+ server_url_img + y +'" alt="">';
                         })
                     }
-                    var type = data.data.type===1?"办公区域":data.data.type===3?"公共区域":"未知";
+                    switch (data.data.type){
+                        case 1:type = "办公区域";address = data.data.address;break;
+                        case 2:type = "公共区域";address = data.data.publicAddress;$(".pbc").hide();break; //  公共区域没有类型，时间等；
+                    }
                     // 报修类型；
                     $("#type").html('<i></i>' + type);
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>').attr("href",headJumps(dataD.user.id));
+                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>').attr("href",headJumps(data.data.user.id));
                     //  报修类型；
                     $("#aspect").text(data.data.repairItem);
                     //  报修内容;
@@ -55,7 +58,7 @@ function HtmlAjax(){
                     //  图片；
                     $("#image").empty().append(img);
                     //  地址;
-                    $("#property").text(data.data.property);
+                    $("#property").text(address);
                     //  预约上门时间;
                     $("#reservation").text(data.data.bespeakTime);
                     //  期待完成时间;

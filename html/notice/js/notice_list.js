@@ -42,14 +42,12 @@ $(".tap a").click(function(){
 });
 //  未读和已读跳转
 $(document).on("click",".notice-list footer a",function(){
-    dataSession["DataUnread"] = parseInt($(this).parent().attr("data-unread"));
-    dataSession["DataHaveRead"] = parseInt($(this).parent().attr("data-haveRead"));
+    deposited("DataUnread",parseInt($(this).parent().attr("data-unread")));
+    deposited("DataHaveRead",parseInt($(this).parent().attr("data-haveRead")));
     if($(this).is(".unread")){
-        dataSession["judgment"] = true;
-        sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
+        deposited("judgment",true);
     }else if($(this).is(".have-read")){
-        dataSession["judgment"] = false;
-        sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
+        deposited("judgment",false);
     }
 });
 

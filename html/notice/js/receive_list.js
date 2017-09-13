@@ -97,6 +97,7 @@ function HtmlAjax(){
                             '<li> <a href="javascript:"> <img class="avatar" src="'+ val.images +'" alt="avatar"> </a> ' +
                             '<div class="ifat"> <p>'+ val.name +'</p> <p class="company">'+ val.firmName +'<span>'+ noTd(val.duty) +'</span></p> </div> </li>'
                     });
+
                     list.append(html);
 
                     if(status === 0){

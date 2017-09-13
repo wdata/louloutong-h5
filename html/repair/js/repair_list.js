@@ -2,7 +2,9 @@
  * Created by Administrator on 2017/8/23.
  */
 var page = null;   // 页数
-var searchType = 1;  // 报修类型
+var repairType = null;  // 报修状态；
+var searchStatus = null;  // 报修类型；
+var searchType = 1;  // 搜索类型；
 var keyword = null;   // 搜索关键字；
 var pIdRepair = propertyId;  // 物业ID；
 var comment = 1;      //page数
@@ -58,20 +60,19 @@ function HtmlAjax(){
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
-                _this.repairList(pIdRepair,searchType,keyword,me);
+                _this.repairList(pIdRepair,searchType,keyword,me,repairType,searchStatus);
             }
         });
     };
     this.road = function(){
         var _this = this;
-
         _this.Dlist.empty();            //清除列表数据;
         comment = 1;
         dropload.unlock();
         dropload.noData(false);
         dropload.resetload();
     };
-    this.repairList = function(proId,searchType,keyword,me){
+    this.repairList = function(proId,searchType,keyword,me,repairType,searchStatus){
         var _this = this;
         console.log("物业ID：" + proId + " 搜索类型：" + searchType + " 搜索内容：" + keyword + " page：" + comment);
         $.ajax({
@@ -82,6 +83,8 @@ function HtmlAjax(){
                 "propertyId":proId,
                 "page":comment,
                 "size":5,
+                "status":repairType,
+                "type":searchStatus,
                 "searchType":searchType,
                 "keyword":keyword
             },
@@ -225,12 +228,14 @@ function HtmlAjax(){
             searchType = 1;  // 报修类型
             $("#search_btn").val("");
         });
-        $('#cancel').on("tap",function(){
+        $('#cancel').on("click",function(){
 
             $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');
 
             searchType = 1;  // 报修类型
             keyword = "";       //  清除搜索条件；
+            repairType = null;  // 报修状态；
+            searchStatus = null;  // 报修类型；
 
             _this.Dlist.empty();            //清除列表数据;
             setTimeout(function(){
@@ -312,18 +317,14 @@ DongSwitch.prototype = {
 
             var id = $("#addressList li.active").attr("data-id");
             var text = $(".statusList .active").text();
-            //  如果是全部则显示为空；
-            if($(".statusList .active").is(".all")){
-                text = "";
-            }
             //  判断id不为空；
             if(id){
                 pIdRepair = id;
             }
-            keyword = text;
-            searchType = 2;
+            repairType = $("#repairType .active").attr("data-value");  // 报修状态；
+            searchStatus = $("#searchStatus .active").attr("data-value");  // 报修类型；
+
             htmlAjax.road();  // 重置
-            searchType = 1;  // 重置报修类型
         });
         //  重置
         $("#reset").click(function(){
@@ -333,6 +334,9 @@ DongSwitch.prototype = {
             _this.dongAjax();     //  ajax事件获取数据，并将数据保存；
             //  删除顶部选择楼栋；
             $("#prompt").siblings().remove();
+            //  重置搜索数据；
+            repairType = null;  // 报修状态；
+            searchStatus = null;  // 报修类型；
         });
 
         // 平移动画效果

@@ -9,7 +9,7 @@ var server_url_repair = server_IP + "/louloutong-repair/api";          // 物业
 var server_url_notice = server_IP + "/louloutong-notice/api";          // 通知管理
 var server_rent = server_IP + "/louloutong-rent/api";                  // 租房管理
 var server_core = server_IP + "/louloutong-core/api";                  // 文件删除管理
-var server_zuui = server_IP + "zuui/louloutong-core/api";              // 文件上传管理
+var server_zuui = server_IP + "/zuul/louloutong-core/api";              // 文件上传管理
 // var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_url_img = '';
 var server_uel_user_img = '';
@@ -18,7 +18,7 @@ var server_uel_user_img = '';
 var dataS = JSON.parse(sessionStorage.getItem("dataSession"));   // 本地存储；
 var dataSession = dataS?dataS:{};   // 本地存储对象,添加判断，以继承本地存储内数据；如果没有本地存储则创建一个对象；
 
-var userId = "1980";    //  用户ID；
+var userId = "1977";    //  用户ID；
 var propertyId = dataS?dataS["propertyId"]:null;              //  物业ID；
 var propertyName = dataS?dataS["propertyName"]:null;              //  物业名；
 
@@ -33,7 +33,7 @@ var reg = /^[\s]*$/;  //为空判断；
 //  将报错提示放入公共文件，以方便后期修改；
 function ErrorReminder(data){
     console.log("报错：" + data.status);
-};
+}
 //  头像跳转；
 function headJumps(data){
     return "javascript:";
@@ -105,6 +105,12 @@ function checkAll(elem,_this){
         $(elem).find('input[type=checkbox]').prop('checked',false);
     }
 }
+
+//  默认头像；
+console.log($("img"));
+$(document).on("error","img[alt=avatar]",function(){
+    console.log("11111111");
+});
 
 
 //  底部导航

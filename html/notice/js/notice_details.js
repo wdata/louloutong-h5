@@ -21,7 +21,7 @@ $.ajax({
             var html = '';
             if(data.data.file){
                 $.each(data.data.file,function(index,val){
-                    var da = val.fileName.split('"')[1].split(".");
+                    var da = val.fileName.split(".");
                     var i = "";
                     switch(da[1]){
                         case "pdf":i = '<i class="suffix-icon pdf-icon"></i>';

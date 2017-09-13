@@ -229,6 +229,7 @@ body{overflow: hidden;}
 .annex{
     width: 8.93333333rem;
     position: relative;
+    margin-top: .56rem;
 }
 .annex li{
     width: 100%;

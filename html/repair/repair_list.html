@@ -42,9 +42,9 @@
                         <div class="tit">搜索指定范围</div>
                         <div class="list-con">
                             <div data-id="1" class="list">报修人</div>
-                            <div data-id="2" class="list">报修状态</div>
-                            <div data-id="4" class="list">报修类型</div>
-                            <div data-id="3" class="list">服务地址</div>
+                            <div class="list">报修状态</div>
+                            <div class="list">报修类型</div>
+                            <div data-id="2" class="list">服务地址</div>
                         </div>
                     </div>
                 </div>
@@ -155,13 +155,21 @@
 <div class="switch repair-switch overflow-y">
     <div class="title">报修订单状态</div>
     <header class="status">
-        <ul class="statusList">
+        <ul id="repairType" class="statusList">
             <li class="active all">全部</li>
-            <li>待受理</li>
-            <li>已受理</li>
-            <li>待验收</li>
-            <li>已确认</li>
-            <li>已撤销</li>
+            <li data-value="1">待受理</li>
+            <li data-value="3">已受理</li>
+            <li data-value="4">待验收</li>
+            <li data-value="6">已确认</li>
+            <li data-value="7">已撤销</li>
+        </ul>
+    </header>
+    <div class="title">报修类型</div>
+    <header class="status">
+        <ul id="searchStatus" class="statusList">
+            <li class="active all">全部</li>
+            <li data-value="1">办公区报修</li>
+            <li data-value="2">公共区报修</li>
         </ul>
     </header>
     <div class="hr-24"></div>
