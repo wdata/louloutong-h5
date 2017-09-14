@@ -66,7 +66,7 @@ dongSwitch.prototype = {
         var _this = this;
         $.ajax({
             type:'get',
-            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
+            url:  server_LouDong + server_v1 + '/property/manager/'+ userId +'.json',
             data: null,
             dataType:'json',
             success:function(data){
@@ -86,6 +86,13 @@ dongSwitch.prototype = {
                         }
                     });
                     _this.addressList.append(html);
+                    if(one){
+                        deposited("propertyId",one.id);
+                        deposited("propertyName",one.name);
+                    }else{
+                        showMask("没有物业");
+                        return;
+                    }
                     _this.Default(one);    // 显示本地存储内楼栋名；
 
                     //  这边部分是首页数据；可以删除
@@ -177,16 +184,13 @@ dongSwitch.prototype = {
 
         }else{
             //  如果没有，则选择第一级第一个数据作为物业名和物业ID；
-            dataSession["propertyId"] = data.id;
-            dataSession["propertyName"] = data.name;
-            sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
             $("#address").text(data.name);
         }
     },
     superior:function(){
         //  选择同级；
         var _this = this;
-        $('.switch .nav li').tap(function(){
+        $(document).on("tap",".switch .nav li",function(){
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");

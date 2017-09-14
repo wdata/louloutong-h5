@@ -46,7 +46,7 @@ dongSwitch.prototype = {
         var _this = this;
         $.ajax({
             type:'get',
-            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
+            url:  server_LouDong + server_v1 + '/property/manager/'+ userId +'.json',
             data: null,
             dataType:'json',
             success:function(data){

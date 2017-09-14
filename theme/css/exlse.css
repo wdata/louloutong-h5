@@ -301,7 +301,7 @@ time{
     -webkit-box-orient: vertical;
     font-size: 14px;
     color: #333;
-    line-height: .4rem;
+    line-height: .5rem;
 }
 /*  楼内动态   */
 .index .dynamic .classification{
@@ -414,6 +414,7 @@ time{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    flex: 1;
 }
 .index .showings article{
     font-size: 14px;

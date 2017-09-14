@@ -9,7 +9,9 @@ var server_url_repair = server_IP + "/louloutong-repair/api";          // 物业
 var server_url_notice = server_IP + "/louloutong-notice/api";          // 通知管理
 var server_rent = server_IP + "/louloutong-rent/api";                  // 租房管理
 var server_core = server_IP + "/louloutong-core/api";                  // 文件删除管理
-var server_zuui = server_IP + "/zuul/louloutong-core/api";              // 文件上传管理
+var server_zuui = server_IP + "/zuul/louloutong-core/api";             // 文件上传管理
+var server_LouDong = server_IP + "/louloutong-property/api";          // 切换楼栋
+
 // var server_url_img = 'http://oud4j7ifk.bkt.clouddn.com/';
 var server_url_img = '';
 var server_uel_user_img = '';
@@ -17,8 +19,21 @@ var server_uel_user_img = '';
 
 var dataS = JSON.parse(sessionStorage.getItem("dataSession"));   // 本地存储；
 var dataSession = dataS?dataS:{};   // 本地存储对象,添加判断，以继承本地存储内数据；如果没有本地存储则创建一个对象；
+var userId = obtain("userId");    //  用户ID；
+if(!userId){
+    userId = "1977";
+    deposited("userId","1977");
+    $("#index-check").text("物业管理者");
+}else{
+    if(userId === "1977"){
+        $("#index-check").text("物业管理者");
+    }else if(userId === "1980"){
+        $("#index-check").text("物业维修者");
+    }
+}
 
-var userId = "1977";    //  用户ID；
+
+
 var propertyId = dataS?dataS["propertyId"]:null;              //  物业ID；
 var propertyName = dataS?dataS["propertyName"]:null;              //  物业名；
 
@@ -33,7 +48,7 @@ var reg = /^[\s]*$/;  //为空判断；
 //  将报错提示放入公共文件，以方便后期修改；
 function ErrorReminder(data){
     console.log("报错：" + data.status);
-}
+};
 //  头像跳转；
 function headJumps(data){
     return "javascript:";
@@ -58,6 +73,17 @@ function headJumps(data){
 // 1989	荀攸	物业前台人员	南山物业公司
 // 1990	曹洪	物业普通人员	南山物业公司
 
+//  将签到修改成点击修改职业；
+$("#index-check").click(function(){
+    if(userId === "1977"){
+        deposited("userId","1980");
+        $("#index-check").text("物业维修者");
+    }else if(userId === "1980"){
+        deposited("userId","1977");
+        $("#index-check").text("物业管理者");
+    }
+    history.go(0);
+});
 
 
 //------------------------------获取网址ID，key是参数名-------------------------------
@@ -106,12 +132,6 @@ function checkAll(elem,_this){
     }
 }
 
-//  默认头像；
-console.log($("img"));
-$(document).on("error","img[alt=avatar]",function(){
-    console.log("11111111");
-});
-
 
 //  底部导航
 $(".click-footer a").click(function(){
@@ -125,17 +145,14 @@ function closeMask(){
 }
 
 function showMask(msg){
-	var code=`
-		<div class="mask-bg">
-		    <div class="mask-con">
-		        <div class="tit">提示</div>
-		        <div class="main">${msg}</div>
-		        <div class="bot">
-		            <button class="btn" onclick="closeMask()">确认</button>
-		        </div>
-		    </div>
-		</div>
-		`
+	var code = ' ' +
+        '<div class="mask-bg"> ' +
+        '<div class="mask-con"> ' +
+        '<div class="tit">提示</div> ' +
+        '<div class="main">${msg}</div> ' +
+        '<div class="bot"> ' +
+        '<button class="btn" onclick="closeMask()">确认</button> ' +
+        '</div> </div> </div>';
 	$('body').append(code);
 }
 
@@ -155,7 +172,7 @@ Array.prototype.unique = function(){
   }
  }
  return res;
-}
+};
 
 
 var curTime=(new Date()).getTime();

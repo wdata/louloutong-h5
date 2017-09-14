@@ -353,7 +353,7 @@ DongSwitch.prototype = {
         var _this = this;
         $.ajax({
             type:'get',
-            url:  server_url_repair + server_v1 + '/property/manager/'+ userId +'.json',
+            url:  server_LouDong + server_v1 + '/property/manager/'+ userId +'.json',
             data: null,
             dataType:'json',
             success:function(data){
@@ -428,7 +428,7 @@ DongSwitch.prototype = {
     superior:function(){
         //  选择同级；
         var _this = this;
-        $(document).on("click",".switch .nav li",function(){
+        $(document).on("tap",".switch .nav li",function(){
             //  提示
             $(this).addClass("active")
                 .siblings().removeClass("active");
