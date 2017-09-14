@@ -53,6 +53,12 @@ $(document).on("click",".orders",function(){
                 window.location.href = "repair_details.html?id="+ urlParams("id") +"";
             }
         },
+        beforeSend:function(){
+            showMask("正在派单!");
+        },
+        complete:function(){
+            showMask("正在派单!");
+        },
         error:function(data){
             ErrorReminder(data);
         }

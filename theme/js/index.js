@@ -363,7 +363,7 @@ function IndexAjax(proPertyId){
                 ErrorReminder(data);
             }
         });
-    },
+    };
     this.noticeIndex = function(){
         // 通知列表；
         $.ajax({

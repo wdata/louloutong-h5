@@ -135,6 +135,7 @@ dongSwitch.prototype = {
         var _this = this;
         //  判断sessionStorage存储的ID和name是否为空;
 
+             console.log("222222222222222222222221111111111111111111111");
             $.each(_this.louDong,function(index,val){
                 if(parseInt(data) === val.id){
                     _this.SameLevel(val.id,val.parentId + "");

@@ -50,6 +50,14 @@ wxImg.imgUpload = function(){
                         // 显示图片
                         var code = '<li><img src="'+ localId +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
                         $('#shoot').before(code);
+
+                        // 公告添加图片有所不同
+                        var box = $("#editor_box");
+                        if(box.length > 0){
+                          var bxHtml =  '<img src="'+ data.data.urls[0] + data.data.urls[0] +'" alt="">';
+                          box.append(bxHtml);
+                        }
+
                     },
                     beforeSend:function(){
                         imgBur = true;
@@ -71,9 +79,8 @@ wxImg.imgUpload = function(){
 wxImg.init = function(){
     var _this = this;
     //  上传图片；
-    $('#shoot').click(function(){
+    $('.imgUploadWX').click(function(){
         _this.imgUpload();  // 调用微信接口，选择图片，上传图片；
-
     });
     //  删除图片
     $(document).on("click",".delete-icon",function(){
