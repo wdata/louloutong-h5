@@ -30,15 +30,6 @@ dongSwitch.prototype = {
                         text = val.name;
                     }
                 });
-                //  将物业ID存入本地存储；（非首页可删除）；
-                dataSession["propertyId"] = selected.attr("data-id");
-                dataSession["propertyName"] = text;
-                sessionStorage.setItem("dataSession",JSON.stringify(dataSession));
-
-                //  修改首页顶部物业名
-                $("#address").text(text);
-                var indexAjax = new IndexAjax(selected.attr("data-id"));
-                indexAjax.main();
             }
         });
     },
@@ -66,7 +57,8 @@ dongSwitch.prototype = {
                         }
                     });
                     _this.addressList.append(html);
-
+                    _this.Default(obtain("propertyId"));      //  获取楼栋
+                    if($(".elem-01")){ $(".elem-01").text(obtain("propertyName")) }
                 }
             },
             error:function(data){
@@ -134,15 +126,13 @@ dongSwitch.prototype = {
     Default:function(data){
         var _this = this;
         //  判断sessionStorage存储的ID和name是否为空;
-
-             console.log("222222222222222222222221111111111111111111111");
-            $.each(_this.louDong,function(index,val){
-                if(parseInt(data) === val.id){
-                    _this.SameLevel(val.id,val.parentId + "");
-                    //  如果父级ID为不为空，则添加父级ID到顶部导航；
-                    _this.repeatAdd(val.parentId);  // 重复添加父级，一直到父级ID为null
-                }
-            })
+        $.each(_this.louDong,function(index,val){
+            if(parseInt(data) === val.id){
+                _this.SameLevel(val.id,val.parentId + "");
+                //  如果父级ID为不为空，则添加父级ID到顶部导航；
+                _this.repeatAdd(val.parentId);  // 重复添加父级，一直到父级ID为null
+            }
+        })
     },
     superior:function(){
         //  选择同级；

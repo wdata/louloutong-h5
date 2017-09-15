@@ -132,6 +132,8 @@ $(".click-footer a").click(function(){
 
 
 
+
+
 function closeMask(){
 	$('.mask-bg').remove();
 }

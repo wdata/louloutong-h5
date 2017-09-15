@@ -200,7 +200,7 @@ order.getList = function(elem,me){
                                     </div>
                                     <a href="order_detail.html" onclick="session('order_id',${item.id})">
                                         <div class="mid mm">
-                                            <p class="line2">${item.beseakUser.rentTitle}</p>
+                                            <p class="line2">${item.rentTitle}</p>
                                             <div class="time">预约时间：${item.bespeakTime}</div>
                                             <div class="tips overhide mm">接待者：${item.receptUser.name}</div>
                                         </div>
@@ -602,10 +602,22 @@ issue.add = function(){
     var picUrl=[];
     $.each(wxImg.urls,function(index,item){
         picUrl.push(item.url)
-    })
+    });
+    var title = $('.elem-07').val();
+    var content = $('.elem-08').val();
+
+    if(title.length <= 8 && title.length >= 32){
+        showMask('标题不能为空,其长度在8-28之间！');
+        return ;
+    }
+    if(content.length <= 10){
+        showMask('内容不能为空，其长度大于10！');
+        return ;
+    }
+
     $.ajax({
         type:'post',
-        url:server_rent+server_v1+'/api/v1/rents/save.json',
+        url:server_rent + server_v1+'/rents/save.json',
         dataType:'json',
         traditional: true,  
         data:{
@@ -619,22 +631,21 @@ issue.add = function(){
             'price':this.price,
             'unit':unit,
             'houseType':$('.elem-06').val(),
-            'title':$('.elem-07').val(),
-            'content':$('.elem-08').val(),
+            'title':title,
+            'content':content,
             'contacter':$('.elem-09').val(),
             'phone':$('.elem-10').val(),
             'direction':'朝南',
             'traffic':'地铁',
             'matingFacility':'花园'
         },
-        beforeSend:function(data){
-            showMask('请求处理中！');
-        },
         success:function(data){
-            if(data.code==0){
+            if(data.code===0){
                 closeMask();
                 showMask('添加成功！');
                 clearForm('#rent_form');    
+            }else{
+                showMask(data.message);
             }
         }
     })
@@ -687,6 +698,10 @@ issue.event = function(){
         }
         $(this).addClass('on').siblings().removeClass('on');
     })
+    // 朝向
+    $(".fell .check-wrap").tap(function(){
+       $(this).siblings().find("input").prop("checked",false);
+    });
     //提交  
     $('.submit-btn').click(function(){
         _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();

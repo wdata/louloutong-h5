@@ -132,7 +132,7 @@ function HtmlAjax(){
                             '<li> <a href="notice_details.html?id='+ val.id +'" class="">' +
                             ' <header> <div class="title">'+ val.title +'</div> ' +
                             '<time>'+ val.createTime +'</time> </header> <div class="release">' +
-                            '<p>'+ val.author.name +'</p>' +
+                            '<p>发布者：'+ val.author.name +'</p>' +
                             ''+ status +'</div> <i class="icon"></i> </a> '+ footer + '</li>'
                     });
                     list.append(html);
