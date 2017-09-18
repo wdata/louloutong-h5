@@ -1,6 +1,9 @@
 /**
  * Created by Administrator on 2017/8/15.
  */
+
+// 修改上传图片
+
 $(document).ready(function(){
 
     htmlAjax.project();   //  获取报修项目；
@@ -15,7 +18,7 @@ $(document).ready(function(){
 var htmlAjax = new HtmlAjax();
 function HtmlAjax(){
     this.releaseRpr = function(){
-        if(imgBur){
+        if(wxImg.imgBur){
             showMask("正在处理图片，请稍等！");
             return
         }

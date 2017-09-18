@@ -228,6 +228,9 @@ function HtmlAjax(){
             searchType = 1;  // 报修类型
             $("#search_btn").val("");
         });
+        $('#search_btn').focus(function(){
+            $("#search_btn").attr("placeholder","搜索报修人");
+        });
         $('#cancel').on("click",function(){
 
             $('.sBox-wrapper,.sBox-wrapper .top-search').removeClass('active');

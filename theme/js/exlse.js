@@ -25,7 +25,7 @@ function returnTran(){
 $(document).ready(function(){
     var ww=$(window).width();
 
-})
+});
 
 //搜索相关js
 $('.search-main,.p-layout').width(ww*2);
@@ -33,13 +33,18 @@ $('.main-wrap,.tran-wrap,.tap-footer').width(ww);
 
 $('#search_btn').focus(function(){
     $('.sBox-wrapper').addClass('active');
-})
+});
 //点击关键字后
 $('.sBox-wrapper .list-con .list').click(function(){
+    if($(this).is(".shb")){
+        showMask("可筛选中搜索");
+        return;
+    }
     $('#search_btn').attr('placeholder',$(this).text());
     $('.search-main').css('transform','translateX(-'+ww+'px)');
-    $('.sBox-wrapper .top-search').addClass('active')
-})
+    $('.sBox-wrapper .top-search').addClass('active');
+
+});
 //取消回到列表页
 $('.sBox-wrapper .cancel').click(function(){
     $("#search_btn").val("");
@@ -56,7 +61,7 @@ $('.sBox-wrapper .top-search .back').click(function(){
     $('.sBox-wrapper .top-search').removeClass('active');
     $('#search_btn').attr('placeholder','搜索');
     $(".sBox-wrapper").removeClass("hei");
-})
+});
 //搜索内容输入即开始搜索
 function searchList(){
 
