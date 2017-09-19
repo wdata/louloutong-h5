@@ -51,8 +51,17 @@ $(document).on("click",".orders",function(){
         success:function(data){
             if(data.code === 0){
                 window.location.href = "repair_details.html?id="+ urlParams("id") +"";
+            }else{
+                $('.mask-bg').remove();
+                showMask(data.exception);
             }
         },
+        // beforeSend:function(){
+        //     showMask("正在派单!");
+        // },
+        // complete:function(){
+        //     $('.mask-bg').remove();
+        // },
         error:function(data){
             ErrorReminder(data);
         }

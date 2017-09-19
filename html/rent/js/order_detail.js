@@ -19,12 +19,11 @@ function hourTran(date){
 	}
 }
 
-order_id=18;
 
 
 $.ajax({
 	type:'get',
-	url:server_url+server_v1+'/rents/bespeak/'+order_id+'.json',
+	url:server_url+server_v1+'/rents/bespeak/'+ urlParams("id") +'.json',
 	dataType:'json',
 	success:function(res){
 		if(res.code==0){ 

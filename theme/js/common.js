@@ -23,14 +23,15 @@ var userId = obtain("userId");    //  用户ID；
 if(!userId){
     userId = "1977";
     deposited("userId","1977");
-    $("#index-check").text("物业管理者");
 }else{
-    if(userId === "1977"){
-        $("#index-check").text("物业管理者");
-    }else if(userId === "1980"){
-        $("#index-check").text("物业维修者");
-    }
+    $("#select option[value='"+ userId +"']").attr("selected",true);
 }
+$(document).on("change","#select",function(){
+    sessionStorage.clear();        // 删除所有的零时存储，重新导入；
+    deposited("userId",$(this).val());
+    history.go(0);
+});
+
 
 
 
@@ -74,21 +75,12 @@ function headJumps(data){
 // 1990	曹洪	物业普通人员	南山物业公司
 
 //  将签到修改成点击修改职业；
-$("#index-check").click(function(){
-    if(userId === "1977"){
-        deposited("userId","1980");
-        $("#index-check").text("物业维修者");
-    }else if(userId === "1980"){
-        deposited("userId","1977");
-        $("#index-check").text("物业管理者");
-    }
-    history.go(0);
-});
+
 
 
 //------------------------------获取网址ID，key是参数名-------------------------------
 var urlParams = function (key) {
-    var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'))
+    var ret = location.search.match(new RegExp('(\\?|&)' + key + '=(.*?)(&|$)'));
     return ret && decodeURIComponent(ret[2])
 };
 
@@ -140,6 +132,8 @@ $(".click-footer a").click(function(){
 
 
 
+
+
 function closeMask(){
 	$('.mask-bg').remove();
 }
@@ -149,7 +143,7 @@ function showMask(msg){
         '<div class="mask-bg"> ' +
         '<div class="mask-con"> ' +
         '<div class="tit">提示</div> ' +
-        '<div class="main">${msg}</div> ' +
+        '<div class="main">'+ msg +'</div> ' +
         '<div class="bot"> ' +
         '<button class="btn" onclick="closeMask()">确认</button> ' +
         '</div> </div> </div>';

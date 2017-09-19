@@ -6,7 +6,7 @@ $(".carry").on("click",function(){
     var remark = $("#remark").text();
     var reason = $("#reason").text();
     if(!(reg.test(remark)|| remark === "") || !(reg.test(reason)|| reason === "")){
-        if(imgBur){
+        if(wxImg.imgBur){
             showMask("正在处理图片，请稍等！");
             return
         }

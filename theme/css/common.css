@@ -17,7 +17,7 @@
 .hr-40{ height: .533333rem;clear:both;}
 
 /*弹窗样式*/
-.mask-bg{position: fixed;height: 100%;width: 100%;top: 0;left: 0;background: rgba(0,0,0,.5);z-index: 199;}
+.mask-bg{position: fixed;height: 100%;width: 100%;top: 0;left: 0;background: rgba(0,0,0,.5);z-index: 300;}
 .mask-con{height: 3.84rem;width: 7.2rem;position: fixed;top: 0;left: 0;right: 0;bottom: 0;margin:auto;background: rgba(255,255,255,.9);border-radius: 3px;padding-top: .586rem;text-align: center;color: #333;font-size: .48rem;z-index: 200;}
 .mask-con .tit{;margin-bottom: .267rem;}
 .mask-con .main{height: 1.32rem;line-height: 20px;font-size: 14px;padding: 0 .48rem;overflow: hidden;}
@@ -33,7 +33,7 @@
 .sBox-wrapper .top-search .inpu-w{height: 1.173333rem;position: relative;}
 .sBox-wrapper .inpu-w input{width: 100%;height: .773rem;border:1px solid #038dff;margin-top: .2rem;border-radius: 3px;text-align: center;line-height: .773rem}
 .sBox-wrapper .inpu-w .icon-wrap{height: .773rem;top: .2rem;left: 50%;position: absolute;margin-left:-.7rem;vertical-align: middle;line-height: .85rem;}
-.sBox-wrapper .inpu-w .icon-wrap i{width: .35rem;height: .35rem;background: url(../../images/icon/search-gray.png) no-repeat center center/cover;}
+.sBox-wrapper .inpu-w .icon-wrap i{width: .3333333rem;height: .32rem;background: url(../../images/icon/search-gray.png) no-repeat center center/cover;}
 .sBox-wrapper .top-search .cancel{position: absolute;right: 0;width: 1.53rem;height: .773rem;text-align: center;line-height: .773rem;top: .2rem;color: #048dff;font-size:14px;display: none}
 .sBox-wrapper .top-search .back{position: absolute;left: 0;top: .2rem;width: .96rem;text-align: center;height: .773rem;line-height: 1rem;z-index: 10;display: none;}
 .sBox-wrapper .top-search .back i{width: .27rem;height: .453rem;}
@@ -45,7 +45,7 @@
 .sBox-wrapper.active .inpu-w input{text-align: left;padding-left: .6rem;}
 .sBox-wrapper.active .cancel{display: block;}
 
-.sBox-wrapper.hei{height: 8%;}.sBox-wrapper.heiA{height: 6.8%;}
+.sBox-wrapper.hei{ height: 1.19rem;}.sBox-wrapper.heiA{height: 6.8%;}
 .sBox-wrapper .top-search.active .back{display: block;}
 .sBox-wrapper .top-search.active .inpu-w{padding-left: .64rem}
 .sBox-wrapper .top-search.active .inpu-w .icon-wrap{left: 1.84rem;}

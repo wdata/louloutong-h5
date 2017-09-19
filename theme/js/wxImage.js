@@ -12,13 +12,14 @@ wxConfig(wx);
 var wxImg = new Object({
     "fileData":[],          // 记录返回的图片名；
     "local_url":[],    // 记录上传给微信的数据；
-    "imgBur":true
+    "imgBur":false
 });
 
 wxImg.imgUpload = function(){
     var _this = this;
     var i = 0;
     $('#pic_num').text(this.fileData.length);
+    console.log(8 - this.fileData.length);
     wx.chooseImage({
         count: 8 - this.fileData.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -50,12 +51,20 @@ wxImg.imgUpload = function(){
                         // 显示图片
                         var code = '<li><img src="'+ localId +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
                         $('#shoot').before(code);
+
+                        // 公告添加图片有所不同
+                        var box = $("#editor_box");
+                        if(box.length > 0){
+                          var bxHtml =  '<img src="'+ data.data.domain + data.data.urls[0] +'" alt="">';
+                          box.append(bxHtml);
+                        }
+
                     },
                     beforeSend:function(){
-                        imgBur = true;
+                        wxImg.imgBur = true;
                     },
                     complete:function(){
-                        imgBur = false;
+                        wxImg.imgBur = false;
                     },
                     error:function(data){
                         ErrorReminder(data);
@@ -71,16 +80,15 @@ wxImg.imgUpload = function(){
 wxImg.init = function(){
     var _this = this;
     //  上传图片；
-    $('#shoot').click(function(){
+    $('.imgUploadWX').click(function(){
         _this.imgUpload();  // 调用微信接口，选择图片，上传图片；
-
     });
     //  删除图片
     $(document).on("click",".delete-icon",function(){
         var self = this;
         var ind = $(this).parent().index();
         var name = $(this).attr("data-name");
-        if(imgBur){
+        if(wxImg.imgBur){
             showMask("正在处理中！");
             return
         }
@@ -99,10 +107,10 @@ wxImg.init = function(){
                 }
             },
             beforeSend:function(){
-                imgBur = true;
+                wxImg.imgBur = true;
             },
             complete:function(){
-                imgBur = false;
+                wxImg.imgBur = false;
             },
             error:function(data){
                 ErrorReminder(data);

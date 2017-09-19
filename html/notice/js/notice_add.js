@@ -177,9 +177,15 @@ function release(){
         dataType:'json',
         traditional:true,
         success:function(data){
-            if(data.code === 0 && data.message === "SUCCESS"){
-                // window.location.href = "notice_list.html";
+            if(data.code === 0){
+                window.location.href = "notice_list.html";
             }
+        },
+        beforeSend:function(){
+            showMask("正在发布!");
+        },
+        complete:function(){
+            showMask("正在发布!");
         },
         error:function(data){ErrorReminder(data);}
     });
@@ -188,7 +194,7 @@ function release(){
 //  入驻企业；
 $.ajax({
     type:'get',
-    url:  server_url_repair + server_v1 + '/propertyFirms/'+ 2 +'.json',
+    url:  server_LouDong + server_v1 + '/propertyFirms/'+ 2 +'.json',
     data: null,
     dataType:'json',
     success:function(data){
