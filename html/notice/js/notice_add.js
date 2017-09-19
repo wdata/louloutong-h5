@@ -12,10 +12,14 @@ $(document).ready(function(){
 function rePublish(){
     $('.p-layout').css('transform','translateX(0)');
     var recei_str="";
-    var recei_num=0;
-    $('input[type=checkbox]:checked').each(function(){
-        recei_str+=$(this).parents('.list').find('.tit').text()+',';
-        recei_num++;
+    var recei_num = 0;
+    $('input[type=checkbox]:checked').each(function(index){
+        if(index <= 0){
+            recei_str += $(this).parents('.list').find('.tit').text();
+        }else{
+            recei_str += $(this).parents('.list').find('.tit').text() + ',';
+        }
+        recei_num ++;
     });
     if(recei_str){
         $('#recei_comp').text(recei_str);
