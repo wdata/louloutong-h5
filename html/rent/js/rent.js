@@ -31,7 +31,6 @@ var auth_0=false;			//显示出租/求租
     	$('.rent-tab .bot .inner-r2').show().siblings().hide();
     }
 
-wxConfig(wx);       //微信授权
 //出租和求租
 var rent = new Object({
 	page:1,
@@ -464,105 +463,7 @@ myrent.reloadList = function(){
     dropload.resetload();
 }
 
-var wxImg = new Object({
-    urls:[],
-    local_url:[]
-})
-wxImg.imgUpload = function(){
-    var _this=this;
-    var i=0;
-    wx.chooseImage({
-        count: 8-this.urls.length, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-        success: function (res) {
-            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-            syncUpload(localIds);
-        }
-    })
-    var syncUpload = function(localIds){
-        i++;
-        var localId = localIds.pop();
-        _this.local_url.push({'num':i,'url':localId});
-        _this.setImg(_this.local_url[0].url);
-        $('#pic_num').text(this.urls.length);
-        var code=`
-            <div class="img-list">
-                <img src="${localId}" alt="">
-                <i class="icon icon-del" onclick="wxImg.del(this)"></i>
-            </div> 
-            `;
-        $('.pic-wrap .pic-con .list-con').append(code);
-        wx.uploadImage({
-            localId: localId,
-            isShowProgressTips: 1,
-            success: function (res) {
-                var serverId = res.serverId; // 返回图片的服务器端ID
-                $.ajax({
-                    type:'post',
-                    url:'/weixin/downloadImage',
-                    dataType:'json',
-                    data:{
-                        mediaIds:serverId
-                    },
-                    success:function(res){
-                        _this.urls.push({'num':i,'url':res.data.urls[0]});
-                    }
-                })
-                if(localIds.length > 0){
-                    syncUpload(localIds);
-                }
-            }
-        });
-    }   
-}
-wxImg.del = function(cur){
-    var _this=this;
-    $(cur).parent().remove();
-    var t_num;
-    $.each(_this.local_url,function(index,item){
-        if(item.url ==$(cur).parent().find('img').attr('src')){
-            _this.local_url.splice(index,1);
-            $.each(_this.urls,function(i,t){
-                if(t.num==item.num){
-                    _this.urls.splice(i,1);
-                }
-            })
-        }
-    })
-    if(_this.local_url.length>=1){
-        _this.setImg(_this.local_url[0].url)
-    }else{
-        _this.setImg(default_img);
-    }            
-}
-wxImg.setImg = function(src){
-    $('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
-}
-wxImg.init = function(){
-    var _this=this;
-    $('.issue .photo').click(function(){
-        if(_this.local_url.length>=1){
-            $('.pic-wrap').show();
-            $('.sBox-wrapper,.tap-footer').addClass('z0');
-        }else{
-           _this.imgUpload(); 
-        }
-    })
-    $('.pic-wrap .pic-con .add-list').click(function(){
-        if(_this.local_url.length>=8){
-            showMask('最多只能上传8张！');
-            return false;
-        }
-        _this.imgUpload(); 
-    })
 
-    $('.pic-wrap .return').click(function(){
-        $('.pic-wrap').hide();
-        $('.sBox-wrapper,.tap-footer').removeClass('z0');
-    })   
-}
-wxImg.init();
 
 //发布
 var issue=new Object({
@@ -581,7 +482,7 @@ issue.show = function(){
         $('.rent-list-con').show();
         $('.issue').hide();
     }
-}
+};
 issue.scroll = function(){
     var _this=this;
     $('.mainCon-wrap').scroll(function(){
@@ -592,28 +493,18 @@ issue.scroll = function(){
             $('.issue-editbox').addClass('on');
         }
     })
-}
+};
 issue.add = function(){
     var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
-    var unit=this.type==1?q:p
+    var unit = this.type===1?q:p;
     //  wxImg.urls  /api/v1/rents/save.json
     /*alert(wxImg.urls);*/
     var picUrl=[];
     $.each(wxImg.urls,function(index,item){
         picUrl.push(item.url)
     });
-    var title = $('.elem-07').val();
-    var content = $('.elem-08').val();
-
-    if(title.length <= 8 && title.length >= 32){
-        showMask('标题不能为空,其长度在8-28之间！');
-        return ;
-    }
-    if(content.length <= 10){
-        showMask('内容不能为空，其长度大于10！');
-        return ;
-    }
+    console.log("222222222222222222222222222");
 
     $.ajax({
         type:'post',
@@ -631,28 +522,32 @@ issue.add = function(){
             'price':this.price,
             'unit':unit,
             'houseType':$('.elem-06').val(),
-            'title':title,
-            'content':content,
+            'title':$('.elem-07').val(),
+            'content':$('.elem-08').val(),
             'contacter':$('.elem-09').val(),
             'phone':$('.elem-10').val(),
-            'direction':'朝南',
-            'traffic':'地铁',
-            'matingFacility':'花园'
+            'direction':$(".elem-11 input[type=checkbox]:checked").siblings("label").text(),
+            'traffic':$(".elem-12 input[type=checkbox]:checked").siblings("label").text(),
+            'matingFacility':$(".elem-13 input[type=checkbox]:checked").siblings("label").text()
         },
         success:function(data){
             if(data.code===0){
                 closeMask();
-                showMask('添加成功！');
-                clearForm('#rent_form');    
+                // showMask('添加成功！');
+                clearForm('#rent_form');
+                // window.location.href = "rent.html?show=3";
             }else{
                 showMask(data.message);
             }
+        },
+        beforeSend:function(){
+            showMask("正在发布!");
         }
     })
-}
+};
 issue.tranBack = function(){
      $('.p-layout').css('transform','translateX(0)');
-}
+};
 issue.event = function(){
     var _this=this;
     //区域选择
@@ -707,31 +602,34 @@ issue.event = function(){
         _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
         var m=$('.diff-orent .elem-05').val();
         var n=$('.diff-irent .elem-05').val();
-        _this.price=(m)?m:n;
+        _this.price=(m)?m:n;;
+        var mobile = /^((\+?86)|(\(\+86\)))?(13[0123456789][0-9]{8}|15[012356789][0-9]{8}|18[0123456789][0-9]{8}|147[0-9]{8}|1349[0-9]{7}|17[0123456789][0-9]{8})$/;
+        var phone = $('.elem-10').val();
         //if(_this.type==1 && wxImg.urls.length<=0)                                       { showMask('请至少上传一张图片！'); return false; }
         //if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
-        /*if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
+        if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
         if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
         if(!$('.elem-06').val())                                                        { showMask('请填写类型！'); return false; }
         if(!($('.elem-07').val().length>=8 && $('.elem-07').val().length<=18))          { showMask('请填写标题，且在8-28个字之间！'); return false; }
         if(!$('.elem-08').val().length>=10)                                             { showMask('请填写描述！'); return false; }
         if(!$('.elem-09').val().length>=2)                                              { showMask('请填写联系人，且至少2字！'); return false; }
         if(!$('.elem-10').val())                                                        { showMask('请填写手机号！'); return false; }
-        if(!checkMobile($('.elem-10').val()))                                           { showMask('手机号格式错误！'); return false; }
+        if(!(phone.length === 11 && mobile.test(phone)))                                           { showMask('手机号格式错误！'); return false; }
         if($('.elem-02').val()){
             if(!($('.elem-02').val().length>=2 && $('.elem-07').val().length<=30))      { showMask('所填写楼盘字数应为2-30个字'); return false; }
         }
         if($('.elem-03').val()){
             if(!($('.elem-03').val().length>=2 && $('.elem-03').val().length<=12))      { showMask('所填写地段字数应为2-12个字'); return false; }
-        }*/
+        }
+        console.log("1111111111111111111111");
         _this.add();
     })
-}
+};
 issue.init = function(){
     this.show();
     this.scroll();
     this.event();
-}
+};
 
 
 $('#search_btn').on("input porpertychange",function(){
@@ -877,7 +775,7 @@ function link(id,type){
 }
 function mlink(id,type,status){
     var elem=JSON.stringify({'id':id,'type':type,'status':status})
-    sessionStorage.setItem('rent_modify',elem)
+    sessionStorage.setItem('rent_modify',elem);
 }
 
 //点击关键字后

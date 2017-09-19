@@ -22,7 +22,8 @@ $.ajax({
 	dataType:'json',
 	success:function(data){
 		if(data.code==0){
-			$('.detail-tit').html(data.data.title+"<div class='time'>"+data.data.createTime+"</div>");
+			$('.detail-tit span').text(data.data.title);
+			$(".time").text(data.data.createTime.split(" ")[0]);
 			$('#detail_price').text(data.data.price+data.data.unit);
 			$('#detail_acreage').html(data.data.acreage+"m<sup>2</sup>");
 			$('#detail_views').text(data.data.views);
@@ -46,9 +47,7 @@ $.ajax({
 				$('.orent-swiper').show();
 				var imgCode="";
 				$.each(data.data.images,function(index,item){
-					imgCode+=`
-							<div class="swiper-slide"><a href=""><img src="${item.url}" alt=""></a></div>
-							`;
+					imgCode+= '<div class="swiper-slide"><a href=""><img src="'+ item.url +'" alt=""></a></div>';
 				})
 				$('.orent-swiper .swiper-wrapper').html(imgCode);
 				mySwiper.init()
@@ -57,7 +56,7 @@ $.ajax({
 			}
 		}
 	}
-})
+});
 
 var i=0;
 $('.rentd-box04 .tit .icon-w').click(function(){
