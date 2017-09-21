@@ -92,7 +92,7 @@ rent.getList = function(elem,me){
                                 <div class="word overhide">
                                     ${item.title}
                                 </div>
-                                <div class="tips price">${item.price}</div>    
+                                <div class="tips price">${item.price}/月</div>    
                             </div>
                             ${botCode}
                         </a>

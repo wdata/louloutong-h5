@@ -36,7 +36,7 @@ $.ajax({
                     // <i class="suffix-icon pdf-icon"></i>
                     // <i class="suffix-icon excel-icon"></i>
                     // <i class="suffix-icon word-icon"></i>
-                    html += '<li>'+ i +'<p class=""><span>'+ da[0] +'</span>.'+ da[1] +'</p> <a download href="'+ val.url +'" class="icon-wrap"><i class="download-icon"></i></a> </li>'
+                    html += '<li>'+ i +'<p class=""><span>'+ da[0] +'</span>.'+ da[1] +'</p> <a onclick="downloaded()" download href="'+ val.url +'" class="icon-wrap"><i class="download-icon"></i></a> </li>'
                 });
                 $(".annex").empty().append(html);
             }
@@ -46,3 +46,9 @@ $.ajax({
     },
     error:function(data){ErrorReminder(data);}
 });
+
+function downloaded(){
+    if( typeof WeixinJSBridge !== "undefined" ){
+        showMask("请点击右上角选择浏览器，跳转到浏览器下载！")
+    }
+}
