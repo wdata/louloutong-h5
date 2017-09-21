@@ -145,8 +145,8 @@ function HtmlAjax(){
 
                     // 报修类型
                     switch (dataD.type){
-                        case 1:type = "办公区域";address = dataD.address;break;
-                        case 2:type = "公共区域";address = dataD.publicAddress;$(".pbc").hide();break; //  公共区域没有类型，时间等；
+                        case 1:type = "办公区报修";address = dataD.address;break;
+                        case 2:type = "公共区报修";address = dataD.publicAddress;$(".pbc").hide();break; //  公共区域没有类型，时间等；
                     }
 
 

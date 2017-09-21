@@ -67,8 +67,16 @@ function HtmlAjax(){
             showMask("请选择预约和期望时间！");
             return;
         }
+        if(new Date(bespeakTime).getTime() >= new Date(expectTime).getTime()){
+            showMask("期待完成时间必须大于预约上门时间！");
+            return ;
+        }
         if(reg.test(content) || content === ""){
             showMask("请输入报修内容！");
+            return;
+        }
+        if(urls.length <= 0){
+            showMask("请添加最少一张图片！");
             return;
         }
 
@@ -170,10 +178,10 @@ function HtmlAjax(){
     };
     this.upDefault = function(self){
         $.ajax({
-            type:'get',
+            type:'post',
             url:  server_url_repair + server_v1 + '/repairAddress/update.json',
             data: {
-                "id":$(self).attr("data-id"),
+                "id":$(self).find(".address").attr("data-id"),
                 "isDefault":1
             },
             dataType:'json',
@@ -213,7 +221,7 @@ function Operating(){
             }
         });
         //  请选择服务地址；
-        $(".service").click(function(){
+        $("#service").click(function(){
            $(".repair-add-switch").addClass("active");
         });
 
@@ -223,7 +231,7 @@ function Operating(){
                 .siblings().removeClass("active");
             //  修改默认地址；
             if(!$(this).is(".ative")){
-                htmlAjax.upDefault();
+                htmlAjax.upDefault(this);
             }
         });
         //  服务地址选择；
@@ -237,7 +245,7 @@ function Operating(){
             $(".service").removeClass("active");
 
             $("#ads").text($(".addressList li.active .address").text())
-                .attr("data-id",$(".addressList li.active").attr("data-id"));
+                .attr("data-id",$(".addressList li.active").find(".address").attr("data-id"));
             return false;
         });
         //  下一步
@@ -252,7 +260,7 @@ function Operating(){
             $(".first").removeClass("active");
             $(".second").removeClass("active");
         });
-    }
+    };
     this.OPtime = function(){
         //  时间插件
         var currYear = (new Date()).getFullYear();

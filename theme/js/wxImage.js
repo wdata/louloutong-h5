@@ -50,7 +50,7 @@ wxImg.imgUpload = function(){
                         _this.fileData.push({'num':i,'url':data.data.urls[0]});
                         // 显示图片
                         var code = '<li><img src="'+ localId +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
-                        $('#shoot').before(code);
+                        $('#shoot').parent().prepend(code);
 
                         // 公告添加图片有所不同
                         var box = $("#editor_box");
