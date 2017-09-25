@@ -18,7 +18,6 @@ var wxImg = new Object({
 wxImg.imgUpload = function(){
     var _this = this;
     var i = 0;
-    $('#pic_num').text(this.fileData.length);
     wx.chooseImage({
         count: 8 - this.fileData.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -29,7 +28,6 @@ wxImg.imgUpload = function(){
         }
     });
     var syncUpload = function(localIds){
-        i++;
         var localId = localIds.pop();
         _this.local_url.push({'num':i,'url':localId});
 
@@ -46,13 +44,29 @@ wxImg.imgUpload = function(){
                         mediaIds:serverId
                     },
                     success:function(data){
-                        _this.fileData.splice(0,0,{'num':i,'url':data.data.urls[0]});
+                        i++;
+                        // 显示图片 报修模块；
+                        var shoot = $("#shoot");
+                        if(shoot.length > 0){
+                            var code = '<li><img src="'+ data.data.domain + data.data.urls[0] +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
+                            shoot.parent().prepend(code);
+                            // 因为图片顺序有问题，需要用插入数据；
+                            _this.fileData.splice(0,0,{'num':i,'url':data.data.urls[0]});
+                        }
 
-                        console.log(_this.fileData);
-                        // 显示图片
-                        var code = '<li><img src="'+ localId +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
-                        $('#shoot').parent().prepend(code);
 
+                        // 出租和求组添加图片有所不同；
+                        var listCon = $("#list-con");
+                        if(listCon.length > 0){
+                            var listHtml =  '<div class="img-list"> <img src="'+ data.data.domain + data.data.urls[0] +'" alt=""> <i data-name="'+ data.data.urls[0] +'" class="icon icon-del delete-icon"></i> </div>';
+                            listCon.append(listHtml);
+                            // 图片顺序没有问题，用正序，从末尾引入数据
+                            _this.fileData.push({'num':i,'url':data.data.urls[0]});
+
+                            $('.issue .photo .img-wrap img').attr("src",data.data.domain + _this.fileData[0].url);
+                            // 修改顶部数量
+                            $('#pic_num').text(_this.fileData.length);
+                        }
                         // 公告添加图片有所不同
                         var box = $("#editor_box");
                         if(box.length > 0){
@@ -84,6 +98,32 @@ wxImg.init = function(){
     $('.imgUploadWX').click(function(){
         _this.imgUpload();  // 调用微信接口，选择图片，上传图片；
     });
+    // 出租和求组中，各个事件
+    $('.issue .photo').click(function(){
+        console.log(_this.fileData.length);
+        if(_this.fileData.length>=1){
+            $('.pic-wrap').show();
+            $('.sBox-wrapper,.tap-footer').addClass('z0');
+        }else{
+            _this.imgUpload();
+        }
+    });
+
+    // 上传限制
+    $('.pic-wrap .pic-con .add-list').click(function(){
+        if(_this.fileData.length >= 8){
+            showMask('最多只能上传8张！');
+            return false;
+        }
+        _this.imgUpload();
+    });
+
+    // 确定
+    $('.pic-wrap .return').click(function(){
+        $('.pic-wrap').hide();
+        $('.sBox-wrapper,.tap-footer').removeClass('z0');
+    });
+
     //  删除图片
     $(document).on("click",".delete-icon",function(){
         var self = this;
@@ -105,6 +145,9 @@ wxImg.init = function(){
                 if(data.code === 0 && data.message === "SUCCESS"){
                     $(self).parent().remove();
                     _this.fileData.splice(ind,1); //删除呗删除图片数据；
+
+                    // 出租和求组发布中，修改顶部图片数量；
+                    $('#pic_num').text(_this.fileData.length);
                 }
             },
             beforeSend:function(){

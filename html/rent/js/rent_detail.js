@@ -1,12 +1,11 @@
 
-
-var mySwiper = new Swiper ('.rent-swiper', {
-        loop: true,
-        pagination: '.swiper-pagination',
-        autoplay: 1500,
-        autoplayDisableOnInteraction: false
-})        
-
+var mySwiper = new Swiper('.orent-swiper', {
+    loop: true,
+    pagination: '.swiper-pagination',
+    paginationType: 'fraction',
+    autoplay: 1000,
+    autoplayDisableOnInteraction: false
+});
 $.ajax({
 	type:'get',
 	url:server_url+server_v1+'/rents/'+ obtain("rent_id") +'.json',
@@ -38,11 +37,11 @@ $.ajax({
 				$('.orent-swiper').show();
 				var imgCode="";
 				$.each(data.data.images,function(index,item){
-					imgCode+= '<div class="swiper-slide"><figure><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure></div>';
-
+					imgCode+= '<div class="swiper-slide rent-image"><figure><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure></div>';
 				});
 				$('.orent-swiper .swiper-wrapper').html(imgCode);
-				mySwiper.init()
+                mySwiper.init();
+                mySwiper.reLoop();   //   这个函数是重新计算swiper个数
 			}else{
 				$('.orent-swiper').hide();
 			}

@@ -70,7 +70,7 @@ rent.getList = function(elem,me){
                 }
                 var txCode=item.user.photo?server_uel_user_img+item.user.photo:default_tx;
 				code+=`
-					<div class="list" data-id=${item.id}>
+					<div class="list all-rent" data-id=${item.id}>
                         <a class="p24" href="rent_detail.html" onclick="link('${item.id}',${_this.type})">
                             <div class="top">
                                 <div class="t-l fl">
@@ -374,25 +374,18 @@ myrent.getList = function(elem,me){
                     statue = "下架";
                 }
                 var botCode= '<div class="bot">'+ imgCode +'</div>';
-				code+=`
-					<div class="list" data-id=${item.id}>
-                        <a class="p24" href="rent_detail.html"  onclick="link('${item.id}',${_this.type})">
-                            <div class="mid">
-                                <div class="word overhide">
-                                    ${item.title}
-                                </div>
-                                <div class="tips price">${item.price} <span class="fr c666">发布于${item.createTime}</span></div>    
-                            </div>
-                            ${botCode}
-                        </a>
-                        <div class="oper-bot">
-                            <button onclick="myrent.refresh(${item.id})" class="btn">刷新</button>
-                            <a class="btn" href="rent_edit.html" onclick="mlink('${item.id}',${_this.type},'${item.status}')">修改</a>
-                            <button onclick="myrent.changeStatus(${item.id},${item.status})" class="btn">${statue}</button>
-                            <button onclick="myrent.del(${item.id},${item.status})" class="btn">删除</button>
-                        </div>
-                    </div>
-				`	
+				code += '<div class="list" data-id="'+ item.id +'"> ' +
+                    '<a class="p24" href="rent_detail.html"  onclick="link('+ item.id +','+ _this.type +')"><div class="mid"> ' +
+                '<div class="word overhide">'+ item.title +' ' +
+                '</div> <div class="tips price">'+ item.price + item.unit +'<span class="fr c666">发布于'+ item.createTime +'</span></div> </div>'+ botCode +'' +
+                    '</a> ' +
+                    '<div class="oper-bot"> ' +
+                    '<button onclick="myrent.refresh('+ item.id +')" class="btn">刷新</button> ' +
+                    '<a class="btn" href="rent_edit.html" onclick="mlink('+ item.id +','+ _this.type +','+ item.status +')">修改</a> ' +
+                '<button onclick="myrent.changeStatus('+ item.id +','+ item.status +')" class="btn">'+ statue +'</button> ' +
+                '<button onclick="myrent.del(('+ item.id +','+ item.status +')" class="btn">删除</button> ' +
+                '</div> ' +
+                '</div>'
 			});
 			$(elem).append(code);
             _this.page++;
@@ -511,7 +504,7 @@ issue.add = function(){
     //  wxImg.urls  /api/v1/rents/save.json
     /*alert(wxImg.urls);*/
     var picUrl=[];
-    $.each(wxImg.urls,function(index,item){
+    $.each(wxImg.fileData,function(index,item){
         picUrl.push(item.url)
     });
 

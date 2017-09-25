@@ -65,22 +65,24 @@
 .rent-tab .bot .list{width: 33.33%;text-align: center;}
 .rent-tab .bot .list.active{color: #038dff;}
 .rent-tab .list.half{width:50%;}
-.rent-list-con{padding-top:.2133333rem;background: #fff;}
-.rent-list-con .list{border-bottom: 1px solid #e2e2e2;margin-top: .32rem}
+.rent-list-con{padding-top:.2133333rem;background: #ececf1;}
+.rent-list-con .list{border-bottom: 1px solid #e2e2e2;margin-top: .32rem;background-color: #fff;}
+.rent-list-con .list.all-rent{ margin-top: 0; padding-top:.32rem;}
 .rent-list-con .list .top .t-l{}
 .rent-list-con .list .top .t-l .tx{width: 1.08rem;height: 1.08rem;display: inline-block;vertical-align: middle;}
 .rent-list-con .list .top .t-l .tx img{width: 100%;height: 100%;border-radius: 100%;}
 .rent-list-con .list .top .t-l .txt{display: inline-block;vertical-align: middle;margin-left: 5px;}
 .rent-list-con .list .top .t-l .txt .tit{font-size: 14px;color: #000;}
 .rent-list-con .list .top .t-l .txt .time{font-size: 12px;color: #666;margin-top: 2px;}
-.rent-list-con .list .top .t-r{line-height: 1.08rem;font-size: .42rem;color: #666;}
+.rent-list-con .list .top .t-r{line-height: 1.08rem;font-size: 16px;color: #999;}
 
-.rent-list-con .list .mid{}
-.rent-list-con .list .mid .word{font-size: .48rem;color: #333;line-height: 1rem}
+.rent-list-con .list .mid{ margin-bottom: .2133333rem;}
+.rent-list-con .list .mid .word{font-size: 18px;color: #333;line-height: 1rem}
 .rent-list-con .list .mid .tips{height: .3rem;padding-bottom: .4rem;}
-.rent-list-con .list .mid .price{font-size: 14px;color: #ff2626;}
+.rent-list-con .list .mid .price{font-size: 12px;color: #fe0000;}
+.rent-list-con .list .mid .price .c666{ color:#999;font-size: 12px}
 .rent-list-con .list .mid .date{color: #666;}
-.rent-list-con .list .bot{margin:0 -.12rem 0;min-height: 1.7rem;}
+.rent-list-con .list .bot{margin:0 -.12rem 0;overflow: hidden;}
 .rent-list-con .list .bot .pic-w{width: 25%;padding:0 .12rem;margin-bottom: .16rem}
 .rent-list-con .list .bot .pic-w img{width: 100%;height: 1.6rem;}            
 
@@ -232,7 +234,13 @@
 .pic-wrap .pic-con .add-list img{width: 55%;height: auto;}
 
 
-
+.rent-image figure
+,.rent-image figure a{
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow:hidden;
+}
 
 
 
