@@ -49,6 +49,7 @@ function nullCheck(elem){
 $('.search-main,.p-layout').width(ww*2);
 
 $('.main-wrap,.tran-wrap,.tap-footer,.issue-editbox,.pic-wrap').width(ww);
+$(".sCon-wrapper").removeClass("hide");  // 先隐藏，防止出现开始时图形非常小然后变大的差异！！！
 
 $('#search_btn').focus(function(){
 	$('.sBox-wrapper').addClass('active');

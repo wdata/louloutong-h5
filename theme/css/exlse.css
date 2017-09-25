@@ -911,6 +911,16 @@ time{
     height: 2.4rem;
     display: block;
 }
+/* 使用图片放大插件时，将margin放在figure中*/
+.repair .list-ul .image figure{
+    margin:0 .1333333rem .1333333rem 0;
+}
+.repair .list-ul .image figure:nth-child(4n){
+    margin-right: 0;
+}
+.repair .list-ul .image figure img{
+    margin:0;
+}
 .repair .list-ul .image img:nth-child(4n){
     margin-right: 0;
 }

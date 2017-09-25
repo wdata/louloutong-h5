@@ -21,8 +21,9 @@
 .mask-con{height: 3.84rem;width: 7.2rem;position: fixed;top: 0;left: 0;right: 0;bottom: 0;margin:auto;background: rgba(255,255,255,.9);border-radius: 3px;padding-top: .586rem;text-align: center;color: #333;font-size: .48rem;z-index: 200;}
 .mask-con .tit{;margin-bottom: .267rem;}
 .mask-con .main{height: 1.32rem;line-height: 20px;font-size: 14px;padding: 0 .48rem;overflow: hidden;}
-.mask-con .bot{height: 1.2rem;line-height: 1.2rem;border-top: 1px solid #e2e2e2;}
-.mask-con .bot .btn{border:0px none;color: #038dff;background: transparent;width: 100%;height: 100%}
+.mask-con .bot{height: 1.2rem;line-height: 1.2rem;border-top: 1px solid #e2e2e2;display: flex;}
+.mask-con .bot .btn{border:0 none;color: #038dff;background: transparent;width: 100%;height: 100%;}
+.mask-con .bot .btn.cancel{border-left: 1px solid #e2e2e2;}
 
 /*搜索效果*/
 .icon{display: inline-block;}
@@ -374,4 +375,7 @@ body{overflow: hidden;}
     content: attr(placeholder);
     color: #038dff;
     font-size: 14px;
+}
+figcaption{
+    display: none;
 }

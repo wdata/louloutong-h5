@@ -253,13 +253,22 @@ function Operating(){
             $(".first").addClass("active");
             $(".second").addClass("active");
             $(".project").text($("#projectList li.active").text());
-
+            $(".repair-add-A .header-return").unbind().addClass("previousPage");   // 解除返回的点击事件
         });
         //  返回上一步选择报修类型；
-        $(".modify-icon").on("click",function(){
+        $(document).on("click",".previousPage",function(){
             $(".first").removeClass("active");
             $(".second").removeClass("active");
+
+            // 移除返回上一步，绑定返回上一页；
+            $(".repair-add-A .header-return").removeClass("previousPage")
+                .on("click",function(){
+                history.go(-1);
+            })
         });
+        $(".repair-add-A .header-return").on("click",function(){
+            history.go(-1);
+        })
     };
     this.OPtime = function(){
         //  时间插件

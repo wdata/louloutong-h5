@@ -25,25 +25,33 @@ $.ajax({
             $(".elem-08").val(data.data.content); // 描述
             $(".desc-con textarea").text(data.data.content);  // 描述
             $(".elem-09").val(data.data.contacter); // 联系人
-            $(".elem-010").val(data.data.phone); //联系电话
+            $(".elem-10").val(data.data.phone); //联系电话
             // 朝向;
             $.each($(".elem-11 input"),function(index,val){
                 if($(val).siblings("label").text() === data.data.direction){
-                    $(val).prop(true);
+                    $(val).attr("checked",'true');
                 }
             });
             // 交通;
             $.each($(".elem-12 input"),function(index,val){
                 if($(val).siblings("label").text() === data.data.traffic){
-                    $(val).prop(true);
+                    $(val).attr("checked",'true');
                 }
             });
             // 配套设施;
             $.each($(".elem-13 input"),function(index,val){
                 if($(val).siblings("label").text() === data.data.matingFacility){
-                    $(val).prop(true);
+                    $(val).attr("checked",'true');
                 }
-            })
+            });
+            // 图片；
+            var codeData = null;
+            $(".img-wrap img").attr("src",data.data.images[0].url);
+            $.each(data.data.images,function(index,val){
+                wxImg.fileData.push({'num':index,'url':val.unDomainUrl});
+                codeData += '<div class="img-list"> <img src="'+ val.url +'" alt=""> <i data-name="'+ val.unDomainUrl +'" class="icon icon-del delete-icon"></i> </div> ';
+            });
+            $('.pic-wrap .pic-con .list-con').append(codeData);
         }
     }
 });
@@ -70,11 +78,12 @@ var modify = new Object({
 modify.update = function(){
 	var p=$('.diff-orent .unit-choosed').html();
     var q=$('.diff-irent .unit-choosed').html();
-    var unit=this.type==1?q:p;
-    var picUrl=[];
-    $.each(wxImg.urls,function(index,item){
+    var unit = this.type===1?q:p;
+    var picUrl = [];
+    $.each(wxImg.fileData,function(index,item){
         picUrl.push(item.url)
     });
+    console.log(wxImg.fileData,picUrl);
 	$.ajax({
 		type:'post',
 		url:server_rent+server_v1+'/rents/update.json',
@@ -107,7 +116,8 @@ modify.update = function(){
             if(data.code === 0){
                 closeMask();
                 showMask('修改成功！');
-                clearForm('#rent_form');    
+                clearForm('#rent_form');
+                window.location.href="rent.html";
             }
         }
 	})
@@ -117,20 +127,38 @@ modify.tranBack = function(){
 };
 modify.event = function(){
 	var _this=this;
+    //区域选择
+    $('.header-operating').tap(function(){
+        var cur_name,li_name;
+        li_name=$('#addressList li.active').text();
+        if(li_name=="全部"){
+            cur_name=$('.switch .nav li.active').prev().text();
+        }else{
+            cur_name=li_name;
+        }
+        $('.elem-01').text(cur_name);
+        _this.tranBack();
+    });
 	//选择单位
     $('.unit-con ul li').tap(function(){
-        if(_this.type==1){
+        if(_this.type===1){
            $('.diff-irent .unit-choosed').html($(this).html()) 
         }else{
            $('.diff-orent .unit-choosed').html($(this).html())  
         }
         _this.tranBack();
     });
-	$('.submit-btn').tap(function(){
-	    _this.acreage=($('.diff-orent .elem-04').val())?$('.diff-orent .elem-04').val():$('.diff-irent .elem-04').val();
-	    var m=$('.diff-orent .elem-05').val();
-	    var n=$('.diff-irent .elem-05').val();
-	    _this.price=(m)?m:n;
+    $('#desc_oper').tap(function(){
+        $('.elem-08').val($('.desc-con textarea').val());
+        _this.tranBack();
+    });
+    $(document).on("click",'.submit-btn',function(){
+	    _this.acreage = _this.type === 1?$('.diff-irent .elem-04').val():$('.diff-orent .elem-04').val();
+	    var m = $('.diff-orent .elem-05').val();
+	    var n = $('.diff-irent .elem-05').val();
+	    _this.price = _this.type === 1 ? n : m;
+        var mobile = /^((\+?86)|(\(\+86\)))?(13[0123456789][0-9]{8}|15[012356789][0-9]{8}|18[0123456789][0-9]{8}|147[0-9]{8}|1349[0-9]{7}|17[0123456789][0-9]{8})$/;
+        var phone = $('.elem-10').val();
 	    if(!$('#addressList li.active').data('id'))                                     { showMask('请选择区域！'); return false; }
 	    if(!_this.acreage)                                                              { showMask('请填写面积！'); return false; }
 	    if(!_this.price)                                                                { showMask('请填写租金！'); return false; }
@@ -138,8 +166,8 @@ modify.event = function(){
 	    if(!($('.elem-07').val().length>=8 && $('.elem-07').val().length<=18))          { showMask('请填写标题，且在8-28个字之间！'); return false; }
 	    if(!$('.elem-08').val().length>=10)                                             { showMask('请填写描述！'); return false; }
 	    if(!$('.elem-09').val().length>=2)                                              { showMask('请填写联系人，且至少2字！'); return false; }
-	    if(!$('.elem-10').val())                                                        { showMask('请填写手机号！'); return false; }
-	    if(!checkMobile($('.elem-10').val()))                                           { showMask('手机号格式错误！'); return false; }
+	    if(!phone)                                                        { showMask('请填写手机号！'); return false; }
+	    if(!(phone.length === 11 && mobile.test(phone)))                                           { showMask('手机号格式错误！'); return false; }
 	    if($('.elem-02').val()){
 	        if(!($('.elem-02').val().length>=2 && $('.elem-07').val().length<=30))      { showMask('所填写楼盘字数应为2-30个字'); return false; }
 	    }
@@ -151,111 +179,3 @@ modify.event = function(){
 };
 
 modify.event();
-
-// var wxImg = new Object({
-//     urls:[],
-//     local_url:[]
-// })
-// wxImg.imgUpload = function(){
-//     var _this=this;
-//     var i=0;
-//     wx.chooseImage({
-//         count: 8-this.urls.length, // 默认9
-//         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-//         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-//         success: function (res) {
-//             var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-//             syncUpload(localIds);
-//         }
-//     })
-//     var syncUpload = function(localIds){
-//         i++;
-//         var localId = localIds.pop();
-//         _this.local_url.push({'num':i,'url':localId});
-//         _this.setImg(_this.local_url[0].url);
-//         _this.setLocalImg(localId);
-//         $('#pic_num').text(_this.local_url.length);
-//         wx.uploadImage({
-//             localId: localId,
-//             isShowProgressTips: 1,
-//             success: function (res) {
-//                 var serverId = res.serverId; // 返回图片的服务器端ID
-//                 $.ajax({
-//                     type:'post',
-//                     url:'/weixin/downloadImage',
-//                     dataType:'json',
-//                     data:{
-//                         mediaIds:serverId
-//                     },
-//                     success:function(res){
-//                         _this.urls.push({'num':i,'url':res.data.urls[0]});
-//                     }
-//                 })
-//                 if(localIds.length > 0){
-//                     syncUpload(localIds);
-//                 }
-//             }
-//         });
-//     }
-// }
-// wxImg.del = function(cur){
-//     var _this=this;
-//     $(cur).parent().remove();
-//     var t_num;
-//     $.each(_this.local_url,function(index,item){
-//         if(item.url ==$(cur).parent().find('img').attr('src')){
-//             _this.local_url.splice(index,1);
-//             $.each(_this.urls,function(i,t){
-//             	if(t.num==item.num){
-//             		_this.urls.splice(i,1);
-//             	}
-//             })
-//
-//         }
-//     })
-//
-//     if(_this.local_url.length>=1){
-//         _this.setImg(_this.local_url[0].url)
-//     }else{
-//         _this.setImg(default_img);
-//     }
-// }
-// wxImg.setImg = function(src){
-//     $('.issue .photo .img-wrap').html(`<img src="${src}" alt="" class="full">`);
-// }
-// wxImg.setLocalImg = function(src){
-// 	var code=`
-//             <div class="img-list">
-//                 <img src="${src}" alt="">
-//                 <i class="icon icon-del" onclick="wxImg.del(this)"></i>
-//             </div>
-//             `;
-//     $('.pic-wrap .pic-con .list-con').append(code);
-// }
-// wxImg.init = function(){
-//     var _this=this;
-//     $('.issue .photo').click(function(){
-//         if(_this.local_url.length>=1){
-//             $('.pic-wrap').show();
-//             $('.sBox-wrapper,.tap-footer').addClass('z0');
-//         }else{
-//            _this.imgUpload();
-//         }
-//     })
-//     $('.pic-wrap .pic-con .add-list').click(function(){
-//         if(_this.local_url.length>=8){
-//             showMask('最多只能上传8张！');
-//             return false;
-//         }
-//         _this.imgUpload();
-//     })
-//
-//     $('.pic-wrap .return').click(function(){
-//         $('.pic-wrap').hide();
-//         $('.sBox-wrapper,.tap-footer').removeClass('z0');
-//     })
-// }
-// wxImg.init();
-
-
-

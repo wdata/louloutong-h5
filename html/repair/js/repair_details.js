@@ -137,9 +137,12 @@ function HtmlAjax(){
                         operating += '<a href="repair_revoked.html?id='+ dataD.id +'" class="repair-operating cancel red">撤销</a>';
                     }
                     var status = '<div class="repair-status '+ color +'">'+ mi + dataD.statusName +'</div>';
+
+
                     if(dataD.repairImages){
                         $.each(dataD.repairImages,function(x,y){
-                            img += '<img src="'+ server_url_img + y +'" alt="">';
+                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'" ></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
+                            // img += '<a href="https://farm3.staticflickr.com/2567/5697107145_a4c2eaa0cd_o.jpg" itemprop="contentUrl" data-size="1024x1024"> <img src="https://farm3.staticflickr.com/2567/5697107145_3c27ff3cd1_m.jpg" itemprop="thumbnail" alt="Image description" /> </a>'
                         })
                     }
 
@@ -217,7 +220,7 @@ function HtmlAjax(){
                     var imgA = "";
                     if(dataD.repairRecordImages){
                         $.each(dataD.repairRecordImages,function(x,y){
-                            imgA += '<img src="'+ server_url_img + y +'" alt="">';
+                            imgA += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'" ></a><figcaption itemprop="caption description">repair pictures '+ (x + 1) +'</figcaption></figure>';
                         });
                         $("#images").empty().append(imgA);
                     }
@@ -329,7 +332,7 @@ function HtmlAjax(){
                 dataType:'json',
                 success:function(data){
                     if(data.code === 0){
-                        showMask("评论发布成功！");
+                        showMask("评论成功！");
                         $("#listCom").empty();  // 删除列表数据；
                         $("#comCon").val("");  // 清空评论；
                         comment = 1;
@@ -423,7 +426,7 @@ function HtmlAjax(){
                 $(".like").addClass("hide");   // 如果没有点赞，隐藏点赞列表；
             }
         })
-    }
+    };
     this.features = function(){
         $(document).on("click",".orders",function(){
             var self = $(this);
