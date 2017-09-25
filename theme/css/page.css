@@ -207,7 +207,7 @@
 .rent-input-con ul li .unit .c333{display: inline-block;border-left: 1px solid #bebebf;line-height: .4rem;padding-left: .15rem}
 .rent-input-con ul li .unit i{margin:0;}
 .rent-input-con ul li .unit sup{font-size: 12px;}
-.rent-input-con .submit-btn{display: block;margin:1.32rem auto 0 auto;height: 1.1733rem;width:3.893rem;background: #038dff;color: #fff;font-size: .426rem;}
+.rent-input-con .submit-btn{display: block;margin:1.32rem auto 0 auto;height: 1.1733rem;width:3.893rem;background: #038dff;color: #fff;font-size: .426rem;text-align: center;line-height:1.17333rem;}
 
 .desc-con{margin-top: .373rem;}
 .desc-con textarea{height: 11.3rem;width: 100%;background: #fff;resize:none;border:0px none;font-size:14px;line-height: 22px;padding: .48rem  .426rem;box-sizing:border-box; }

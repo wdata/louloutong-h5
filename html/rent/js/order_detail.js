@@ -1,4 +1,3 @@
-var order_id=sessionStorage.getItem('order_id');
 var auth_sum=sessionStorage.getItem('authority');
 var auth_2=false;  			                  //预约显示状态_未分配/已分配 
 if(auth_sum.indexOf('/llt/click/rent/showModel/click/assignorno')>0) 		auth_2=true;
@@ -23,10 +22,10 @@ function hourTran(date){
 
 $.ajax({
 	type:'get',
-	url:server_url+server_v1+'/rents/bespeak/'+ urlParams("id") +'.json',
+	url:server_url+server_v1+'/rents/bespeak/'+ obtain("order_id") +'.json',
 	dataType:'json',
 	success:function(res){
-		if(res.code==0){ 
+		if(res.code===0){
             var imgCode="";
             if(res.data.images.length>1){
                 for(var i=0;i<res.data.images.length;i++){
@@ -53,7 +52,7 @@ $.ajax({
                             </div>
                             <div class="clear"></div>
                         </div>
-                        <a href="orent_detail.html" onclick="link()">
+                        <a href="rent_detail.html" onclick="deposited('rent_id',${res.data.id})">
                             <div class="mid">
                                 <div class="word overhide">
                                    ${nullCheck(res.data.title)}

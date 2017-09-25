@@ -19,7 +19,6 @@ wxImg.imgUpload = function(){
     var _this = this;
     var i = 0;
     $('#pic_num').text(this.fileData.length);
-    console.log(8 - this.fileData.length);
     wx.chooseImage({
         count: 8 - this.fileData.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -47,7 +46,9 @@ wxImg.imgUpload = function(){
                         mediaIds:serverId
                     },
                     success:function(data){
-                        _this.fileData.push({'num':i,'url':data.data.urls[0]});
+                        _this.fileData.splice(0,0,{'num':i,'url':data.data.urls[0]});
+
+                        console.log(_this.fileData);
                         // 显示图片
                         var code = '<li><img src="'+ localId +'" alt=""><i data-name="'+ data.data.urls[0] +'" class="delete-icon"></i></li>';
                         $('#shoot').parent().prepend(code);

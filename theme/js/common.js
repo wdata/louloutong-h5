@@ -28,8 +28,11 @@ if(!userId){
 }
 $(document).on("change","#select",function(){
     sessionStorage.clear();        // 删除所有的零时存储，重新导入；
+
+    deposited("rentTop",0);
+    deposited("rentBot",0);
     deposited("userId",$(this).val());
-    history.go(0);
+    location.reload();
 });
 
 
@@ -150,6 +153,25 @@ function showMask(msg){
 	$('body').append(code);
 }
 
+// 是否删除;
+function confirm(msg,z){
+    var code = ' ' +
+        '<div class="mask-bg"> ' +
+        '<div class="mask-con"> ' +
+        '<div class="tit">提示</div> ' +
+        '<div class="main">'+ msg +'</div> ' +
+        '<div class="bot"> ' +
+        '<button class="btn confirm">确认</button><button class="btn cancel" onclick="closeMask()">取消</button>  ' +
+        '</div> </div> </div>';
+    $('body').append(code);
+
+    // 点击事件
+    $(".mask-bg .confirm").on("click",function(){
+        z();
+        $('.mask-bg').remove();
+    })
+
+}
 
 Array.prototype.unique = function(){
  var res = [this[0]];

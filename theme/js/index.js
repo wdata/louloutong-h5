@@ -379,11 +379,14 @@ function IndexAjax(proPertyId){
                 var html = "";
                 noticeIndex.empty();
                 if(data.code === 0 && data.data){
-                    $.each(data.data,function(index,val){
+                    $.each(data.data.items,function(index,val){
                         html += '<div class="swiper-slide box-center"><a href="html/notice/notice_details.html?id='+ val.id +'">'+ val.title +'</a></div>';
-                    })
+                    });
+                    noticeIndex.append(html);
+                }else{
+                    noticeIndex.append('<div class="swiper-slide box-center"><a href="javascript:">暂无最新通知，请点击更多通知</a></div>');
+                    noticeWord.stopAutoplay();
                 }
-                noticeIndex.append(html);
                 noticeWord.reLoop();   //   这个函数是重新计算swiper个数
             },
             error:function(data){
