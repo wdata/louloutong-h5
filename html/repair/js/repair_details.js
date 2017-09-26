@@ -141,7 +141,7 @@ function HtmlAjax(){
 
                     if(dataD.repairImages){
                         $.each(dataD.repairImages,function(x,y){
-                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'" ></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
+                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'"  onerror="defaultP(this)"></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
                             // img += '<a href="https://farm3.staticflickr.com/2567/5697107145_a4c2eaa0cd_o.jpg" itemprop="contentUrl" data-size="1024x1024"> <img src="https://farm3.staticflickr.com/2567/5697107145_3c27ff3cd1_m.jpg" itemprop="thumbnail" alt="Image description" /> </a>'
                         })
                     }
@@ -182,7 +182,7 @@ function HtmlAjax(){
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + dataD.user.photo +'"> <div class="information"> <div class="name">'+ dataD.user.name +'</div> <time>'+ dataD.createTime +'</time> </div>').attr("href",headJumps(dataD.user.id));
+                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + dataD.user.photo +'"  onerror="defaultPA(this)"> <div class="information"> <div class="name">'+ dataD.user.name +'</div> <time>'+ dataD.createTime +'</time> </div>').attr("href",headJumps(dataD.user.id));
                     //  订单状态；
                     $("#status").empty().append(status);
                     //  报修类型；
@@ -207,10 +207,10 @@ function HtmlAjax(){
                     if(dataD.handlerUsers){
                         if(dataD.handlerUsers.length > 1){
                             html = '<div class="most frame '+ su +'"> ' +
-                                '<a class="service over"  href="'+ headJumps(dataD.handlerUsers[1].id) +'"><img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[1].photo +'" alt=""></a> ' +
-                                '<a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
+                                '<a class="service over"  href="'+ headJumps(dataD.handlerUsers[1].id) +'"><img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[1].photo +'" onerror="defaultPA(this)" alt=""></a> ' +
+                                '<a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" onerror="defaultPA(this)" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
                         }else{
-                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
+                            html = '<div class="odd-number frame '+ su +'"> <a class="service" href="'+ headJumps(dataD.handlerUsers[0].id) +'"> <img class="avatar" src="'+ server_uel_user_img + dataD.handlerUsers[0].photo +'" onerror="defaultPA(this)" alt=""> <div class="concise"><p class="career">维修员</p><p>'+ dataD.handlerUsers[0].name +'</p></div> </a> </div>'
                         }
                         $(".repair-man").empty().append(html);
                     }
@@ -267,7 +267,7 @@ function HtmlAjax(){
             scrollArea : $(".repair-details"),
             autoLoad:true,
             loadDownFn : function(me){
-                //  获取报修列表
+                //  获取报修评论列表
                 $.ajax({
                     type:'get',
                     url:  server_url_repair + server_v1 + '/repairMessage/list.json',
@@ -286,7 +286,7 @@ function HtmlAjax(){
                         if(data.code === 0 && data.data){
                             $(".comment").removeClass("hide");   //有评论时显示评论列表；
                             $.each(data.data.items,function(index,val){
-                                html += '<li> <a href="'+ headJumps(val.id) +'"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
+                                html += '<li> <a href="'+ headJumps(val.id) +'"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" onerror="defaultPA(this)" alt=""></a> <div class="inform"> <p class="name">'+ val.user.name +'</p> <time>'+ val.createTime +'</time> <div class="content">'+ val.content +'</div> </div> </li>';
                             });
                             $("#listCom").append(html);
 
@@ -414,7 +414,7 @@ function HtmlAjax(){
                 if(data.code === 0 && data.data){
                     $(".like").removeClass("hide");   // 有点赞，显示点赞列表；
                     $.each(data.data.items,function(index,val){
-                        html += '<a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""></a>';
+                        html += '<a href="javascript:"><img class="small-avatar" src="'+ server_uel_user_img + val.user.photo +'"  onerror="defaultPA(this)" alt=""></a>';
                     });
                     list.append(html);
                 }else{

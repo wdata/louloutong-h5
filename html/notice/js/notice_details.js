@@ -49,6 +49,6 @@ $.ajax({
 
 function downloaded(){
     if( typeof WeixinJSBridge !== "undefined" ){
-        showMask("请点击右上角选择浏览器，跳转到浏览器下载！")
+        showMask("请点击右上角选择浏览器，跳转到浏览器下载！");
     }
 }

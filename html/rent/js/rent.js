@@ -62,7 +62,7 @@ rent.getList = function(elem,me){
                     for(var i=0;i<item.images.length;i++){
                         imgCode+=`
                                 <div class="pic-w fl">
-                                    <img src="${server_url_img+item.images[i].url}" alt="">
+                                    <img src="${server_url_img+item.images[i].url}" alt=""  onerror="defaultP(this)">
                                 </div>
                             `;
                     }
@@ -177,12 +177,12 @@ order.getList = function(elem,me){
                                 <button class="btn" onclick="order.tranShow('${item.id}')">接待</button>
                             </div>
                             <a href="order_detail.html" onclick="deposited('order_id',${item.rentId})">
-                                <img src="${imgCode}" alt="">
+                                <img src="${imgCode}" alt=""  onerror="defaultP(this)">
                             </a>
                         `;
                     }
                     code+=`
-                         <div class="item">
+                         <div class="item rent-reservation">
                             <div class="p24">
                                 <div class="t-l fl">
                                     <div class="top">
@@ -364,7 +364,7 @@ myrent.getList = function(elem,me){
                 var imgCode="",statue = '';
                 if(item.images.length>=1){
                     for(var i=0;i<item.images.length;i++){
-                        imgCode+= ' <div class="pic-w fl"> <img src="'+ server_url_img+item.images[i].url +'" alt=""> </div>'
+                        imgCode+= ' <div class="pic-w fl"> <img src="'+ server_url_img+item.images[i].url +'" alt=""  onerror="defaultP(this)"> </div>'
                     }
                 };
                 // 状态：0正常,1下架

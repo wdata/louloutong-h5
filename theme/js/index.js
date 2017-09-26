@@ -419,8 +419,8 @@ function IndexAjax(proPertyId){
                             case 1:span = '<span class="tag-green tag tag-gray">已分配</span>';
                                 break;
                         }
-                        html += '<li> <a class="overall" href="html/rent/order_detail.html?id='+ val.id +'"> <div class="introduction"> <div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.beseakUser.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.beseakUser.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
-                            '<article>'+ val.rentTitle +'</article><div class="showings-time"><i class="time-icon"></i>预约时间：<span>'+ val.bespeakTime +'</span></div> </div> <img class="cover" src="'+ server_url_img + val.imageUrl +'" alt=""></a> </li>';
+                        html += '<li> <a class="overall" href="html/rent/order_detail.html?id='+ val.id +'"> <div class="introduction"> <div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.beseakUser.photo +'"  onerror="defaultPA(this)"> <div class="information"> <div class="name">'+ val.beseakUser.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
+                            '<article>'+ val.rentTitle +'</article><div class="showings-time"><i class="time-icon"></i>预约时间：<span>'+ val.bespeakTime +'</span></div> </div> <img onerror="defaultP(this)" class="cover" src="'+ server_url_img + val.imageUrl +'" alt=""></a> </li>';
                     })
                 }
                 showings.append(html);
@@ -464,8 +464,8 @@ function IndexAjax(proPertyId){
                                 name = "公共区域";color = 'pluple';address = val.publicAddress;
                                 break;
                         }
-                        html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
-                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
+                        html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'"  onerror="defaultPA(this)" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
+                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img onerror="defaultP(this)" class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
                     })
                 }
                 repair.append(html);

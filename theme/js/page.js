@@ -1,4 +1,4 @@
-var default_tx="../../images/upload/touxiang@2x.png";           //默认头像
+var default_tx="../../images/anounce/avatar.png";           //默认头像
 var default_img='../../images/upload/pic2@2x.png';              //默认上传的底图
 
 //显示

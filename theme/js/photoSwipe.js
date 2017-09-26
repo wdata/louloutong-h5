@@ -263,7 +263,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
         // define options (if needed)
         options = {
-
+            shareEl:false,   // 关闭分享
+            // tapToClose:true,
             // define gallery index (for URL)
             galleryUID: galleryElement.getAttribute('data-pswp-uid'),
 
