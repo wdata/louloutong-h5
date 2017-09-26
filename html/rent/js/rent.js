@@ -62,7 +62,7 @@ rent.getList = function(elem,me){
                     for(var i=0;i<item.images.length;i++){
                         imgCode+=`
                                 <div class="pic-w fl">
-                                    <img src="${server_url_img+item.images[i].url}" alt="">
+                                    <img src="${server_url_img+item.images[i].url}" alt="" >
                                 </div>
                             `;
                     }
@@ -187,7 +187,7 @@ order.getList = function(elem,me){
                                 <div class="t-l fl">
                                     <div class="top">
                                         <a href="">
-                                            <span class="tx"><img src="${txCode}" alt=""></span>
+                                            <span class="tx"><img src="${txCode}"  alt=""></span>
                                             <div class="txt">
                                                 <div class="tit">${item.beseakUser.name}</div>
                                                 <span>${item.createTime}</span>

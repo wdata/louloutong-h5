@@ -175,7 +175,7 @@ function HtmlAjax(){
                             case 1:type = "办公区域";address = val.address;break;
                             case 2:type = "公共区域";address = val.publicAddress;break;
                         }
-                        html += '<li> <a class="header"  href="'+ headJumps(val.id) +'"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" alt="avatar"> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
+                        html += '<li> <a class="header"  href="'+ headJumps(val.id) +'"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'" onerror="defaultPA(this)" alt=""> <div class="information"> <div class="name">'+ val.user.name +'</div> <time>'+ val.createTime +'</time> </div> ' +
                             ''+ status +' </a><a href="'+ href +'?id='+ val.id +'"> <div class="address"><i class="address-icon"></i><span>'+ address +'</span></div> <div class="image"> '+ img +'' +
                             '</div> <p class="repair-types">报修类型：'+ type +'</p> </a> ' +
                             '<footer> '+ operating +' </footer> </li>';
