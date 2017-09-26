@@ -103,6 +103,7 @@
 
 /*预约列表*/
 .rent-list-con .item{border-bottom: 1px solid #e2e2e2;margin-top: .32rem;padding-bottom: .24rem}
+.rent-list-con .item.rent-reservation{ background-color: #fff; padding-top: .32rem; }
 .rent-list-con .item .t-l{width:67%; }
 .rent-list-con .item .t-l .top .tx{height: .96rem;width: .96rem;display: inline-block;vertical-align: middle;}
 .rent-list-con .item .t-l .top .tx img{border-radius: 100%;height: 100%;width: 100%;}
@@ -235,13 +236,9 @@
 
 
  figure.rent-image
-,figure.rent-image  a{
-    width: 100%;
-    height: 100%;
-    display: block;
-    overflow:hidden;
-}
-
+,figure.rent-image  a{  width: 100%;  height: 100%;  display: block;  overflow:hidden;  }
+/*  减少上面部分位移的影响 */
+.rent-load .dropload-down{  transform: translateY(-1.6rem);  }
 
 
 

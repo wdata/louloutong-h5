@@ -39,7 +39,7 @@ $.ajax({
 				var imgCode="";
 				$.each(data.data.images,function(index,item){
 					// imgCode+= '<div class="swiper-slide rent-image"><figure><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure></div>';
-                    imgCode+= '<figure class="swiper-slide rent-image"><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure>';
+                    imgCode+= '<figure class="swiper-slide rent-image"><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'"  onerror="defaultP(this)"></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure>';
                 });
 				$('.orent-swiper .swiper-wrapper').html(imgCode);
                 // mySwiperA.init();                                                      // 因为photoSwipe不支持无缝轮播，所以需要删除这个两行代码

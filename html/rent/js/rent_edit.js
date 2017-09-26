@@ -50,7 +50,7 @@ $.ajax({
             $("#pic_num").text(data.data.images.length);
             $.each(data.data.images,function(index,val){
                 wxImg.fileData.push({'num':index,'url':val.unDomainUrl});
-                codeData += '<div class="img-list"> <img src="'+ val.url +'" alt=""> <i data-name="'+ val.unDomainUrl +'" class="icon icon-del delete-icon"></i> </div> ';
+                codeData += '<div class="img-list"> <img src="'+ val.url +'" alt=""  onerror="defaultP(this)"> <i data-name="'+ val.unDomainUrl +'" class="icon icon-del delete-icon"></i> </div> ';
             });
             $('.pic-wrap .pic-con .list-con').append(codeData);
         }

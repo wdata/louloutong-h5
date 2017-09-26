@@ -465,7 +465,7 @@ function IndexAjax(proPertyId){
                                 break;
                         }
                         html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'"  onerror="defaultPA(this)" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
-                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
+                            '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img onerror="defaultP(this)" class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
                     })
                 }
                 repair.append(html);

@@ -38,7 +38,7 @@ function HtmlAjax(){
 
                     if(data.data.repairImages){
                         $.each(data.data.repairImages,function(x,y){
-                            img += '<img src="'+ server_url_img + y +'" alt="">';
+                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'"  onerror="defaultP(this)"></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
                         })
                     }
                     switch (data.data.type){
@@ -50,7 +50,7 @@ function HtmlAjax(){
                     //  可进行操作；
                     $("#set").empty().append(operating);
                     //  报修人;
-                    $("#people").empty().append('<img class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>').attr("href",headJumps(data.data.user.id));
+                    $("#people").empty().append('<img  class="avatar" src="'+ server_uel_user_img + data.data.user.photo +'"  onerror="defaultPA(this)"> <div class="information"> <div class="name">'+ data.data.user.name +'</div> <time>'+ data.data.createTime +'</time> </div>').attr("href",headJumps(data.data.user.id));
                     //  报修类型；
                     $("#aspect").text(data.data.repairItem);
                     //  报修内容;

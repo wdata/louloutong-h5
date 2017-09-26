@@ -141,7 +141,7 @@ function HtmlAjax(){
 
                     if(dataD.repairImages){
                         $.each(dataD.repairImages,function(x,y){
-                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'" ></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
+                            img += '<figure><a href="'+ server_url_img + y +'" data-size="1024x1024" ><img src="'+ server_url_img + y +'"  onerror="defaultP(this)"></a><figcaption >repair pictures '+ (x + 1) +'</figcaption></figure>';
                             // img += '<a href="https://farm3.staticflickr.com/2567/5697107145_a4c2eaa0cd_o.jpg" itemprop="contentUrl" data-size="1024x1024"> <img src="https://farm3.staticflickr.com/2567/5697107145_3c27ff3cd1_m.jpg" itemprop="thumbnail" alt="Image description" /> </a>'
                         })
                     }
