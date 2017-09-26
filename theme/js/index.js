@@ -422,6 +422,8 @@ function IndexAjax(proPertyId){
                         html += '<li> <a class="overall" href="html/rent/order_detail.html?id='+ val.id +'"> <div class="introduction"> <div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.beseakUser.photo +'"  onerror="defaultPA(this)"> <div class="information"> <div class="name">'+ val.beseakUser.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
                             '<article>'+ val.rentTitle +'</article><div class="showings-time"><i class="time-icon"></i>预约时间：<span>'+ val.bespeakTime +'</span></div> </div> <img onerror="defaultP(this)" class="cover" src="'+ server_url_img + val.imageUrl +'" alt=""></a> </li>';
                     })
+                }else{
+                    html = '<div class="noData">亲，暂无新内容，去别的地方转转吧</div>';
                 }
                 showings.append(html);
             },
@@ -467,6 +469,8 @@ function IndexAjax(proPertyId){
                         html += '<li> <a class="overall" href="html/repair/repair_details.html?id='+ val.id +'"><div class="introduction"><div class="personal"> <img class="avatar" src="'+ server_uel_user_img + val.user.photo +'"  onerror="defaultPA(this)" alt=""> <div class="information"> <div class="name">'+ val.user.name + span +'</div> <time>'+ val.createTime +'</time> </div> </div> ' +
                             '<div class="address"><i class="position-icon"></i>地址：<span>'+ address +'</span><div class="address-types '+ color +'"><span>'+ name +'</span></div></div> </div> <img onerror="defaultP(this)" class="cover" src="'+ server_url_img + val.repairImages[0] +'" alt=""> </a> </li>';
                     })
+                }else{
+                    html = '<div class="noData">亲，暂无新内容，去别的地方转转吧</div>';
                 }
                 repair.append(html);
             },

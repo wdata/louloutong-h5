@@ -72,6 +72,12 @@ time{
 #select option{
     color: #038dff;
 }
+.noData{
+    display: block;
+    height: 1rem;
+    line-height: 1rem;
+    text-align: center;
+}
 /*  ----------------------------------------------------首页模块----------------------------------------------------  */
 
 /*  头部  */

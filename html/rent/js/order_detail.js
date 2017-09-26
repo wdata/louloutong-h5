@@ -25,7 +25,7 @@ $.ajax({
 	url:server_url+server_v1+'/rents/bespeak/'+ obtain("order_id") +'.json',
 	dataType:'json',
 	success:function(res){
-		if(res.code===0){
+		if(res.code===0 && res.data){
             var imgCode="";
             if(res.data.images.length>1){
                 for(var i=0;i<res.data.images.length;i++){

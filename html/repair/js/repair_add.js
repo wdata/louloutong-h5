@@ -67,6 +67,10 @@ function HtmlAjax(){
             showMask("请选择预约和期望时间！");
             return;
         }
+        if(new Date().getTime() >= new Date(bespeakTime).getTime()){
+            showMask("预约上门时间不能早于当前日期！");
+            return ;
+        }
         if(new Date(bespeakTime).getTime() >= new Date(expectTime).getTime()){
             showMask("期待完成时间必须大于预约上门时间！");
             return ;

@@ -73,6 +73,7 @@ wxImg.imgUpload = function(){
                         if(box.length > 0){
                           var bxHtml =  '<img src="'+ data.data.domain + data.data.urls[0] +'" alt="">';
                           box.append(bxHtml);
+                            _this.fileData.push({'num':i,'url':data.data.urls[0]});
                         }
 
                     },

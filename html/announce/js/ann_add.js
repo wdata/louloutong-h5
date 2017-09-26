@@ -59,13 +59,22 @@ function release(){
             firmIds += "," + $(y).attr("data-id");
         }
     });
+    var urls = [];
+    console.log(wxImg.fileData);
+    $.each(wxImg.fileData,function(index,val){
+        urls.push(val.url);
+    });
 
+
+    // 隐藏文本编辑区域的图片；
+    $("#editor_box img").css("display","none");
 
     form.append("propertyId",propertyId);
     form.append("userId",userId);
     form.append("title",title);
     form.append("content",$("#editor_box").html());
     form.append("firmIds",firmIds);
+    form.append("urls",urls);
 
     $.ajax({
         type:'post',

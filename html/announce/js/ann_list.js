@@ -88,7 +88,8 @@ function HtmlAjax(){
                 if(data.code === 0 && data.data){
                     $.each(data.data.items,function(index,val){
                         //  有封面和没有封面代码不同；
-                        if(val.image){
+                        console.log();
+                        if(val.content.indexOf("<img src") >= 0){
                             html += '<li> <a href="ann_details.html?id='+ val.id +'"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <img src="'+ val.image +'" alt="cover"> <div class="details">查看全文</div> </a> </li>'
                         }else{
                             html += '<li> <a href="ann_details.html?id='+ val.id +'" class="no-price"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <div class="details">查看全文</div> </a> </li>';

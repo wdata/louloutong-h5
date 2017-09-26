@@ -13,6 +13,13 @@ $.ajax({
             $(".personal time").text(data.data.createTime);  //时间；
             $("article").html(data.data.content);     //内容；
 
+            // 图片；
+            // if(data.data.image){
+            //     $.each(data.data.image,function(index,val){
+            //         $("article img").eq(index).css("display","block").attr("src",val.url);
+            //     })
+            // }
+
             $(".content").removeClass("hide");
         }
     },
