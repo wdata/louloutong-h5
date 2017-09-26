@@ -12,14 +12,15 @@ wxConfig(wx);
 var wxImg = new Object({
     "fileData":[],          // 记录返回的图片名；
     "local_url":[],    // 记录上传给微信的数据；
-    "imgBur":false
+    "imgBur":false,
+    "limitData":null
 });
 
 wxImg.imgUpload = function(){
     var _this = this;
     var i = 0;
     wx.chooseImage({
-        count: 8 - this.fileData.length, // 默认9
+        count: wxImg.limitData - _this.fileData.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: function (res) {
@@ -92,15 +93,23 @@ wxImg.imgUpload = function(){
         });
     };
 };
+wxImg.limit = function(data){
+    var _this = this;
+    if(_this.fileData.length >= data){
+        showMask('最多只能上传'+ data +'张！');
+        return true;
+    }
+};
 wxImg.init = function(){
     var _this = this;
     //  上传图片；
     $('.imgUploadWX').click(function(){
+        if(wxImg.limit(4)){ return }
+        wxImg.limitData = 4; // 微信图片限制数
         _this.imgUpload();  // 调用微信接口，选择图片，上传图片；
     });
     // 出租和求组中，各个事件
     $('.issue .photo').click(function(){
-        console.log(_this.fileData.length);
         if(_this.fileData.length>=1){
             $('.pic-wrap').show();
             $('.sBox-wrapper,.tap-footer').addClass('z0');
@@ -111,10 +120,8 @@ wxImg.init = function(){
 
     // 上传限制
     $('.pic-wrap .pic-con .add-list').click(function(){
-        if(_this.fileData.length >= 8){
-            showMask('最多只能上传8张！');
-            return false;
-        }
+        if(wxImg.limit(8)){ return }
+        wxImg.limitData = 8; // 微信图片限制数
         _this.imgUpload();
     });
 

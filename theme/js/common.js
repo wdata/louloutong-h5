@@ -135,8 +135,8 @@ $(".click-footer a").click(function(){
 
 // img加载不成功设置默认头像和默认图片；
 function defaultP(_this){
-    $(_this).attr("src","../../images/anounce/avatar.png");
-    _this.onerror='';  // 如果更换的图片加载不成功不重复加载；
+    // $(_this).attr("src","../../images/anounce/avatar.png");
+    // _this.onerror='';  // 如果更换的图片加载不成功不重复加载；
 }
 function defaultPA(_this){
     $(_this).attr("src","../../images/anounce/avatar.png");

@@ -234,8 +234,8 @@
 .pic-wrap .pic-con .add-list img{width: 55%;height: auto;}
 
 
-.rent-image figure
-,.rent-image figure a{
+ figure.rent-image
+,figure.rent-image  a{
     width: 100%;
     height: 100%;
     display: block;

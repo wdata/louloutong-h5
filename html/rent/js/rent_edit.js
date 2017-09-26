@@ -45,8 +45,9 @@ $.ajax({
                 }
             });
             // 图片；
-            var codeData = null;
+            var codeData = "";
             $(".img-wrap img").attr("src",data.data.images[0].url);
+            $("#pic_num").text(data.data.images.length);
             $.each(data.data.images,function(index,val){
                 wxImg.fileData.push({'num':index,'url':val.unDomainUrl});
                 codeData += '<div class="img-list"> <img src="'+ val.url +'" alt=""> <i data-name="'+ val.unDomainUrl +'" class="icon icon-del delete-icon"></i> </div> ';

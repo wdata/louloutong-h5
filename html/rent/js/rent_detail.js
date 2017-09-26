@@ -1,9 +1,10 @@
 
-var mySwiper = new Swiper('.orent-swiper', {
-    loop: true,
+var mySwiperA = new Swiper('.orent-swiper', {
+    // loop: true,      // 因为photoSwipe不支持无缝轮播
     pagination: '.swiper-pagination',
     paginationType: 'fraction',
-    autoplay: 1000,
+    autoplay: 2000,
+    observer:true,  // 如果不监控，则轮播和滑动的时候会现的特别卡
     autoplayDisableOnInteraction: false
 });
 $.ajax({
@@ -37,11 +38,12 @@ $.ajax({
 				$('.orent-swiper').show();
 				var imgCode="";
 				$.each(data.data.images,function(index,item){
-					imgCode+= '<div class="swiper-slide rent-image"><figure><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure></div>';
-				});
+					// imgCode+= '<div class="swiper-slide rent-image"><figure><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure></div>';
+                    imgCode+= '<figure class="swiper-slide rent-image"><a href="'+ item.url +'" data-size="1024x1024" ><img src="'+ item.url +'" ></a><figcaption >rent pictures '+ (index + 1) +'</figcaption></figure>';
+                });
 				$('.orent-swiper .swiper-wrapper').html(imgCode);
-                mySwiper.init();
-                mySwiper.reLoop();   //   这个函数是重新计算swiper个数
+                // mySwiperA.init();                                                      // 因为photoSwipe不支持无缝轮播，所以需要删除这个两行代码
+                // mySwiperA.reLoop();   //   这个函数是重新计算swiper个数
 			}else{
 				$('.orent-swiper').hide();
 			}
