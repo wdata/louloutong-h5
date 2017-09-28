@@ -167,7 +167,7 @@ function HtmlAjax(){
                         // 判断是否有图片
                         if(val.repairImages){
                             $.each(val.repairImages,function(x,y){
-                                img += '<img src="'+ server_url_img + y +'" alt=""  onerror="defaultP(this)">';
+                                img += '<img src="'+ server_url_img + y +'" alt="" >';
                             })
                         }
                         // 报修类型

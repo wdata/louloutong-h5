@@ -14,11 +14,11 @@ $.ajax({
             $("article").html(data.data.content);     //内容；
 
             // 图片；
-            // if(data.data.image){
-            //     $.each(data.data.image,function(index,val){
-            //         $("article img").eq(index).css("display","block").attr("src",val.url);
-            //     })
-            // }
+            if(data.data.image){
+                $.each(data.data.image,function(index,val){
+                    $("article img").eq(index).css("display","block").attr("src",val);
+                })
+            }
 
             $(".content").removeClass("hide");
         }

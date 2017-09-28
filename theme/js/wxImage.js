@@ -71,7 +71,7 @@ wxImg.imgUpload = function(){
                         // 公告添加图片有所不同
                         var box = $("#editor_box");
                         if(box.length > 0){
-                          var bxHtml =  '<img src="'+ data.data.domain + data.data.urls[0] +'" alt="">';
+                          var bxHtml =  '<img src="'+ data.data.domain + data.data.urls[0] +'" onerror="defaultP(this)">';
                           box.append(bxHtml);
                             _this.fileData.push({'num':i,'url':data.data.urls[0]});
                         }

@@ -59,7 +59,7 @@ function HtmlAjax(){
     this.main = function(){
         var _this = this;
         dropload = $(".anounce").dropload({
-            scrollArea : window,
+            scrollArea : $(".anounce"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
@@ -80,7 +80,7 @@ function HtmlAjax(){
                 "propertyId":propertyId,
                 "status":status,
                 "page":comment,
-                "size":10
+                "size":5
             },
             dataType:'json',
             success:function(data){
@@ -89,8 +89,8 @@ function HtmlAjax(){
                     $.each(data.data.items,function(index,val){
                         //  有封面和没有封面代码不同；
                         console.log();
-                        if(val.content.indexOf("<img src") >= 0){
-                            html += '<li> <a href="ann_details.html?id='+ val.id +'"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <img src="'+ val.image +'" alt="cover"> <div class="details">查看全文</div> </a> </li>'
+                        if(val.image){
+                            html += '<li> <a href="ann_details.html?id='+ val.id +'"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <img src="'+ val.image[0] +'" onerror="defaultP(this)"> <div class="details">查看全文</div> </a> </li>'
                         }else{
                             html += '<li> <a href="ann_details.html?id='+ val.id +'" class="no-price"> <time>'+ val.createTime +'</time> <header>'+ val.title +'</header> <article>'+ val.content +'</article> <div class="details">查看全文</div> </a> </li>';
                         }

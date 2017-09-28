@@ -84,7 +84,7 @@ function HtmlAjax(){
     this.main = function(){
         var _this = this;
         dropload = $(".notice").dropload({
-            scrollArea : window,
+            scrollArea : $(".notice"),
             autoLoad:true,
             loadDownFn : function(me){
                 //  获取报修列表
